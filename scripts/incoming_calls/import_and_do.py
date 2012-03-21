@@ -1,9 +1,5 @@
-'''
-Created on 2012-03-14
-
-@author: jylebleu
-'''
-
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 
 import csv
 import json
@@ -16,8 +12,8 @@ GATEWAY1 = "xivo-gtw-1"
 GATEWAY2 = "xivo-gtw-2"
 CONTEXT = "test_incall"
 
-
 INCALL_URI = "/service/ipbx/json.php/%s/call_management/incall"
+
 
 class WebServicesResponse(object):
     def __init__(self, url, code, data):
@@ -25,11 +21,9 @@ class WebServicesResponse(object):
         self.code = code
         self.data = data
 
-class WebServices(object):
-    def __init__(self, module, uri_prefix):
-        uri_prefix = uri_prefix
 
-        self.module = module
+class IncomingCallsWebServices(object):
+    def __init__(self, uri_prefix):
         self._wsr = None
         self._path = self._compute_path(uri_prefix)
         self._uri_prefix = uri_prefix
@@ -43,7 +37,6 @@ class WebServices(object):
         else:
             method = 'restricted'
         return INCALL_URI % method
-
 
     def _request_http(self, qry, data=None):
         if isinstance(data, dict):
@@ -76,10 +69,10 @@ class WebServices(object):
         qry = {"act": "add"}
         return self._request_http(qry, content)
 
-class IncomingCallsCache():
+
+class IncomingCallsCache(object):
     def __init__(self, incomingcall_ws):
         self.incomingcall_ws = incomingcall_ws
-
 
     def init_cache(self):
         response = self.incomingcall_ws.list()
@@ -92,10 +85,10 @@ class IncomingCallsCache():
     def exists(self, extension):
         return extension in self.incalls
 
-def createIncomingCalls(user_phone_nb , incoming_call_ws, gateway):
+
+def create_incoming_calls(user_phone_nb, incoming_call_ws, gateway):
     exten = user_phone_nb
     context = CONTEXT
-
 
     incall_content = new_incall_content(exten, context, gateway)
     response = incoming_call_ws.add(incall_content)
@@ -119,23 +112,21 @@ def new_incall_content(exten, context, gateway):
 
 
 def import_csv(incoming_call_cache1, incoming_call_cache2, incoming_call_ws1, incoming_call_ws2, gateway1, gateway2):
-    userReader = csv.reader(open('users.csv', 'rb'), delimiter=';', quotechar='|')
+    with open('users.csv', 'rb') as fobj:
+        userReader = csv.reader(fobj, delimiter=';', quotechar='|')
 
     for row in userReader:
         extension = row[3]
         if incoming_call_cache1.exists(extension):
             print "Xivo1 : incoming call already exists for %s " % extension
         else:
-            print "Xivo1 : creating incoming call for %s gateway %s" % (extension,gateway1)
-            createIncomingCalls(extension, incoming_call_ws1 , gateway1)
+            print "Xivo1 : creating incoming call for %s gateway %s" % (extension, gateway1)
+            create_incoming_calls(extension, incoming_call_ws1, gateway1)
         if incoming_call_cache2.exists(extension):
             print "Xivo2 : incoming call already exists for %s " % extension
         else:
-            print "Xivo2 : creating incoming call for %s gateway %s" % (extension,gateway2)
-            createIncomingCalls(extension, incoming_call_ws2 , gateway2)
-
-
-
+            print "Xivo2 : creating incoming call for %s gateway %s" % (extension, gateway2)
+            create_incoming_calls(extension, incoming_call_ws2, gateway2)
 
 
 def main():
@@ -150,14 +141,15 @@ def main():
     print " gateway 1 : %s " % gateway1
     print " gateway 2 : %s " % gateway2
 
-    incoming_call_ws1 = WebServices('ipbx/call_management/incall', 'https://%s:443' % XIVO1)
-    incoming_call_ws2 = WebServices('ipbx/call_management/incall', 'https://%s:443' % XIVO2)
+    incoming_call_ws1 = IncomingCallsWebServices('https://%s:443' % xivo1)
+    incoming_call_ws2 = IncomingCallsWebServices('https://%s:443' % xivo2)
 
     incoming_call_cache1 = IncomingCallsCache(incoming_call_ws1)
     incoming_call_cache1.init_cache()
     incoming_call_cache2 = IncomingCallsCache(incoming_call_ws2)
     incoming_call_cache2.init_cache()
     import_csv(incoming_call_cache1, incoming_call_cache2, incoming_call_ws1, incoming_call_ws2, gateway1, gateway2)
+
 
 if __name__ == '__main__':
     main()
