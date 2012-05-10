@@ -19,7 +19,7 @@ EOF
 
 show_installed_version() {
     echo "#### Installed versions ####"
-    echo "\n"
+    echo
     for package in $packages; do
         version=$(apt-cache policy $package | grep Installed | grep -oE '2\.[2-9]\.[0-9]{1,2}' | head -n 1)
         echo "$package: $version"
