@@ -42,6 +42,7 @@ install_dahdi() {
 Package: $package
 Pin: release a=$release
 Pin-Priority: 1001
+
 EOF
         done
     fi
