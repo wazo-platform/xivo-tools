@@ -23,8 +23,8 @@ show_installed_version() {
     for package in $packages; do
         version=$(apt-cache policy $package | grep Installed | grep -oE '2\.[2-9]\.[0-9]{1,2}' | head -n 1)
         echo "$package: $version"
-        echo
     done
+    echo
 }
 
 services_restart() {
