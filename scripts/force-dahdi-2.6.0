@@ -27,6 +27,12 @@ show_installed_version() {
     done
 }
 
+services_restart() {
+    invoke-rc.d asterisk stop
+    invoke-rc.d dahdi restart
+    invoke-rc.d asterisk start
+}
+
 install_dahdi() {
     read -p 'Would you like to downgrade dahdi (service will be restarted) [Y/n]? ' answer                                                                                        
     answer="${answer:-Y}"                                                                                                                                                                  
@@ -53,7 +59,7 @@ EOF
     aptitude download $packages -t $release
     dpkg -i dahdi*deb
     cd - && rm -rf $rep
-    service dahdi restart
+    services_restart
     show_installed_version
 }
 
