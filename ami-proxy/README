@@ -1,0 +1,30 @@
+A proxy that buffers indefinitely the connection between xivo-ctid and
+asterisk.
+
+
+Installation
+============
+
+1. On your XiVO, install the files in the right directory::
+
+      # cp -r amiproxy /usr/lib/pymodules/python2.6/
+      # cp bin/amiproxy /usr/sbin
+      # cp etc/init.d/amiproxy /etc/init.d
+
+2. Add amiproxy to the boot sequence::
+
+      # update-rc.d amiproxy defaults
+
+3. On your XiVO's web interface, configure your CTI server to connect to the AMI
+   via the port 5039 (Services / CTI Server / General).
+
+4. Start amiproxy::
+
+      # /etc/init.d/amiproxy start
+
+5. Restart the XiVO stack::
+
+     # xivo-service restart
+
+You should also make sure that your XiVO restart correctly by restarting your
+machine.
