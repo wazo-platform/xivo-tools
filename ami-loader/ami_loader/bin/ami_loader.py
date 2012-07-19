@@ -30,6 +30,8 @@ def main():
         pass
     #ami_client.action_command('module reload')
     #ami_client.action_show_dialplan()
+    #ami_client.action_agent_logoff('9215')
+    #ami_client.action_agent_callback_login('9215', 'default', '1215')
     #ami_client.wait_recv()
 
     ami_client.wait_recv(0.5)

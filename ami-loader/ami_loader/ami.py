@@ -29,6 +29,12 @@ class AMIClient(object):
         else:
             self._sock = new_sock
 
+    def disconnect(self):
+        logger.info('Disconnecting from %s', self._hostname)
+
+        self._sock.close()
+        self._sock = None
+
     def wait_recv(self, timeout=_TIMEOUT):
         if self._is_recv_ready(timeout):
             self.flush_recv()
@@ -83,8 +89,22 @@ class AMIClient(object):
         ]
         self._send_request(lines)
 
-    def disconnect(self):
-        logger.info('Disconnecting from %s', self._hostname)
+    def action_agent_callback_login(self, agent_num, context, exten):
+        logger.debug('Action agent callback login')
 
-        self._sock.close()
-        self._sock = None
+        lines = [
+            'Action: AgentCallbackLogin',
+            'Agent: %s' % agent_num,
+            'Context: %s' % context,
+            'Exten: %s' % exten,
+        ]
+        self._send_request(lines)
+
+    def action_agent_logoff(self, agent_num):
+        logger.debug('Action agent logoff')
+
+        lines = [
+            'Action: AgentLogoff',
+            'Agent: %s' % agent_num,
+        ]
+        self._send_request(lines)
