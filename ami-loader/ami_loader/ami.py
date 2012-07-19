@@ -40,6 +40,8 @@ class AMIClient(object):
     def flush_recv(self):
         while self._is_recv_ready():
             data = self._sock.recv(self._BUFSIZE)
+            if not data:
+                raise Exception('remote end closed the connection')
             logger.debug('Received %r', data)
 
     def action_login(self, username, password):
