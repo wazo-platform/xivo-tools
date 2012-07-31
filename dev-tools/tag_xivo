@@ -1,0 +1,137 @@
+#!/bin/bash
+# Author: Nicolas Hicher <nhicher@proformatique.com (atarakt)>
+# License: GNU General Public License (GPL) V3
+# Copyright: (C) 2011 Proformatique
+
+usage() {
+    cat << EOF 
+You have to provide some informations to allow tagging:
+
+    $(basename $0) -v xivo_version [-d git_directory]
+
+    -v: xivo_version
+    -d: git_directory (default ~/xivo_src)
+
+    example : $(basename $0) -v 12.14
+
+EOF
+    exit
+}
+
+update_repository() {
+    local directories=$*
+    echo "Ensure we start from an up-to-date repository"
+    for dir in $directories; do
+        cd $dir
+        echo "updating $dir"
+        $git checkout master -q && $git pull -q
+        echo "done"
+        cd - > /dev/null
+    done
+}
+
+get_answer() {
+    if [ $assume_yes -eq 0 ]; then
+        echo "Is it ok ? yes/no"
+        read answer
+        while [ $answer != 'yes' ] && [ $answer != 'no' ]; do
+            echo 'must be "yes" or "no"'
+            read answer
+        done
+        if [ $answer = 'yes' ]; then
+            echo 'create version file'
+        else
+            exit
+        fi
+    fi
+}
+
+create_version_file() {
+    directory="$git_directory/xivo-skaro"
+    cd $directory
+    local version_tag=$(cat VERSION)
+
+    $git checkout master -q
+}
+
+create_build_cmd() {
+    local version=$1
+    local cmd="$git tag -s squeeze-xivo-skaro-$version -m squeeze-xivo-skaro-$version"
+    echo $cmd
+}
+
+create_tag() {
+    for dir in $directories; do
+        cd $dir
+        cmd=$(create_build_cmd $version)
+        $cmd
+        $git push --tags -q 
+        cd "$OLDPWD"
+    done
+}
+
+check_if_directories_exist() {
+    local missed_dir=0
+    for dir in $directories; do
+        if [ ! -d $dir ]; then
+            echo "directory $dir doesn't exist"
+            missed_dir=1
+        fi
+    done
+    if [ $missed_dir -eq 1 ]; then
+        echo "some directories are missed"
+        exit -1
+    fi
+}
+
+while getopts :d:v:xy opt
+do
+  case ${opt} in
+    d) git_directory=${OPTARG};;
+    v) version=${OPTARG};;
+    x) debug=1;;
+    y) assume_yes=1;;
+    '?')  echo "${0} : option ${OPTARG} is not valid" >&2
+          exit -1
+    ;;
+  esac
+done
+
+assume_yes="${assume_yes:-"0"}"
+debug="${debug:-"0"}"
+
+if [ -z $version ]; then
+    usage
+fi
+
+
+if [ $debug -eq 1 ]; then
+    git="echo git"
+else
+    git="git"
+fi
+
+if [ -z $git_directory ]; then
+    git_directory="$HOME/xivo_src"
+else
+    git_directory="$HOME/$git_directory"
+fi
+
+directories="$git_directory/squeeze-xivo-skaro \
+             $git_directory/xivo-confgen \
+             $git_directory/xivo-ctid \
+             $git_directory/xivo-dao \
+             $git_directory/xivo-dird \
+             $git_directory/xivo-libsccp \
+             $git_directory/xivo-skaro \
+             $git_directory/xivo-stat \
+             $git_directory/xivo-upgrade \
+            "
+
+echo "We need to use an up-to-date repository to avoid conflict"
+echo "'git pull' will be executed in each repository branch"
+check_if_directories_exist
+get_answer
+update_repository $directories
+create_version_file
+create_tag $directories
