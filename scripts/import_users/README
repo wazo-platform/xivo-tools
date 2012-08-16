@@ -1,0 +1,5 @@
+Dependencies
+============
+
+* xivo-ws >= 1.2
+  * pip install xivo-ws
