@@ -114,7 +114,7 @@ fi
 if [ -z $git_directory ]; then
     git_directory="$HOME/xivo_src"
 else
-    git_directory="$HOME/$git_directory"
+    git_directory="$git_directory"
 fi
 
 directories="$git_directory/squeeze-xivo-skaro \
