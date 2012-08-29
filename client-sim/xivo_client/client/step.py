@@ -256,6 +256,7 @@ class _InitializationStepHelper(object):
         self._infos = runner.infos
         self._recv_msg = runner.client.recv_msg
         self._send_msg = runner.client.send_msg
+        self._sendall = runner.client.sendall
         self._next_command_id = runner.command_id.next
         self._item_ids = dict((name, set()) for name in self._LIST_NAMES)
 
@@ -287,15 +288,8 @@ class _InitializationStepHelper(object):
         function = msg['function']
         listname = msg['listname']
         if function == 'updateconfig':
-            msg = {
-                'class': 'getlist',
-                'function': 'updatestatus',
-                'listname': listname,
-                'tid': msg['tid'],
-                'tipbxid': msg['tipbxid'],
-                'commandid': self._next_command_id(),
-            }
-            self._send_msg(msg)
+            msg_data = self._new_getlist_msg_data('updatestatus', listname, msg['tid'], msg['tipbxid'])
+            self._sendall(msg_data)
             if listname == 'queues':
                 msg = {
                     'class': 'getqueuesstats',
@@ -316,14 +310,11 @@ class _InitializationStepHelper(object):
             if item_ids:
                 self._item_ids[listname] = set(item_ids)
                 for item_id in item_ids:
-                    msg = {
-                        'class': 'getlist',
-                        'function': 'updateconfig',
-                        'listname': listname,
-                        'tid': item_id,
-                        'tipbxid': msg['tipbxid'],
-                        'commandid': self._next_command_id(),
-                    }
-                    self._send_msg(msg)
+                    msg_data = self._new_getlist_msg_data('updateconfig', listname, item_id, msg['tipbxid'])
+                    self._sendall(msg_data)
             else:
                 del self._item_ids[listname]
+
+    def _new_getlist_msg_data(self, function, listname, item_id, ipbx_id):
+        return ('{"class": "getlist", "function": "%s", "listname": "%s", "tid": "%s", "tipbxid": "%s"}\n' %
+                (function, listname, item_id, ipbx_id))
