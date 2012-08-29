@@ -18,6 +18,7 @@
 import argparse
 import logging
 import xivo_client.client.step
+import xivo_client.json
 import xivo_client.scenario.foobar
 import xivo_client.scenario.null
 import xivo_client.scenario.standard
@@ -35,9 +36,12 @@ def main():
 
     _set_logging_level(parsed_args.verbose)
 
+    if parsed_args.cjson:
+        from xivo_client.json import cjson
+        xivo_client.json.install_coder(cjson)
+
     stats = StandardScenarioStatistics()
     parsed_args.stats = stats
-
     config = _load_config_file(parsed_args.conf, parsed_args)
 
     scenario_runner = ScenarioRunner(config['scenarios'],
@@ -90,6 +94,8 @@ def _parse_args():
                         help='increase verbosity')
     parser.add_argument('-p', '--port', type=int, default=CTIClient.DEFAULT_PORT,
                         help='CTI port')
+    parser.add_argument('--cjson', action='store_true',
+                        help='use cjson instead of json')
     parser.add_argument('hostname',
                         help='CTI server hostname')
     return parser.parse_args()
