@@ -1,0 +1,66 @@
+Goal
+====
+
+This script is currently written in bash.
+Its goal is to ease the migration process between a XiVO 1.1 and a XiVO 12.
+
+
+Disclaimer
+==========
+
+Before starting a 1.1 -> 12 migration, you should really know what you are doing.
+This is a 'for XiVO expert' job only.
+
+
+Limitations
+===========
+
+XXX :
+* Works only with a XiVO 1.1 installed in MySQL.
+
+TODO :
+It does not ease 
+* Group,
+* Conference rooms,
+* Queues,
+* Agents,
+re-configuration.
+
+
+Pre-requisities
+===============
+
+* Have access to the XiVO 1.1 MySQL DB,
+
+
+Process
+=======
+
+#. Copy script on XiVO 1.1,
+#. Launch script
+#. The script creates a new directory::
+
+    Migration-1.1-to-12
+
+#. It contains the CSV file for XiVO 12 which can import users with their associated DID and 
+Voicemail::
+    
+    users.csv : users import file for XiVO 12 version,
+
+#. and several manual_* files which are intended to give hint regarding the manual configuration 
+which has to be done::
+
+    manual_users_dialaction.csv : 
+    manual_users_funckey.csv : lists users which have phone function keys configured,
+    manual_users_musiconhold.csv : lists users which have a moh different from 'default' or none,
+    manual_users_ringseconds.csv : lists users which have a ring second parameter different from 30s,
+    manual_users_simultcalls.csv : lists users which have a simult calls parameter different from 5,
+    manual_users_subroutine.csv : lists users which have a pre-process subroutine configured,
+    manual_users_dialaction.csv : lists users which have dialaction different from 'none',
+    manual_users_custom_protocol_line.csv : lists users which are not SIP or SCCP or IAX users,
+    manual_voicemail.csv : lists voicemails which are not linked to a user,
+    manual_incall.csv : lists incalls which have a destination different from a user,
+
+#. import the users in the XiVO 12 via the users.csv file,
+#. read the manual_* files and report the according changes in the XiVO 12 configuration
+
