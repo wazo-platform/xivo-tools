@@ -46,14 +46,6 @@ get_answer() {
     fi
 }
 
-create_version_file() {
-    directory="$git_directory/xivo-skaro"
-    cd $directory
-    local version_tag=$(cat VERSION)
-
-    $git checkout master -q
-}
-
 create_build_cmd() {
     local version=$1
     local cmd="$git tag -s squeeze-xivo-skaro-$version -m squeeze-xivo-skaro-$version"
@@ -133,5 +125,4 @@ echo "'git pull' will be executed in each repository branch"
 check_if_directories_exist
 get_answer
 update_repository $directories
-create_version_file
 create_tag $directories
