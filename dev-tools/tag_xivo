@@ -24,7 +24,7 @@ update_repository() {
     for dir in $directories; do
         cd $dir
         echo "updating $dir"
-        $git checkout master -q && $git pull -q
+        $git checkout master -q && $git pull -q || exit 1
         echo "done"
         cd - > /dev/null
     done
@@ -55,9 +55,14 @@ create_build_cmd() {
 create_tag() {
     for dir in $directories; do
         cd $dir
-        cmd=$(create_build_cmd $version)
-        $cmd
-        $git push --tags -q 
+        lasttag=$(git tag --list | grep squeeze-xivo-skaro-$version)
+        if [ -z $lasttag ]; then
+            cmd=$(create_build_cmd $version)
+            $cmd || exit 1
+            $git push --tags -q || exit 1
+        else
+            echo "$dir has already been tagged."
+        fi
         cd "$OLDPWD"
     done
 }
