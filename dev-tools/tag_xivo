@@ -38,9 +38,7 @@ get_answer() {
             echo 'must be "yes" or "no"'
             read answer
         done
-        if [ $answer = 'yes' ]; then
-            echo 'create version file'
-        else
+        if [ $answer != 'yes' ]; then
             exit
         fi
     fi
@@ -55,7 +53,7 @@ create_build_cmd() {
 create_tag() {
     for dir in $directories; do
         cd $dir
-        lasttag=$(git tag --list | grep squeeze-xivo-skaro-$version)
+        lasttag=$(git tag | grep squeeze-xivo-skaro-$version)
         if [ -z $lasttag ]; then
             cmd=$(create_build_cmd $version)
             $cmd || exit 1
