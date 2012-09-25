@@ -115,6 +115,7 @@ fi
 directories="$git_directory/squeeze-xivo-skaro \
              $git_directory/xivo-agid \
              $git_directory/xivo-confgen \
+             $git_directory/xivo-config \
              $git_directory/xivo-ctid \
              $git_directory/xivo-dao \
              $git_directory/xivo-dird \
