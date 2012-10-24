@@ -64,6 +64,26 @@ class AMIClient(object):
         data = '\r\n'.join(lines) + '\r\n\r\n'
         self._sock.send(data)
 
+    def action_agent_callback_login(self, agent_num, context, exten):
+        logger.debug('Action agent callback login')
+
+        lines = [
+            'Action: AgentCallbackLogin',
+            'Agent: %s' % agent_num,
+            'Context: %s' % context,
+            'Exten: %s' % exten,
+        ]
+        self._send_request(lines)
+
+    def action_agent_logoff(self, agent_num):
+        logger.debug('Action agent logoff')
+
+        lines = [
+            'Action: AgentLogoff',
+            'Agent: %s' % agent_num,
+        ]
+        self._send_request(lines)
+
     def action_command(self, cli_command):
         logger.debug('Action command')
 
@@ -89,22 +109,11 @@ class AMIClient(object):
         ]
         self._send_request(lines)
 
-    def action_agent_callback_login(self, agent_num, context, exten):
-        logger.debug('Action agent callback login')
+    def action_status(self, channel_name):
+        logger.debug('Action status')
 
         lines = [
-            'Action: AgentCallbackLogin',
-            'Agent: %s' % agent_num,
-            'Context: %s' % context,
-            'Exten: %s' % exten,
-        ]
-        self._send_request(lines)
-
-    def action_agent_logoff(self, agent_num):
-        logger.debug('Action agent logoff')
-
-        lines = [
-            'Action: AgentLogoff',
-            'Agent: %s' % agent_num,
+            'Action: Status',
+            'Channel: %s' % channel_name,
         ]
         self._send_request(lines)

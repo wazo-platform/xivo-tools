@@ -10,9 +10,13 @@ from ami_loader.ami import AMIClient
 
 
 def main():
-    logging.basicConfig(level=logging.INFO)
+    _init_logging()
 
     parsed_args = _parse_args(sys.argv[1:])
+
+    if parsed_args.verbose:
+        logger = logging.getLogger()
+        logger.setLevel(logging.DEBUG)
 
     ami_client = AMIClient(parsed_args.hostname)
     ami_client.connect()
@@ -23,9 +27,10 @@ def main():
 
     try:
         while True:
-            ami_client.action_core_show_channels()
+            #ami_client.action_core_show_channels()
+            ami_client.action_status("SIP/abcdef-000001")
             ami_client.flush_recv()
-            time.sleep(0.01)
+            time.sleep(0.02)
     except KeyboardInterrupt:
         pass
     #ami_client.action_command('module reload')
@@ -36,6 +41,14 @@ def main():
 
     ami_client.wait_recv(0.5)
     ami_client.disconnect()
+
+
+def _init_logging():
+    logger = logging.getLogger()
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
 
 
 def _parse_args(args):
@@ -49,6 +62,8 @@ def _new_argument_parser():
                         help='authentication username')
     parser.add_argument('-p', '--password', default='phaickbebs9',
                         help='authentication password')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='increase verbosity')
     parser.add_argument('hostname',
                         help='AMI server hostname')
     return parser
