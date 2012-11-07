@@ -122,6 +122,7 @@ directories="$git_directory/squeeze-xivo-skaro \
              $git_directory/xivo-dird \
              $git_directory/xivo-fetchfw \
              $git_directory/xivo-lib-js \
+             $git_directory/xivo-lib-python \
              $git_directory/xivo-libsccp \
              $git_directory/xivo-skaro \
              $git_directory/xivo-stat \
