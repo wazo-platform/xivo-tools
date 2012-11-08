@@ -132,7 +132,6 @@ def new_agent(firstname, lastname, number):
                 "numgroup" : "1",
                 "autologoff": "0",
                 "ackcall": "no",
-                "wrapuptime": "0",
                 "enddtmf" : "*",
                 "acceptdtmf" : "#",
              },
