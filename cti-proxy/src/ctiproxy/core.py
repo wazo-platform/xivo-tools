@@ -309,6 +309,27 @@ class IncludeListener(ForwardMsgListener):
         pass
 
 
+class ExcludeListener(ForwardMsgListener):
+    def __init__(self, listener, key, value):
+        ForwardMsgListener.__init__(self, listener)
+        self._key = key
+        self._value = value
+
+    def client_send_data(self, data):
+        pass
+
+    def client_send_msg(self, msg):
+        if msg.get(self._key) != self._value:
+            self._listener.client_send_msg(msg)
+
+    def server_send_msg(self, msg):
+        if msg.get(self._key) != self._value:
+            self._listener.server_send_msg(msg)
+
+    def server_send_data(self, data):
+        pass
+
+
 class PrintMsgListener(BaseMsgListener):
     def __init__(self, pretty_print=False):
         self._pretty_print = pretty_print

@@ -25,6 +25,8 @@ def _new_argument_parser():
                         help="strip the given fields from messages")
     parser.add_argument("-i", "--include", action="store",
                         help="include only the given messages")
+    parser.add_argument("-e", "--exclude", action="store",
+                        help="exclude the given messages")
     return parser
 
 
@@ -50,6 +52,9 @@ def _new_listener(args):
         if args.include:
             key, value = args.include.split("=", 1)
             listener = core.IncludeListener(listener, key, value)
+        if args.exclude:
+            key, value = args.exclude.split("=", 1)
+            listener = core.ExcludeListener(listener, key, value)
         listener = core.JsonDecoderListener(listener)
         listener = core.NewlineSplitListener(listener)
     if args.no_client:
