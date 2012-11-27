@@ -124,6 +124,7 @@ directories="$git_directory/squeeze-xivo-skaro \
              $git_directory/xivo-lib-js \
              $git_directory/xivo-lib-python \
              $git_directory/xivo-libsccp \
+             $git_directory/xivo-provisioning \
              $git_directory/xivo-skaro \
              $git_directory/xivo-stat \
              $git_directory/xivo-upgrade \
