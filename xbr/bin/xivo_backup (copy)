@@ -1,0 +1,69 @@
+#!/bin/bash
+mkdir -p "/mnt/boot" "/mnt/system" "/mnt/var" "/mnt/partimag"
+source "/live/image/vars"
+umount -f "/mnt/partimag"
+clear
+
+# Gestion de la partition de sauvegarde
+while true; do
+	echo "......Montage de la partition data......"
+	mount "/dev/disk/by-uuid/$uuid_data" "/mnt/partimag" && break
+	clear
+
+	echo "Erreur de montage de la partition data!!!"
+	fdisk -l | grep sd
+	echo "Partition data? (Exemple : sda2)"
+	read partition_data
+	mount "/dev/$partition_data" "/mnt/partimag" && break
+
+	clear
+	echo "Erreur de montage de la partition data!!!"
+	clear
+done
+
+# Gestion de la sauvegarde
+while true; do
+	ls -1 "/mnt/partimag/backup"
+	echo "Entrer le nom de la sauvegarde?"
+	read name_save
+		if [ -n "$name_save" ]; then
+			if [ ! -e "/mnt/partimag/backup/$name_save" ]; then
+				break
+			fi
+		fi
+	clear
+done
+
+while true; do
+	fdisk -l | grep sd
+	echo "Disque a restaurer? (Exemple : sda)"
+	read disk
+		if [ -n "$disk" ]; then
+			if [ -e "/dev/$disk" ]; then
+				break
+			fi
+		fi
+	clear
+done
+
+mkdir -p "/mnt/partimag/backup/$name_save"
+vgscan
+vgchange -ay data
+
+mount -t ext3 "/dev/$disk"1 "/mnt/boot"
+mount -t xfs "/dev/mapper/data-system" "/mnt/system"
+mount -t xfs "/dev/mapper/data-var" "/mnt/var"
+
+tar -cf "/mnt/partimag/backup/$name_save/boot.tar" --directory "/mnt" boot
+tar -cf "/mnt/partimag/backup/$name_save/system.tar" --directory "/mnt" system
+tar -cf "/mnt/partimag/backup/$name_save/var.tar" --directory "/mnt" var
+
+uuid_old_boot=`blkid -o udev "/dev/$disk"1 | grep "ID_FS_UUID=" | cut -d '=' -f 2`
+uuid_old_system=`blkid -o udev "/dev/mapper/data-system" | grep "ID_FS_UUID=" | cut -d '=' -f 2`
+echo "uuid_old_boot="$uuid_old_boot > "/mnt/partimag/backup/$name_save/vars"
+echo "uuid_old_system="$uuid_old_system >> "/mnt/partimag/backup/$name_save/vars"
+
+chmod -R 777 "/mnt/partimag/backup"
+
+echo "FIN...FIN...FIN..."
+echo "FIN...FIN...FIN..."

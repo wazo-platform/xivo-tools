@@ -1,0 +1,95 @@
+#!/bin/bash
+
+#yum update
+yum install ncurses ncurses-base ncurses-libs ncurses-term ncurses-devel openssl openssl-devel mingw32-termcap.noarch zlib zlib-devel curl libxml2 libxml2-devel gcc gcc-c++ kernel-devel
+
+cd /usr/src
+wget http://downloads.asterisk.org/pub/telephony/asterisk/old-releases/asterisk-1.6.2.24.tar.gz
+wget http://downloads.asterisk.org/pub/telephony/libpri/releases/libpri-1.4.13.tar.gz
+wget http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/releases/dahdi-linux-complete-2.6.1+2.6.1.tar.gz
+
+# Decompression
+tar xvzf asterisk*.tar.gz
+tar xvzf libpri*.tar.gz
+tar xvzf dahdi*.tar.gz
+
+# Install : libpri
+cd libpri*
+make clean
+make install
+cd ..
+
+# Install : dahdi
+cd dahdi*
+make all
+make install
+make config
+cd ..
+
+# Install : asterisk
+cd asterisk*
+./configure
+echo '
+MENUSELECT_APPS=app_fax app_ivrdemo app_jack app_osplookup app_rpt app_skel 
+MENUSELECT_BRIDGES=
+MENUSELECT_CDR=cdr_adaptive_odbc cdr_odbc cdr_pgsql cdr_radius cdr_sqlite3_custom cdr_sqlite cdr_tds 
+MENUSELECT_CHANNELS=chan_alsa chan_console chan_gtalk chan_h323 chan_jingle chan_misdn chan_nbs chan_usbradio chan_vpb 
+MENUSELECT_CODECS=codec_ilbc codec_resample codec_speex 
+MENUSELECT_FORMATS=format_ogg_vorbis 
+MENUSELECT_FUNCS=func_curl func_odbc func_speex 
+MENUSELECT_PBX=pbx_ael pbx_gtkconsole pbx_lua 
+MENUSELECT_RES=res_ais res_config_curl res_config_ldap res_config_odbc res_config_pgsql res_config_sqlite res_curl res_http_post res_jabber res_odbc res_snmp 
+MENUSELECT_TESTS=test_astobj2 test_dlinklists test_expr test_heap test_poll test_sched test_skel 
+MENUSELECT_CFLAGS=LOADABLE_MODULES 
+MENUSELECT_OPTS_app_voicemail=FILE_STORAGE 
+MENUSELECT_EMBED=
+MENUSELECT_CORE_SOUNDS=CORE-SOUNDS-EN-GSM 
+MENUSELECT_MOH=MOH-OPSOUND-WAV 
+MENUSELECT_EXTRA_SOUNDS=EXTRA-SOUNDS-EN-WAV EXTRA-SOUNDS-FR-WAV 
+MENUSELECT_BUILD_DEPS=res_adsi chan_local app_voicemail app_meetme res_monitor res_agi res_smdi G711_NEW_ALGORITHM chan_usbradio 
+MENUSELECT_DEPSFAILED=MENUSELECT_APPS=app_fax
+MENUSELECT_DEPSFAILED=MENUSELECT_APPS=app_jack
+MENUSELECT_DEPSFAILED=MENUSELECT_APPS=app_osplookup
+MENUSELECT_DEPSFAILED=MENUSELECT_CDR=cdr_adaptive_odbc
+MENUSELECT_DEPSFAILED=MENUSELECT_CDR=cdr_odbc
+MENUSELECT_DEPSFAILED=MENUSELECT_CDR=cdr_pgsql
+MENUSELECT_DEPSFAILED=MENUSELECT_CDR=cdr_radius
+MENUSELECT_DEPSFAILED=MENUSELECT_CDR=cdr_sqlite3_custom
+MENUSELECT_DEPSFAILED=MENUSELECT_CDR=cdr_sqlite
+MENUSELECT_DEPSFAILED=MENUSELECT_CDR=cdr_tds
+MENUSELECT_DEPSFAILED=MENUSELECT_CHANNELS=chan_alsa
+MENUSELECT_DEPSFAILED=MENUSELECT_CHANNELS=chan_console
+MENUSELECT_DEPSFAILED=MENUSELECT_CHANNELS=chan_gtalk
+MENUSELECT_DEPSFAILED=MENUSELECT_CHANNELS=chan_h323
+MENUSELECT_DEPSFAILED=MENUSELECT_CHANNELS=chan_jingle
+MENUSELECT_DEPSFAILED=MENUSELECT_CHANNELS=chan_misdn
+MENUSELECT_DEPSFAILED=MENUSELECT_CHANNELS=chan_nbs
+MENUSELECT_DEPSFAILED=MENUSELECT_CHANNELS=chan_vpb
+MENUSELECT_DEPSFAILED=MENUSELECT_CODECS=codec_resample
+MENUSELECT_DEPSFAILED=MENUSELECT_CODECS=codec_speex
+MENUSELECT_DEPSFAILED=MENUSELECT_FORMATS=format_ogg_vorbis
+MENUSELECT_DEPSFAILED=MENUSELECT_FUNCS=func_curl
+MENUSELECT_DEPSFAILED=MENUSELECT_FUNCS=func_odbc
+MENUSELECT_DEPSFAILED=MENUSELECT_FUNCS=func_speex
+MENUSELECT_DEPSFAILED=MENUSELECT_PBX=pbx_lua
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_ais
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_config_curl
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_config_ldap
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_config_odbc
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_config_pgsql
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_config_sqlite
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_curl
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_http_post
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_jabber
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_odbc
+MENUSELECT_DEPSFAILED=MENUSELECT_RES=res_snmp
+MENUSELECT_DEPSFAILED=MENUSELECT_TESTS=test_astobj2
+MENUSELECT_DEPSFAILED=MENUSELECT_TESTS=test_expr
+MENUSELECT_DEPSFAILED=MENUSELECT_TESTS=test_heap
+MENUSELECT_DEPSFAILED=MENUSELECT_TESTS=test_poll
+MENUSELECT_DEPSFAILED=MENUSELECT_TESTS=test_sched
+MENUSELECT_DEPSFAILED=MENUSELECT_TESTS=test_skel' > "menuselect.makeopts"
+make
+make install
+make samples
+make config
