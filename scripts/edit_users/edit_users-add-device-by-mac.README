@@ -1,0 +1,31 @@
+Usage
+=====
+
+This script can associate an *existing* user line with an *existing* device.
+It takes one parameter which is a CSV file with the phone number of the line and the MAC address of the
+device separated by a comma. MAC address must be lower case. e.g.::
+    
+    399,00:08:5d:26:65:7e
+
+
+It will associate the user with line phone number with number 399 to device 
+with MAC address 00:08:5d:26:65:7e.
+
+Note :
+- An user with line with the number 399 MUST exist,
+- A device with MAC address 00:08:5d:26:65:7e MUST exist
+
+Prerequisite
+============
+
+Before lauching the script you MUST :
+
+1. Create the users with the lines,
+2. Having the devices already created *by provd*,
+
+Dependencies
+============
+
+* python 
+
+
