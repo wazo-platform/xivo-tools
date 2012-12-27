@@ -36,7 +36,7 @@ done
 
 while true; do
 	fdisk -l | grep sd
-	echo "Disque a restaurer? (Exemple : sda)"
+	echo "Disque a sauvegarder ? (Exemple : sda)"
 	read disk
 		if [ -n "$disk" ]; then
 			if [ -e "/dev/$disk" ]; then
