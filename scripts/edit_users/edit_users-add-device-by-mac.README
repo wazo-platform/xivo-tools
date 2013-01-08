@@ -3,10 +3,12 @@ Usage
 
 This script can associate an *existing* user line with an *existing* device.
 It takes one parameter which is a CSV file with the phone number of the line and the MAC address of the
-device separated by a comma. MAC address must be lower case. e.g.::
+device separated by a comma. MAC address must be *lower case*. e.g.::
     
     399,00:08:5d:26:65:7e
 
+Launch the script :
+  python edit_users-add-device-by-mac.py csv_file.csv
 
 It will associate the user with line phone number with number 399 to device 
 with MAC address 00:08:5d:26:65:7e.
@@ -20,12 +22,23 @@ Prerequisite
 
 Before lauching the script you MUST :
 
-1. Create the users with the lines,
-2. Having the devices already created *by provd*,
+1. Create a Webservice user on your XiVO
+2. Create the users with the lines,
+3. Having the devices already created *by provd*,
 
 Dependencies
 ============
 
 * python 
 
+Tips
+====
 
+On a XiVO 1.1 you can use this SQL request :
+
+SELECT number,LOWER(macaddr) 
+FROM phone LEFT JOIN userfeatures 
+    ON phone.iduserfeatures = userfeatures.id 
+    WHERE phone.iduserfeatures != 0;
+
+and select the user wanted.
