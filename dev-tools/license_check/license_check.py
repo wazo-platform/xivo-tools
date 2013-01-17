@@ -74,7 +74,7 @@ ENCODING_REGEX = re.compile(r'^# -\*- coding:(.*)-\*-')
 
 VARIABLE_LICENSE_REGEX = re.compile(r'__license__ += +("+)(.*?)(\1)\n', re.S)
 
-COPYRIGHT_REGEX = re.compile(r'^#? *Copyright +\((C|c)\) (\d{4})( ?- ?(\d{4}))?')
+COPYRIGHT_REGEX = re.compile(r'^#? *Copyright +\((C|c)\) (\d{4})( ?- ?(\d{4}))?', re.M)
 LICENSE_HEADER = """# Copyright (C) %(year)s Avencall
 #
 # This program is free software: you can redistribute it and/or modify
@@ -184,18 +184,17 @@ def revise_copyright_year(copyright=None):
 
     years = set([current_year])
 
-    for line in StringIO(copyright):
-        match = COPYRIGHT_REGEX.match(line)
-        if match:
-            years.add(int(match.group(2)))
-            if match.group(4):
-                years.add(int(match.group(4)))
+    for match in COPYRIGHT_REGEX.finditer(copyright):
+        years.add(int(match.group(2)))
+        if match.group(4):
+            years.add(int(match.group(4)))
 
-    if len(years) == 1:
-        return str(years.pop())
+    min_year = min(years)
+    max_year = max(years)
+
+    if min_year == max_year:
+        return str(min_year)
     else:
-        min_year = min(years)
-        max_year = max(years)
         return "%s-%s" % (min_year, max_year)
 
 def file_with_headers(contents, year, shebang=None):
