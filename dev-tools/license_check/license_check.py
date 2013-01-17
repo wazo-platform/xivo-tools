@@ -115,12 +115,13 @@ def add_headers(filepath):
     contents = remove_encoding(contents)
 
     contents, copyright = chop_copyright(contents)
+
     year = revise_copyright_year(copyright)
+
     contents = contents.lstrip()
 
     tmpfile = file_with_headers(contents, year, shebang)
 
-    tmpfile.seek(0)
     with open(filepath, 'w') as pyfile:
         pyfile.write(tmpfile.read())
 
@@ -207,6 +208,7 @@ def file_with_headers(contents, year, shebang=None):
     tmpfile.write(LICENSE_HEADER % {'year': year})
     tmpfile.write('\n')
     tmpfile.write(contents)
+    tmpfile.seek(0)
 
     return tmpfile
 
