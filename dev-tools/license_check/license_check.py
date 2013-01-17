@@ -222,8 +222,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser('add GPL license to project repo and file headers')
     parser.add_argument('projectroot', help='folder containing all the projects')
-    parser.add_argument('-L', '--no-license', action='store_false', dest='license', default=True, help='copy license file')
-    parser.add_argument('-H', '--no-header', action='store_false', dest='header', default=True, help='insert license in header')
+    parser.add_argument('-L', '--no-license', action='store_false', dest='license',
+            default=True, help='do not copy license file')
+    parser.add_argument('-H', '--no-header', action='store_false', dest='header',
+            default=True, help='do not insert license in header')
 
     args = parser.parse_args()
 
