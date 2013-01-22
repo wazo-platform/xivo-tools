@@ -25,46 +25,6 @@ import datetime
 
 from StringIO import StringIO
 
-REPOS=[
-    'xivo-acceptance',
-    'xivo-agent',
-    'xivo-agid',
-    'xivo-backup',
-    'xivo-callgen',
-    'xivo-client-qt',
-    'xivo-confgen',
-    'xivo-config',
-    'xivo-ctid',
-    'xivo-dao',
-    'xivo-dird',
-    'xivo-doc',
-    'xivo-experimental',
-    'xivo-fetchfw',
-    'xivo-lib-js',
-    'xivo-lib-python',
-    'xivo-libsccp',
-    'xivo-loadtest',
-    'xivo-presentations',
-    'xivo-provd-plugins-addons',
-    'xivo-provisioning',
-    'xivo-skaro',
-    'xivo-stat',
-    'xivo-tools',
-    'xivo-upgrade',
-    'xivo-ws',
-    'xivo-install-cd',
-    'xivo-monitoring',
-]
-
-EXCLUDE_FILES = [
-    'setup.py',
-    'OrderedConf.py',
-    'UpCollections.py',
-    'ThreadingHTTPServer.py',
-    'agi.py',
-    'voicemailpwcheck.py',
-]
-
 LICENSE_FILE_PATH = 'gpl3.txt'
 
 LICENSE_FILE_NAME = 'LICENSE'
@@ -96,11 +56,11 @@ def add_license_file(repopath):
     if not os.path.exists(licensepath):
         shutil.copyfile(LICENSE_FILE_PATH, licensepath)
 
-def find_all_python_files(repopath):
+def find_all_python_files(repopath, exclude):
     python_files = []
     for path, dirs, files in os.walk(repopath):
         for filename in files:
-            if filename.endswith(".py") and filename not in EXCLUDE_FILES:
+            if filename.endswith(".py") and filename not in exclude:
                 python_files.append(os.path.join(path, filename))
     return python_files
 
@@ -218,6 +178,11 @@ def has_copyright(lines):
             return True
     return False
 
+def read_filelist(path):
+    with open(path) as reader:
+        elements = [l.strip() for l in reader]
+    return elements
+
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser('add GPL license to project repo and file headers')
@@ -226,12 +191,18 @@ if __name__ == "__main__":
             default=True, help='do not copy license file')
     parser.add_argument('-H', '--no-header', action='store_false', dest='header',
             default=True, help='do not insert license in header')
+    parser.add_argument('-r', '--repos', default='repos.txt',
+            help='text file with a list of repositories to scan (default: repos.txt)')
+    parser.add_argument('-e', '--exclude', default='exclude.txt',
+            help='text file with a list of python files to exlude  (default: exclude.txt)')
 
     args = parser.parse_args()
 
     root = args.projectroot
+    repos = read_filelist(args.repos)
+    exclude = read_filelist(args.exclude)
 
-    for repo in REPOS:
+    for repo in repos:
         repopath = os.path.join(root, repo)
 
         if args.license:
@@ -239,7 +210,7 @@ if __name__ == "__main__":
             add_license_file(repopath)
 
         if args.header:
-            files = find_all_python_files(repopath)
+            files = find_all_python_files(repopath, exclude)
             for filepath in files:
                 print "processing", filepath
                 add_headers(filepath)
