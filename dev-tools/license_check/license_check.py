@@ -120,7 +120,7 @@ def chop_commented_license(contents):
         line = reader.readline()
 
     if has_copyright(comments):
-        pos = reader.tell()
+        pos = reader.tell() - len(line)
         copyright = contents[0:pos].strip()
         contents = contents[pos:].lstrip()
         return contents, copyright
