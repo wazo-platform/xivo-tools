@@ -17,7 +17,7 @@ def main():
     if not parsed_args.start:
         parsed_args.start = _this_week_tuesday()
     if not parsed_args.end:
-        parsed_args.end = _next_week_tuesday()
+        parsed_args.end = _next_week_wednesday()
 
     data = _generate_data(parsed_args.start, parsed_args.end, parsed_args.hours)
     datafile = _write_datafile(data)
@@ -55,6 +55,11 @@ def _this_week_tuesday():
 
 def _next_week_tuesday():
     next_week_date = datetime.date.today() + datetime.timedelta(days=7)
+    return next_week_date + datetime.timedelta(days=1 - next_week_date.weekday())
+
+
+def _next_week_wednesday():
+    next_week_date = datetime.date.today() + datetime.timedelta(days=8)
     return next_week_date + datetime.timedelta(days=1 - next_week_date.weekday())
 
 
