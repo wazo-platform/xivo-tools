@@ -131,6 +131,7 @@ directories="$git_directory/squeeze-xivo-skaro \
              $git_directory/xivo-skaro \
              $git_directory/xivo-stat \
              $git_directory/xivo-upgrade \
+             $git_directory/xivo-web-interface \
             "
 
 echo "We need to use an up-to-date repository to avoid conflict"
