@@ -15,8 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+import collections
 import json
 import logging
+import operator
 import select
 import socket
 import sys
@@ -290,6 +292,33 @@ class ForwardMsgListener(object):
         self._listener.server_send_data(data)
 
 
+class StatisticMsgListener(BaseMsgListener):
+    def __init__(self):
+        self._client_msgs_by_class = collections.defaultdict(int)
+        self._server_msgs_by_class = collections.defaultdict(int)
+
+    def close(self):
+        self.print_stats()
+
+    def client_send_msg(self, msg):
+        self._client_msgs_by_class[msg.get('class')] += 1
+
+    def server_send_msg(self, msg):
+        self._server_msgs_by_class[msg.get('class')] += 1
+
+    def print_stats(self):
+        print '=== Messages sent by client'
+        self._print_msgs_by_class(self._client_msgs_by_class)
+        print '=== Messages sent by server'
+        self._print_msgs_by_class(self._server_msgs_by_class)
+
+    def _print_msgs_by_class(self, msgs_by_class):
+        items = msgs_by_class.items()
+        items.sort(key=operator.itemgetter(1), reverse=True)
+        for msg_class, nb in items:
+            print msg_class, nb
+
+
 class StripListener(ForwardMsgListener):
     def __init__(self, listener, elements):
         ForwardMsgListener.__init__(self, listener)
@@ -441,8 +470,8 @@ class SocketProxy(object):
     def _do_start(self):
         self._client_socket.setblocking(0)
         self._server_socket.setblocking(0)
-        client_buf = "" # buffer of data to send to client
-        server_buf = "" # buffer of data to send to server
+        client_buf = ""  # buffer of data to send to client
+        server_buf = ""  # buffer of data to send to server
         while not self._asked_to_stop:
             # compute rlist and wlist
             rlist = []

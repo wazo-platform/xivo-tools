@@ -25,11 +25,21 @@ def main():
 
 def _parse_args():
     parser = common.new_argument_parser()
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-m', '--msg', action='store_true',
+                       help='message stats')
+    group.add_argument('-n', '--network', action='store_true',
+                       help='network stats')
     return parser.parse_args()
 
 
 def _new_listener(parsed_args):
-    listener = core.StatisticListener()
+    if parsed_args.network:
+        listener = core.StatisticListener()
+    else:
+        listener = core.StatisticMsgListener()
+        listener = core.JsonDecoderListener(listener)
+        listener = core.NewlineSplitListener(listener)
     return listener
 
 
