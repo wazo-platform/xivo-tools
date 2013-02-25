@@ -32,7 +32,7 @@ def _port_number(value):
 
 def new_argument_parser(add_help=False):
     parser = argparse.ArgumentParser(add_help=add_help)
-    parser.add_argument("--listen-port", type=_port_number, default=50030,
+    parser.add_argument("--listen-port", type=_port_number, default=5003,
                         help="bind to this port")
     parser.add_argument("--listen-addr", default="",
                         help="bind to this address")
