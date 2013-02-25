@@ -16,53 +16,81 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 import argparse
+import itertools
 import logging
-import functools
+from ctiproxy import core
+
+logger = logging.getLogger(__name__)
+
+
+def main(parse_args, new_listener):
+    parsed_args = parse_args()
+
+    _init_logging(parsed_args)
+
+    proxy_establisher = _new_proxy_establisher(parsed_args)
+    try:
+        loop_ctrl = _new_loop_ctrl(parsed_args)
+        for _ in loop_ctrl:
+            listener = new_listener(parsed_args)
+            try:
+                csocket, ssocket = proxy_establisher.establish_connections()
+                socket_proxy = core.SocketProxy(csocket, ssocket, listener)
+                socket_proxy.start()
+            finally:
+                listener.close()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        proxy_establisher.close()
+
+
+def _init_logging(parsed_args):
+    root_logger = logging.getLogger()
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter('%(message)s'))
+    root_logger.addHandler(handler)
+    if parsed_args.verbose:
+        root_logger.setLevel(logging.INFO)
+    else:
+        root_logger.setLevel(logging.ERROR)
+
+
+def _new_proxy_establisher(parsed_args):
+    bind_address = (parsed_args.listen_addr, parsed_args.listen_port)
+    server_address = (parsed_args.hostname, parsed_args.port)
+    return core.IPv4ProxyEstablisher(bind_address, server_address)
+
+
+def _new_loop_ctrl(parsed_args):
+    if parsed_args.loop:
+        return itertools.repeat(True)
+    else:
+        return [True]
+
+
+def new_argument_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--listen-port', type=_port_number, default=5003,
+                        help='bind to this port')
+    parser.add_argument('--listen-addr', default='',
+                        help='bind to this address')
+    parser.add_argument('--port', type=_port_number, default=5003,
+                        help='CTI server port number')
+    parser.add_argument('--loop', action='store_true', default=False,
+                        help='wait for another connection when one is closed')
+    parser.add_argument('-v', '--verbose', action='store_true', default=False,
+                        help='increase logging verbosity')
+    parser.add_argument('hostname',
+                        help='CTI server hostname')
+    return parser
 
 
 def _port_number(value):
     try:
         port = int(value)
     except ValueError:
-        raise argparse.ArgumentTypeError("%r is not a valid port number" % value)
+        raise argparse.ArgumentTypeError('%r is not a valid port number' % value)
     if port < 1 or port > 65535:
-        raise argparse.ArgumentTypeError("%r is not a valid port number" % value)
+        raise argparse.ArgumentTypeError('%r is not a valid port number' % value)
     return port
-
-
-def new_argument_parser(add_help=False):
-    parser = argparse.ArgumentParser(add_help=add_help)
-    parser.add_argument("--listen-port", type=_port_number, default=5003,
-                        help="bind to this port")
-    parser.add_argument("--listen-addr", default="",
-                        help="bind to this address")
-    parser.add_argument("--port", type=_port_number, default=5003,
-                        help="CTI server port number")
-    parser.add_argument("-v", "--verbose", action="store_true", default=False,
-                        help="increase logging verbosity")
-    parser.add_argument("hostname",
-                        help="CTI server hostname")
-    return parser
-
-
-def init_logging(verbose=False):
-    logger = logging.getLogger()
-    handler = logging.StreamHandler()
-    handler.setFormatter(logging.Formatter("%(message)s"))
-    logger.addHandler(handler)
-    if verbose:
-        logger.setLevel(logging.INFO)
-    else:
-        logger.setLevel(logging.ERROR)
-
-
-def hide_exception(exception_class):
-    def hide_exception_decorator(original_function):
-        @functools.wraps(original_function)
-        def decorated_function(*args, **kwargs):
-            try:
-                return original_function(*args, **kwargs)
-            except exception_class:
-                pass
-        return decorated_function
-    return hide_exception_decorator

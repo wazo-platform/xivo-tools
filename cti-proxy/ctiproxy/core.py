@@ -136,6 +136,9 @@ class StatisticListener(BaseListener):
         self.server_pkts = 0
         self.server_app_bytes = 0
 
+    def close(self):
+        self.print_stats()
+
     def connection_established(self):
         self.start_time = time.time()
 
