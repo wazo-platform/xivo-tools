@@ -130,6 +130,7 @@ directories="$git_directory/squeeze-xivo-skaro \
              $git_directory/xivo-restapi \
              $git_directory/xivo-skaro \
              $git_directory/xivo-stat \
+             $git_directory/xivo-utils \
              $git_directory/xivo-upgrade \
              $git_directory/xivo-web-interface \
             "
