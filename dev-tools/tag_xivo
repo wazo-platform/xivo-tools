@@ -112,7 +112,8 @@ else
     git_directory="$git_directory"
 fi
 
-directories="$git_directory/squeeze-xivo-skaro \
+directories="$git_directory/asterisk11 \
+             $git_directory/squeeze-xivo-skaro \
              $git_directory/xivo-agent \
              $git_directory/xivo-agid \
              $git_directory/xivo-backup \
