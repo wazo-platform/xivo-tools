@@ -1,12 +1,16 @@
 #!/bin/sh
 
-# TODO :
-# - remove unused variable,
-# - use variable for iface name, iface mac, iface floating ip, iface netmask and iface router
+MAC_LOCAL_XV="00:0C:29:38:0B:EF"
 
-MAC_XVMASTER="00:90:FB:AA:AA:AA"
-MAC_XVSLAVE="00:90:FB:BB:BB:BB"
+IFACE_DATA="eth0"
+IP_VIP_DATA="192.168.51.162"
+IP_LOCAL_XV_DATA="192.168.51.160"
+NETMASK_DATA="255.255.255.0"
 
+IFACE_VOIP="eth0.590"
+IP_VIP_VOIP="10.59.0.10"
+IP_LOCAL_XV_VOIP="10.59.0.1"
+NETMASK_VOIP="255.255.255.0"
 
 usage() {
     cat << EOF
@@ -25,15 +29,15 @@ enable_virtual_ip() {
 ## - ROUTER_IP = Router IP of the network
 ##
 # ip addr add IPADDR/NETMASK dev IFACE
-# arping -S IPADDR -s ${MAC_XVMASTER} -c 5 -i IFACE ROUTER_IP
+# arping -S IPADDR -s ${MAC_LOCAL_XV} -c 5 -i IFACE ROUTER_IP
 
 	# VLAN Data
-	ip addr add 192.168.31.216/255.255.0.0 dev eth0
-	arping -S 192.168.31.216 -s ${MAC_XVMASTER} -c 5 -i eth0 192.168.31.2
+	ip addr add ${IP_VIP_DATA}/${NETMASK_DATA} dev ${IFACE_DATA}
+	arping -S ${IP_VIP_DATA} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_DATA} -B
 
 	# VLAN VoIP
-	ip addr add 172.20.31.216/255.255.0.0 dev eth0.3
-	arping -S 172.20.31.216 -s ${MAC_XVMASTER} -c 5 -i eth0.3 172.20.1.1
+	ip addr add ${IP_VIP_VOIP}/${NETMASK_VOIP} dev ${IFACE_VOIP}
+	arping -S ${IP_VIP_VOIP} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_VOIP} -B
 }
 
 
@@ -47,15 +51,15 @@ disable_virtual_ip() {
 ## - ROUTER_IP = Router IP of the network
 ##
 # ip addr del IPADDR/NETMASK dev IFACE
-# arping -S XVMASTER_IPADDR -s ${MAC_XVMASTER} -c 5 -i IFACE ROUTER_IP
+# arping -S XVMASTER_IPADDR -s ${MAC_LOCAL_XV} -c 5 -i IFACE ROUTER_IP
 
 	# VLAN Data
-	ip addr del 192.168.31.216/255.255.0.0 dev eth0
-	arping -S 192.168.31.215 -s ${MAC_XVMASTER} -c 5 -i eth0 192.168.31.2
-	
+	ip addr del ${IP_VIP_DATA}/${NETMASK_DATA} dev ${IFACE_DATA}
+	arping -S ${IP_LOCAL_XV_DATA} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_DATA} -B
+
 	# VLAN VoIP
-	ip addr del 172.20.31.216/255.255.0.0 dev eth0.3
-	arping -S 172.20.31.215 -s ${MAC_XVMASTER} -c 5 -i eth0.3 172.20.1.1
+	ip addr del ${IP_VIP_VOIP}/${NETMASK_VOIP} dev ${IFACE_VOIP}
+	arping -S ${IP_LOCAL_XV_VOIP} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_VOIP} -B
 }
 
 case $1 in
