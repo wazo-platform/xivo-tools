@@ -1,0 +1,12 @@
+#!/bin/sh
+# This script is intended to be launched at startup on the master
+# It waits until the slave unmounts the virtual IP, and mount it on the master
+/usr/local/sbin/ac-ha-manage-virtual-ip stop
+ping -c 1 10.59.0.10
+while [ $? -eq 0 ]
+do
+	echo "Virtual IP is still mounted on the slave"
+	ping -c 1 10.59.0.10
+done
+/usr/local/sbin/ac-ha-manage-virtual-ip start
+
