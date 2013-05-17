@@ -16,7 +16,7 @@ usage() {
     cat << EOF
     Script which sets the Virtual IP for each interface
     usage: $(basename $0) action
-        action: start or stop to enable/disable Virtual IPs on slave
+        action: start or stop to enable/disable Virtual IPs
 EOF
 }
 
