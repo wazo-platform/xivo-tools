@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#VAR
+DEST_IPBX="192.168.51.161"
+LOG_DIRECTORY="/var/log/daily-replicate-files"
+
+#FUNCTION
+rsync_auto() {
+        #VAR
+        dest_ipbx=$1
+        directory=$2
+        special_arguments=${*:3}
+        full_log="$LOG_DIRECTORY/daily-replicate-files.log"
+        
+        #SYNC
+        rsync --links --archive --delete --perms --log-file="$full_log" "$directory" root@"$dest_ipbx":"$directory" $special_arguments
+}
+
+#LOG DIRECTORY
+if [ ! -d "$LOG_DIRECTORY" ]
+then
+        mkdir -p "$LOG_DIRECTORY"
+fi
+
+#SYNC
+rsync_auto "$DEST_IPBX" "/var/lib/asterisk/" --exclude "license"
+rsync_auto "$DEST_IPBX" "/var/lib/pf-xivo/"
+rsync_auto "$DEST_IPBX" "/etc/asterisk/extensions_extra.d/"
+rsync_auto "$DEST_IPBX" "/var/spool/asterisk/"
+rsync_auto "$DEST_IPBX" "/var/lib/xivo-provd/"
+rsync_auto "$DEST_IPBX" "/usr/local/sbin/"
