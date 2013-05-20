@@ -1,0 +1,13 @@
+*** Mise en place de l'IP virtuelle  ***
+========================================
+
+1) Sur le maître:
+ - copier les scripts ac-ha-manage-virtual-ip et relay-slave dans /usr/local/sbin
+ - configurer ac-ha-manage-virtual-ip correctement
+ - dans /etc/cron.d/xivo-ha, ajouter la ligne suivante:
+    * * * * * root /usr/local/sbin/relay-slave IP_VIRTUALLE_VOIP >/dev/null
+
+2) Sur l'esclave:
+ - copier le script ac-ha-manage-virtual-ip dans /usr/local/sbin
+ - configurer ac-ha-manage-virtual-ip correctement
+ - remplacer xivo-check-master-status par la version présente dans xivo-tools
