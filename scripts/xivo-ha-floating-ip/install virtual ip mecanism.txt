@@ -1,6 +1,7 @@
 *** Mise en place de l'IP virtuelle  ***
 ========================================
 
+
 1) Sur le maître:
  - copier les scripts ac-ha-manage-virtual-ip et relay-slave dans /usr/local/sbin
  - configurer ac-ha-manage-virtual-ip correctement
