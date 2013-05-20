@@ -1,0 +1,9 @@
+TODO: TESTER LA PROCEDURE
+
+*** Procédure pour passer l'esclave en maître ***
+=================================================
+
+1) sur le maître, lancer manuellement la réplication des fichiers et de la BDD
+2) dans la WebI, changer le type de noeud en "Master"
+3) recopier le contenu du /etc/cron.d/xivo-ha-master de l'ancien maître vers le nouveau (avec éventuellement des modifications d'adresse IP)
+4) modifier ma configuration du DHCP (cf doc d'installation)

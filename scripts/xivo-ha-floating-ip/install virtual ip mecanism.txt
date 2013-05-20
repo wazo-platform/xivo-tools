@@ -1,3 +1,7 @@
+TODO:
+ - passer les tests
+ - ne pas recopier les scripts spécifiques HA dans la réplication ? (avantages: simplifie l'inversion slave <--> master; inconvénient: scripts inutiles sur le slave)
+
 *** Mise en place de l'IP virtuelle  ***
 ========================================
 
