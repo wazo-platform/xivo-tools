@@ -23,9 +23,15 @@ then
 fi
 
 #SYNC
-rsync_auto "$DEST_IPBX" "/var/lib/asterisk/" --exclude "license"
-rsync_auto "$DEST_IPBX" "/var/lib/pf-xivo/"
+#sound files
+rsync_auto "$DEST_IPBX" "/var/lib/asterisk/sounds/"
+rsync_auto "$DEST_IPBX" "/var/lib/pf-xivo/sounds/"
+rsync_auto "$DEST_IPBX" "/var/spool/asterisk/monitor/"
+#music on hold
+rsync_auto "$DEST_IPBX" "/var/lib/asterisk/moh/"
+#specific dialplan
 rsync_auto "$DEST_IPBX" "/etc/asterisk/extensions_extra.d/"
-rsync_auto "$DEST_IPBX" "/var/spool/asterisk/"
+#provisionning files
 rsync_auto "$DEST_IPBX" "/var/lib/xivo-provd/"
-rsync_auto "$DEST_IPBX" "/usr/local/sbin/"
+#voicemails
+rsync_auto "$DEST_IPBX" "/var/spool/asterisk/voicemails/"
