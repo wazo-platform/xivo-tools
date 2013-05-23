@@ -6,11 +6,13 @@ IFACE_DATA="eth0"
 IP_VIP_DATA="192.168.51.162"
 IP_LOCAL_XV_DATA="192.168.51.160"
 NETMASK_DATA="255.255.255.0"
+NETWORK_DATA="192.168.51.0/24"
 
 IFACE_VOIP="eth0.590"
 IP_VIP_VOIP="10.59.0.10"
 IP_LOCAL_XV_VOIP="10.59.0.1"
 NETMASK_VOIP="255.255.255.0"
+NETWORK_VOIP="10.59.0.0/24"
 
 usage() {
     cat << EOF
@@ -34,10 +36,12 @@ enable_virtual_ip() {
 	# VLAN Data
 	ip addr add ${IP_VIP_DATA}/${NETMASK_DATA} dev ${IFACE_DATA}
 	arping -S ${IP_VIP_DATA} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_DATA} -B
+	ip ro change ${NETWORK_DATA} dev ${IFACE_DATA} src ${IP_VIP_DATA}
 
 	# VLAN VoIP
 	ip addr add ${IP_VIP_VOIP}/${NETMASK_VOIP} dev ${IFACE_VOIP}
 	arping -S ${IP_VIP_VOIP} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_VOIP} -B
+	ip ro change ${NETWORK_VOIP} dev ${IFACE_VOIP} src ${IP_VIP_VOID}
 }
 
 
@@ -56,10 +60,12 @@ disable_virtual_ip() {
 	# VLAN Data
 	ip addr del ${IP_VIP_DATA}/${NETMASK_DATA} dev ${IFACE_DATA}
 	arping -S ${IP_LOCAL_XV_DATA} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_DATA} -B
+	ip ro change ${NETWORK_DATA} dev ${IFACE_DATA} src ${IP_LOCAL_XV_DATA}
 
 	# VLAN VoIP
 	ip addr del ${IP_VIP_VOIP}/${NETMASK_VOIP} dev ${IFACE_VOIP}
 	arping -S ${IP_LOCAL_XV_VOIP} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_VOIP} -B
+	ip ro change ${NETWORK_DATA} dev ${IFACE_DATA} src ${IP_LOCAL_XV_VOIP}
 }
 
 case $1 in
