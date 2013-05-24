@@ -41,7 +41,7 @@ enable_virtual_ip() {
 	# VLAN VoIP
 	ip addr add ${IP_VIP_VOIP}/${NETMASK_VOIP} dev ${IFACE_VOIP}
 	arping -S ${IP_VIP_VOIP} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_VOIP} -B
-	ip ro change ${NETWORK_VOIP} dev ${IFACE_VOIP} src ${IP_VIP_VOID}
+	ip ro change ${NETWORK_VOIP} dev ${IFACE_VOIP} src ${IP_VIP_VOIP}
 }
 
 
