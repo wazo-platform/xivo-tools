@@ -1,6 +1,5 @@
 TODO:
  - passer les tests
- - ne pas recopier les scripts spécifiques HA dans la réplication ? (avantages: simplifie l'inversion slave <--> master; inconvénient: scripts inutiles sur le slave)
 
 *** Mise en place de l'IP virtuelle  ***
 ========================================
@@ -13,12 +12,10 @@ TODO:
     * * * * * root /usr/local/sbin/relay-slave IP_VIRTUELLE_VOIP >/dev/null
     0 * * * * root /usr/local/sbin/replicate-files IP_VIRTUELLE_VOIP >/dev/null
  - copier dhcpd_ha_master.conf dans /etc/dhcp
- - dans dhcpd.conf, ajouter les lignes suivantes avant les 2 derniers includes:
-        #HA configuration
-        include "/etc/dhcp/dhcpd_ha_master.conf";
- - dans dhcpd_subnet.conf et dhcpd_subnet.conf.head, rajouter la ligne suivante après l'instruction "range":
-        failover peer "dhcp-failover";
- - générer une clé ssh et l'autoriser sur l'esclace
+ - créer le répertoire /etc/pf-xivo/custom-templates/dhcp/etc/dhcp
+ - y copier les fichiers dhcpd_master.conf (renommer en dhcpd.conf) et dhcp_subnet.conf.head
+ - dans la webi, regénérer la config du dhcp
+ - générer une clé ssh et l'autoriser sur l'esclave
 
 2) Sur l'esclave:
  - copier le script ac-ha-manage-virtual-ip dans /usr/local/sbin
@@ -26,11 +23,8 @@ TODO:
  - remplacer xivo-check-master-status par la version présente dans xivo-tools
  - activer le DHCP, avec les mêmes paramètres que le maître
  - copier dhcpd_ha_slave.conf dans /etc/dhcp
- - dans dhcpd.conf, ajouter les lignes suivantes avant les 2 derniers includes:
-	#HA configuration
-	include "/etc/dhcp/dhcpd_ha_slave.conf";
- - dans dhcpd_subnet.conf et dhcpd_subnet.conf.head, rajouter la ligne suivante après l'instruction "range":
-	failover peer "dhcp-failover";
+ - créer le répertoire /etc/pf-xivo/custom-templates/dhcp/etc/dhcp
+ - y copier les fichiers dhcpd_slave.conf (renommer en dhcpd.conf) et dhcp_subnet.conf.head
  - autoriser la clé ssh du master
 
 NOTES

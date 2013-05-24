@@ -34,4 +34,4 @@ rsync_auto "$DEST_IPBX" "/etc/asterisk/extensions_extra.d/"
 #provisionning files
 rsync_auto "$DEST_IPBX" "/var/lib/xivo-provd/"
 #voicemails
-rsync_auto "$DEST_IPBX" "/var/spool/asterisk/voicemails/"
+rsync_auto "$DEST_IPBX" "/var/spool/asterisk/voicemail/"
