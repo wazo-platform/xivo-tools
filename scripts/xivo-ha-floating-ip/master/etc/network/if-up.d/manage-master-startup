@@ -16,5 +16,5 @@ remove_vip_from_iface() {
 remove_vip_from_iface $VIP_DATA $IFACE_DATA
 remove_vip_from_iface $VIP_VOIP $IFACE_VOIP
 /usr/local/sbin/synchronize-astdb from_slave
-/etc/init.d/asterisk restart
+/etc/init.d/asterisk restart > /dev/null
 exit 0
