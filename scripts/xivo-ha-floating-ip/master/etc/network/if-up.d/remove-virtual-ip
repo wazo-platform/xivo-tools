@@ -1,0 +1,17 @@
+#!/bin/sh
+IFACE_DATA="eth0"
+VIP_DATA="192.168.51.162/24"
+IFACE_VOIP="eth0.590"
+VIP_VOIP="10.59.0.10/24"
+
+remove_vip_from_iface() {
+	VIP=$1
+	IFACE=$2
+	ip addr show dev ${IFACE} | grep ${VIP} > /dev/null
+	if [ $? -eq 0 ]; then
+		ip addr del ${VIP} dev ${IFACE}	
+	fi
+}
+
+remove_vip_from_iface $VIP_DATA $IFACE_DATA
+remove_vip_from_iface $VIP_VOIP $IFACE_VOIP

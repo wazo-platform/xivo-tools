@@ -1,5 +1,6 @@
 #!/bin/sh
 VIRTUAL_IP=$1
+set -x
 ping -c 1 $VIRTUAL_IP
 if [ $? -eq 0 ]; then
 	echo "Virtual IP is still active, no need to activate it now"

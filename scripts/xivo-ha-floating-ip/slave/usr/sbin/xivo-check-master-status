@@ -13,6 +13,6 @@ if [ $? -eq 0 ]; then
     /usr/sbin/xivo-manage-slave-services stop
     /usr/local/sbin/ac-ha-manage-virtual-ip stop
 else
-    /usr/sbin/xivo-manage-slave-services start
     /usr/local/sbin/ac-ha-manage-virtual-ip start
+    /usr/sbin/xivo-manage-slave-services start
 fi

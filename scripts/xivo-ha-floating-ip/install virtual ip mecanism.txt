@@ -1,6 +1,3 @@
-TODO:
- - passer les tests
-
 *** Mise en place de l'IP virtuelle  ***
 ========================================
 
@@ -9,8 +6,8 @@ TODO:
  - copier les scripts ac-ha-manage-virtual-ip, replicate-files et relay-slave dans /usr/local/sbin
  - configurer ac-ha-manage-virtual-ip correctement
  - dans /etc/cron.d/xivo-ha, ajouter la ligne suivante:
-    * * * * * root /usr/local/sbin/relay-slave IP_VIRTUELLE_VOIP >/dev/null
-    0 * * * * root /usr/local/sbin/replicate-files IP_VIRTUELLE_VOIP >/dev/null
+    * * * * * root /usr/local/sbin/relay-slave IP_VIRTUELLE_VOIP > /dev/null
+    0 * * * * root /usr/local/sbin/replicate-files > /dev/null
  - copier dhcpd_ha_master.conf dans /etc/dhcp
  - créer le répertoire /etc/pf-xivo/custom-templates/dhcp/etc/dhcp
  - y copier les fichiers dhcpd_master.conf (renommer en dhcpd.conf) et dhcp_subnet.conf.head
@@ -26,6 +23,7 @@ TODO:
  - créer le répertoire /etc/pf-xivo/custom-templates/dhcp/etc/dhcp
  - y copier les fichiers dhcpd_slave.conf (renommer en dhcpd.conf) et dhcp_subnet.conf.head
  - autoriser la clé ssh du master
+ - autoriser l'adresse virtuelle pour l'accès à la bdd du slave (pg_hba.conf)
 
 NOTES
 =====

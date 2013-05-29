@@ -1,0 +1,77 @@
+#!/bin/sh
+
+export PATH=$PATH:/usr/sbin
+
+MAC_LOCAL_XV="00:0c:29:08:8f:55"
+IFACE_DATA="eth0"
+IP_VIP_DATA="192.168.51.162"
+IP_LOCAL_XV_DATA="192.168.51.160"
+NETMASK_DATA="255.255.255.0"
+NETWORK_DATA="192.168.51.0/24"
+
+IFACE_VOIP="eth0.590"
+IP_VIP_VOIP="10.59.0.10"
+IP_LOCAL_XV_VOIP="10.59.0.1"
+NETMASK_VOIP="255.255.255.0"
+NETWORK_VOIP="10.59.0.0/24"
+
+usage() {
+    cat << EOF
+    Script which sets the Virtual IP for each interface
+    usage: $(basename $0) action
+        action: start or stop to enable/disable Virtual IPs
+EOF
+}
+
+enable_virtual_ip() {
+
+## Add the two lines below for each Floating IP and iface replacing :
+## - IPADDR = Floating IP,
+## - NETMASK = Netmask,
+## - IFACE = interface name (i.e. eth0)
+## - ROUTER_IP = Router IP of the network
+##
+# ip addr add IPADDR/NETMASK dev IFACE
+# arping -S IPADDR -s ${MAC_LOCAL_XV} -c 5 -i IFACE ROUTER_IP
+
+	# VLAN Data
+	ip addr add ${IP_VIP_DATA}/${NETMASK_DATA} dev ${IFACE_DATA}
+	ip ro change ${NETWORK_DATA} dev ${IFACE_DATA} src ${IP_VIP_DATA}
+	arping -S ${IP_VIP_DATA} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_DATA} -B
+
+	# VLAN VoIP
+	ip addr add ${IP_VIP_VOIP}/${NETMASK_VOIP} dev ${IFACE_VOIP}
+	ip ro change ${NETWORK_VOIP} dev ${IFACE_VOIP} src ${IP_VIP_VOIP}
+	arping -S ${IP_VIP_VOIP} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_VOIP} -B
+}
+
+
+disable_virtual_ip() {
+
+## Add the two lines below for each Floating IP and iface replacing :
+## - IPADDR = Floating IP,
+## - NETMASK = Netmask,
+## - IFACE = interface name (i.e. eth0i or eth0.3)
+## - XVMASTER_IPADDR = IP xivo-master
+## - ROUTER_IP = Router IP of the network
+##
+# ip addr del IPADDR/NETMASK dev IFACE
+# arping -S XVMASTER_IPADDR -s ${MAC_LOCAL_XV} -c 5 -i IFACE ROUTER_IP
+
+	# VLAN Data
+	ip ro change ${NETWORK_DATA} dev ${IFACE_DATA} src ${IP_LOCAL_XV_DATA}
+	ip addr del ${IP_VIP_DATA}/${NETMASK_DATA} dev ${IFACE_DATA}
+	arping -S ${IP_LOCAL_XV_DATA} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_DATA} -B
+
+	# VLAN VoIP
+	ip ro change ${NETWORK_VOIP} dev ${IFACE_VOIP} src ${IP_LOCAL_XV_VOIP}
+	ip addr del ${IP_VIP_VOIP}/${NETMASK_VOIP} dev ${IFACE_VOIP}
+	arping -S ${IP_LOCAL_XV_VOIP} -s ${MAC_LOCAL_XV} -c 5 -i ${IFACE_VOIP} -B
+}
+
+case $1 in
+    start) enable_virtual_ip;;
+    stop)  disable_virtual_ip;;
+    *) usage;;
+esac
+

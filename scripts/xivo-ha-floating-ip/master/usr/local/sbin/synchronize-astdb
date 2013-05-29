@@ -1,0 +1,5 @@
+#!/bin/sh
+LOG_FILE="/var/log/replicate-files/synchronize-astdb.log"
+DEST_IPBX="10.59.0.2"
+rsync --archive --perms --log-file="$LOG_FILE" -u /var/lib/asterisk/astdb.sqlite3 root@"$DEST_IPBX":/var/lib/asterisk/astdb.sqlite3
+rsync --archive --perms --log-file="$LOG_FILE" -u root@"$DEST_IPBX":/var/lib/asterisk/astdb.sqlite3 /var/lib/asterisk/astdb.sqlite3

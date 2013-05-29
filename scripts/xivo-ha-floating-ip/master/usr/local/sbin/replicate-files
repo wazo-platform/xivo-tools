@@ -2,7 +2,7 @@
 
 #VAR
 DEST_IPBX="192.168.51.161"
-LOG_DIRECTORY="/var/log/daily-replicate-files"
+LOG_DIRECTORY="/var/log/replicate-files"
 
 #FUNCTION
 rsync_auto() {
@@ -26,7 +26,6 @@ fi
 #sound files
 rsync_auto "$DEST_IPBX" "/var/lib/asterisk/sounds/"
 rsync_auto "$DEST_IPBX" "/var/lib/pf-xivo/sounds/"
-rsync_auto "$DEST_IPBX" "/var/spool/asterisk/monitor/"
 #music on hold
 rsync_auto "$DEST_IPBX" "/var/lib/asterisk/moh/"
 #specific dialplan
