@@ -8,9 +8,9 @@ Suite à quoi, effectuer les actions suivantes:
 
 1) Sur le maître:
  - dans /etc/cron.d/xivo-ha-master, ajouter les lignes suivantes:
-	0   * * * * root /usr/local/sbin/replicate-files > /dev/null
+ 	0   * * * * root /usr/local/sbin/replicate-files > /dev/null
 	*   * * * * root /usr/local/sbin/relay-slave IP_VIRTUELLE_VOIP > /dev/null
-	*/2 * * * * root /usr/local/sbin/synchronize-astdb > /dev/null 
+	*/2 * * * * root /usr/local/sbin/synchronize-astdb to_slave > /dev/null
  - dans la webi, regénérer la config du dhcp
  - générer une clé ssh et l'autoriser sur l'esclave
 
