@@ -1,5 +1,25 @@
 #!/bin/sh
 LOG_FILE="/var/log/replicate-files/synchronize-astdb.log"
-DEST_IPBX="10.59.0.2"
-rsync --archive --perms --log-file="$LOG_FILE" -u /var/lib/asterisk/astdb.sqlite3 root@"$DEST_IPBX":/var/lib/asterisk/astdb.sqlite3
-rsync --archive --perms --log-file="$LOG_FILE" -u root@"$DEST_IPBX":/var/lib/asterisk/astdb.sqlite3 /var/lib/asterisk/astdb.sqlite3
+SLAVE_IP="10.59.0.2"
+
+usage() {
+  cat << EOF
+  Script which replicates the astdb from or to the slave.
+  usage: $(basename $0) action
+    action: to_salve or from_slave
+EOF
+}
+
+to_slave() {
+  rsync --archive --perms --log-file="$LOG_FILE" /var/lib/asterisk/astdb.sqlite3 root@"$SLAVE_IP":/var/lib/asterisk/astdb.sqlite3
+}
+
+from_slave() {
+  rsync --archive --perms --log-file="$LOG_FILE" root@"$SLAVE_IP":/var/lib/asterisk/astdb.sqlite3 /var/lib/asterisk/astdb.sqlite3
+}
+
+case $1 in
+  to_slave) to_slave;;
+  from_slave) from_slave;;
+  *) usage;;
+esac
