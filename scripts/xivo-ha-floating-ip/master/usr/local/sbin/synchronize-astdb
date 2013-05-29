@@ -15,7 +15,7 @@ to_slave() {
 }
 
 from_slave() {
-  rsync --archive --perms --log-file="$LOG_FILE" root@"$SLAVE_IP":/var/lib/asterisk/astdb.sqlite3 /var/lib/asterisk/astdb.sqlite3
+  rsync -u --archive --perms --log-file="$LOG_FILE" root@"$SLAVE_IP":/var/lib/asterisk/astdb.sqlite3 /var/lib/asterisk/astdb.sqlite3
 }
 
 case $1 in
