@@ -1,9 +1,9 @@
-TODO: TESTER LA PROCEDURE
-
 *** Procédure pour passer l'esclave en maître ***
 =================================================
 
-1) sur le maître, lancer manuellement la réplication des fichiers et de la BDD
-2) dans la WebI, changer le type de noeud en "Master"
-3) recopier le contenu du /etc/cron.d/xivo-ha-master de l'ancien maître vers le nouveau (avec éventuellement des modifications d'adresse IP)
-4) modifier ma configuration du DHCP (cf doc d'installation)
+1) dans la WebI, désactiver la HA
+2) supprimer les fichiers créés lors de l'installation de la HA, sauf /etc/pf-xivo/virtual-ip-config.sh
+3) dans la WebI, mettre le noeud en master
+4) suivre les instructions d'installation de l'IP virtuelle en utilisant les fichiers "master" (à l'exception du
+fichier /etc/pf-xivo/virtual-ip-config.sh qu'il ne faut pas remplacer)
+5) recopier la table cel (et queue_log si on décide de l'exclure de la réplication) du master vers le slave
