@@ -1,18 +1,6 @@
 #!/bin/sh
-
+. /etc/pf-xivo/virtual-ip-config.sh
 export PATH=$PATH:/usr/sbin
-
-IFACE_DATA="eth0"
-IP_VIP_DATA="192.168.51.162"
-IP_LOCAL_XV_DATA="192.168.51.160"
-NETMASK_DATA_LENGTH="24"
-NETWORK_DATA="192.168.51.0"
-
-IFACE_VOIP="eth0.590"
-IP_VIP_VOIP="10.59.0.10"
-IP_LOCAL_XV_VOIP="10.59.0.1"
-NETMASK_VOIP_LENGTH="24"
-NETWORK_VOIP="10.59.0.0"
 
 usage() {
     cat << EOF
@@ -25,28 +13,28 @@ EOF
 enable_virtual_ip() {
 
 	# VLAN Data
-	ip addr add ${IP_VIP_DATA}/${NETMASK_DATA_LENGTH} dev ${IFACE_DATA}
-	ip ro change ${NETWORK_DATA}/${NETMASK_DATA_LENGTH} dev ${IFACE_DATA} src ${IP_VIP_DATA}
-	arping -S ${IP_VIP_DATA} -c 5 -i ${IFACE_DATA} -B
+	ip addr add ${VIP_DATA}/${NETMASK_DATA_LENGTH} dev ${IFACE_DATA}
+	ip ro change ${NETWORK_DATA}/${NETMASK_DATA_LENGTH} dev ${IFACE_DATA} src ${VIP_DATA}
+	arping -S ${VIP_DATA} -c 5 -i ${IFACE_DATA} -B
 
 	# VLAN VoIP
-	ip addr add ${IP_VIP_VOIP}/${NETMASK_VOIP_LENGTH} dev ${IFACE_VOIP}
-	ip ro change ${NETWORK_VOIP}/${NETMASK_VOIP_LENGTH} dev ${IFACE_VOIP} src ${IP_VIP_VOIP}
-	arping -S ${IP_VIP_VOIP} -c 5 -i ${IFACE_VOIP} -B
+	ip addr add ${VIP_VOIP}/${NETMASK_VOIP_LENGTH} dev ${IFACE_VOIP}
+	ip ro change ${NETWORK_VOIP}/${NETMASK_VOIP_LENGTH} dev ${IFACE_VOIP} src ${VIP_VOIP}
+	arping -S ${VIP_VOIP} -c 5 -i ${IFACE_VOIP} -B
 }
 
 
 disable_virtual_ip() {
 
 	# VLAN Data
-	ip ro change ${NETWORK_DATA}/${NETMASK_DATA_LENGTH} dev ${IFACE_DATA} src ${IP_LOCAL_XV_DATA}
-	ip addr del ${IP_VIP_DATA}/${NETMASK_DATA_LENGTH} dev ${IFACE_DATA}
-	arping -S ${IP_LOCAL_XV_DATA} -c 5 -i ${IFACE_DATA} -B
+	ip ro change ${NETWORK_DATA}/${NETMASK_DATA_LENGTH} dev ${IFACE_DATA} src ${LOCAL_IP_DATA}
+	ip addr del ${VIP_DATA}/${NETMASK_DATA_LENGTH} dev ${IFACE_DATA}
+	arping -S ${LOCAL_IP_DATA} -c 5 -i ${IFACE_DATA} -B
 
 	# VLAN VoIP
-	ip ro change ${NETWORK_VOIP}/${NETMASK_VOIP_LENGTH} dev ${IFACE_VOIP} src ${IP_LOCAL_XV_VOIP}
-	ip addr del ${IP_VIP_VOIP}/${NETMASK_VOIP_LENGTH} dev ${IFACE_VOIP}
-	arping -S ${IP_LOCAL_XV_VOIP} -c 5 -i ${IFACE_VOIP} -B
+	ip ro change ${NETWORK_VOIP}/${NETMASK_VOIP_LENGTH} dev ${IFACE_VOIP} src ${LOCAL_IP_VOIP}
+	ip addr del ${VIP_VOIP}/${NETMASK_VOIP_LENGTH} dev ${IFACE_VOIP}
+	arping -S ${LOCAL_IP_VOIP} -c 5 -i ${IFACE_VOIP} -B
 }
 
 case $1 in

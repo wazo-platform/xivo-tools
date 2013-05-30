@@ -1,7 +1,7 @@
 #!/bin/sh
-VIRTUAL_IP=$1
-set -x
-ping -c 1 $VIRTUAL_IP
+. /etc/pf-xivo/virtual-ip-config.sh
+
+ping -c 1 $VIP_VOIP
 if [ $? -eq 0 ]; then
 	echo "Virtual IP is still active, no need to activate it now"
 else

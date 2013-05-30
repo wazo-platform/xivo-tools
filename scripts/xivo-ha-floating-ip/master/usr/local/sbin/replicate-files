@@ -1,8 +1,6 @@
 #!/bin/bash
 
-#VAR
-DEST_IPBX="192.168.51.161"
-LOG_DIRECTORY="/var/log/replicate-files"
+. /etc/pf-xivo/virtual-ip-config.sh
 
 #FUNCTION
 rsync_auto() {
@@ -16,21 +14,16 @@ rsync_auto() {
         rsync --links --archive --delete --perms --log-file="$full_log" "$directory" root@"$dest_ipbx":"$directory" $special_arguments
 }
 
-#LOG DIRECTORY
-if [ ! -d "$LOG_DIRECTORY" ]
-then
-        mkdir -p "$LOG_DIRECTORY"
-fi
 
 #SYNC
 #sound files
-rsync_auto "$DEST_IPBX" "/var/lib/asterisk/sounds/"
-rsync_auto "$DEST_IPBX" "/var/lib/pf-xivo/sounds/"
+rsync_auto "$PEER_IP_DATA" "/var/lib/asterisk/sounds/"
+rsync_auto "$PEER_IP_DATA" "/var/lib/pf-xivo/sounds/"
 #music on hold
-rsync_auto "$DEST_IPBX" "/var/lib/asterisk/moh/"
+rsync_auto "$PEER_IP_DATA" "/var/lib/asterisk/moh/"
 #specific dialplan
-rsync_auto "$DEST_IPBX" "/etc/asterisk/extensions_extra.d/"
+rsync_auto "$PEER_IP_DATA" "/etc/asterisk/extensions_extra.d/"
 #provisionning files
-rsync_auto "$DEST_IPBX" "/var/lib/xivo-provd/"
+rsync_auto "$PEER_IP_DATA" "/var/lib/xivo-provd/"
 #voicemails
-rsync_auto "$DEST_IPBX" "/var/spool/asterisk/voicemail/"
+rsync_auto "$PEER_IP_DATA" "/var/spool/asterisk/voicemail/"

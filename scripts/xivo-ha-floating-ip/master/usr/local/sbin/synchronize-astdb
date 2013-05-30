@@ -1,6 +1,8 @@
 #!/bin/sh
-LOG_FILE="/var/log/replicate-files/synchronize-astdb.log"
-SLAVE_IP="10.59.0.2"
+
+. /etc/pf-xivo/virtual-ip-config.sh
+
+LOG_FILE="$LOG_DIRECTORY/synchronize-astdb.log"
 
 usage() {
   cat << EOF
@@ -11,11 +13,11 @@ EOF
 }
 
 to_slave() {
-  rsync --archive --perms --log-file="$LOG_FILE" /var/lib/asterisk/astdb.sqlite3 root@"$SLAVE_IP":/var/lib/asterisk/astdb.sqlite3
+  rsync --archive --perms --log-file="$LOG_FILE" /var/lib/asterisk/astdb.sqlite3 root@"$PEER_IP_DATA":/var/lib/asterisk/astdb.sqlite3
 }
 
 from_slave() {
-  rsync -u --archive --perms --log-file="$LOG_FILE" root@"$SLAVE_IP":/var/lib/asterisk/astdb.sqlite3 /var/lib/asterisk/astdb.sqlite3
+  rsync -u --archive --perms --log-file="$LOG_FILE" root@"$PEER_IP_DATA":/var/lib/asterisk/astdb.sqlite3 /var/lib/asterisk/astdb.sqlite3
 }
 
 case $1 in
