@@ -1,0 +1,83 @@
+#!/usr/bin/env python2
+import time
+import argparse
+
+from fabric.api import run, settings
+from fabric.context_managers import hide
+from fabric.decorators import hosts
+from fabric.tasks import execute
+
+KVM_HOST = "root@kvm-2-dev"
+SKARO_RC_HOST = "root@skaro-rc"
+FARM_HOST = "root@squeeze-farm.xivo.fr"
+MIRROR_HOST = "root@mirror.xivo.fr"
+
+CONNECTION_ATTEMPTS = 20
+
+
+def freeze(previous, release):
+    execute(stop_skaro_rc)
+    execute(revert_snapshot, previous)
+    execute(start_skaro_rc)
+    execute(build_packages)
+    execute(synchronize_mirrors)
+    execute(clear_confgen_cache)
+    execute(upgrade_skaro_rc)
+
+
+@hosts(KVM_HOST)
+def stop_skaro_rc():
+    with hide('stdout'):
+        with settings(ok_ret_codes=[0, 1]):
+            run('virsh shutdown skaro-rc')
+
+    while _is_skaro_rc_up():
+        time.sleep(1)
+
+
+def _is_skaro_rc_up():
+    with settings(ok_ret_codes=[0, 1]):
+        with hide('running', 'stdout'):
+            output = run('virsh list | grep skaro-rc')
+    return output.return_code == 0
+
+
+@hosts(KVM_HOST)
+def revert_snapshot(version):
+    with hide('stdout'):
+        run('virsh snapshot-revert --force skaro-rc skaro-rc_%s' % version)
+
+
+@hosts(KVM_HOST)
+def start_skaro_rc():
+    run('virsh start skaro-rc')
+
+
+@hosts(FARM_HOST)
+def build_packages():
+    run('packaging-farm --cd skaro rebuild')
+
+
+@hosts(SKARO_RC_HOST)
+def clear_confgen_cache():
+    with settings(connection_attempts=CONNECTION_ATTEMPTS):
+        run('rm -f /var/lib/xivo-confgend/asterisk/*')
+
+
+@hosts(MIRROR_HOST)
+def synchronize_mirrors():
+    run('./update_squeeze_skaro-rc')
+
+
+@hosts(SKARO_RC_HOST)
+def upgrade_skaro_rc():
+    run('xivo-upgrade -f')
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser('freeze XiVO')
+    parser.add_argument('previous_version', help='previous XiVO version')
+    parser.add_argument('rc_version', help='Version to freeze')
+
+    args = parser.parse_args()
+    freeze(args.previous_version, args.rc_version)
