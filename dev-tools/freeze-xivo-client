@@ -1,0 +1,174 @@
+#!/usr/bin/env python
+import os
+import sh
+import requests
+import sys
+import argparse
+from configparser import ConfigParser
+
+TRANSIFEX_STATS_URL = "http://www.transifex.com/api/2/project/xivo/resource/xivo-client/stats/fr"
+
+JENKINS_JOB_URL = 'http://jenkins.xivo.fr/job/build-xivoclient-meta/build'
+
+
+def main():
+    parser = argparse.ArgumentParser('freeze XiVO Client')
+    parser.add_argument('version', help='Version to freeze')
+    parser.add_argument('--config', help='Path to configuration file',
+                        default=os.path.expanduser('~/.config/xivo-freeze'))
+    parser.add_argument('--repo', help='Path to xivo client repository',
+                        default=os.path.expanduser('~/xivo-client-qt'))
+
+    args = parser.parse_args()
+
+    synchronize_translations(args.repo)
+
+    print "tagging xivo client"
+    tag_xivo_client(args.repo, args.version)
+
+    print "launching builds"
+    launch_builds(args.config)
+
+
+def synchronize_translations(repo):
+    print "updating xivo client repo"
+    update_xivo_client_repo(repo)
+
+    print "synchronizing transifex"
+    synchronize_transifex(repo)
+
+    print "checking for missing translations"
+    check_for_missing_translations()
+
+    print "committing"
+    commit_and_push(repo)
+
+
+def update_xivo_client_repo(repo):
+    make_sure_repo_is_clean(repo)
+    switch_to_branch_master(repo)
+    pull_repo(repo)
+
+
+def make_sure_repo_is_clean(repo):
+    sh.cd(repo)
+    output = sh.git('status', '--short')
+    if output.strip() != "":
+        raise Exception("There are still files that haven't been committed")
+
+
+def switch_to_branch_master(repo):
+    sh.cd(repo)
+    sh.git('checkout', 'master')
+
+
+def pull_repo(repo):
+    sh.cd(repo)
+    sh.git('pull')
+
+
+def synchronize_transifex(repo):
+    sh.cd(repo)
+    sh.qmake()
+
+    script = '%s/utils/translations.sh' % repo
+    translations = sh.Command(script)
+
+    print "translations pull"
+    translations('pull')
+
+    print "translations commit"
+    translations('commit')
+
+    print "translations push"
+    translations('push')
+
+
+def check_for_missing_translations():
+    username, password = get_transifex_infos()
+    resp = requests.get(TRANSIFEX_STATS_URL,
+                        auth=(username, password))
+
+    stats = resp.json()
+    if stats['completed'] != "100%":
+        raise Exception("French isn't 100% translated (actual: %s)" % stats['completed'])
+
+
+def get_transifex_infos():
+    config_path = os.path.expanduser('~/.transifexrc')
+    if not os.path.exists(config_path):
+        raise Exception("Transifex config file doesn't exist. Run utils/translations.sh at least once")
+
+    config = ConfigParser()
+    config.read(config_path)
+    username = config.get('https://www.transifex.net', 'username')
+    password = config.get('https://www.transifex.net', 'password')
+
+    return username, password
+
+
+def commit_and_push(repo):
+    sh.cd(repo)
+    sh.git('add', '-u')
+
+    print "WARNING: the following files are about to be committed and pushed:"
+    print sh.git('status', '--short')
+
+    confirmed = ask_for_confirmation('are you sure you want to commit ?')
+    if not confirmed:
+        sys.exit(1)
+
+    sh.git('commit', '-m', 'Update translations')
+    sh.git('push')
+
+
+def ask_for_confirmation(message):
+    response = ''
+    while response not in ['yes', 'no']:
+        message = "%s [yes/no] " % message
+        response = raw_input(message)
+
+    return response == "yes"
+
+
+def tag_xivo_client(repo, version):
+    tag_version = 'xivo-client-%s' % version
+    tag_name = tag_version
+
+    confirmed = ask_for_confirmation('Are you sure you want to tag version %s ?' % tag_version)
+    if not confirmed:
+        sys.exit(1)
+
+    sh.cd(repo)
+    sh.git('tag', '-s', '-m', tag_version, tag_name)
+
+    sh.git('push', '--tags')
+
+
+def launch_builds(config_path):
+    job_token = read_or_create_job_token(config_path)
+
+    params = {'token': job_token}
+    requests.get(JENKINS_JOB_URL, params=params)
+
+
+def read_or_create_job_token(config_path):
+    config = ConfigParser()
+    config.read(config_path)
+
+    if not config.has_section('jenkins'):
+        config.add_section('jenkins')
+
+    if not config.has_option('jenkins', 'job_token'):
+        token = raw_input("Jenkins job token not found. Please enter token for job build-xivoclient-meta: ")
+        config.set('jenkins', 'job_token', token)
+        with open(config_path, 'w') as f:
+            config.write(f)
+    else:
+        token = config.get('jenkins', 'job_token')
+
+    return token
+
+
+if __name__ == "__main__":
+    main()
