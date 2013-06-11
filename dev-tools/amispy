@@ -63,7 +63,7 @@ def main():
     parser.add_argument('-e', '--exclude', default='', help='comma-seperated list of events to exclude (Case-sensitive)')
     parser.add_argument('-a', '--accept', default='', help='comma-seperated list of events to accept (Case-sensitive)')
     parser.add_argument('-H', '--host', default='localhost')
-    parser.add_argument('-p', '--port', default=5038)
+    parser.add_argument('-p', '--port', type=int, default=5038)
 
     args = parser.parse_args()
 
