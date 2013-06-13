@@ -1,0 +1,5 @@
+** PREREQUIS POUR LA MISE EN PLACE DE L'IP VIRTUELLE **
+=======================================================
+
+- 3 IP disponibles dans le plan d'adressage: 1 pour l'IP statique du maître, 1 pour l'IP statique de l'esclave, 1 pour l'IP virtuelle
+- les prérequis permettant d'effectuer les tests

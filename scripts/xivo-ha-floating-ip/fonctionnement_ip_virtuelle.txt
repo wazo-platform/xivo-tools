@@ -33,3 +33,10 @@ postes ne perdent leur enregistrement lors de la rebascule de l'esclave vers le 
 ( + configuration des routes et mise à jour des tables ARP)
 
 2) dès que le maître est à nouveau fonctionnel, arrêter ses services XiVO et tomber l'IP virtuelle
+
+* Limitations *
+---------------
+
+1) Les modifications récentes effectuées sur le XiVO (datant de moins d'1 heure) seront perdues lors de la bascule. Ceci inclut les statuts d'agents, qui reviendront à ce qu'ils étaient lors de la dernière synchronisation.
+
+2) Toute modification effectuée sur l'esclave ne sera pas répliquée sur le maître.
