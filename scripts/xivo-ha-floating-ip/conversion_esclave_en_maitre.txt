@@ -6,4 +6,4 @@
 3) dans la WebI, mettre le noeud en master
 4) suivre les instructions d'installation de l'IP virtuelle en utilisant les fichiers "master" (à l'exception du
 fichier /etc/pf-xivo/virtual-ip-config.sh qu'il ne faut pas remplacer)
-5) recopier la table cel (et queue_log si on décide de l'exclure de la réplication) du master vers le slave
+5) recopier les tables cel et queue_log du master vers le slave

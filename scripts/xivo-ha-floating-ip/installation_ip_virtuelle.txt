@@ -32,7 +32,8 @@ Suite à quoi, effectuer les actions suivantes:
 2) Sur l'esclave:
  - activer le DHCP, avec les mêmes paramètres que le maître
  - autoriser la clé ssh du master
- - autoriser l'adresse virtuelle pour l'accès à la bdd du slave (pg_hba.conf)
+ - autoriser l'adresse virtuelle pour l'accès à la bdd du slave (pg_hba.conf): 
+	host asterisk postgres 10.59.0.10/32 trust
 
 NOTES
 =====
