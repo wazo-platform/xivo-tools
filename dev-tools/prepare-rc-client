@@ -91,7 +91,7 @@ def check_for_missing_translations():
 
     stats = resp.json()
     if stats['completed'] != "100%":
-        raise Exception("French isn't 100% translated (actual: %s)" % stats['completed'])
+        raise Exception("French isn't 100%% translated (actual: %s)" % stats['completed'])
 
 
 def get_transifex_infos():
