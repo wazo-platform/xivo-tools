@@ -1,9 +1,0 @@
-*** Procédure pour passer l'esclave en maître ***
-=================================================
-
-1) dans la WebI, désactiver la HA
-2) supprimer les fichiers créés lors de l'installation de la HA, sauf /etc/pf-xivo/virtual-ip-config.sh
-3) dans la WebI, mettre le noeud en master
-4) suivre les instructions d'installation de l'IP virtuelle en utilisant les fichiers "master" (à l'exception du
-fichier /etc/pf-xivo/virtual-ip-config.sh qu'il ne faut pas remplacer)
-5) recopier les tables cel et queue_log du master vers le slave
