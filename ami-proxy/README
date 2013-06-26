@@ -28,3 +28,31 @@ Installation
 
 You should also make sure that your XiVO restart correctly by restarting your
 machine.
+
+
+Uninstallation
+==============
+
+1. On your XiVO's web interface, configure your CTI server to connect to the AMI
+   via the port 5038 (Services / CTI Server / General).
+
+2. Stop amiproxy::
+    
+    # /etc/init.d/amiproxy stop
+
+3. Restart the XiVO stack (or only xivo-ctid)::
+    
+    # xivo-service restart
+
+4. Remove amiproxy from the boot sequence::
+    
+    # cd /etc/init.d/
+    # update-rc.d -f amiproxy remove
+    # rm amiproxy
+    # cd ~
+
+5. Remove binaries::
+
+    # rm -rf /usr/lib/pymodules/python2.6/amiproxy
+    # rm /usr/sbin/amiproxy
+
