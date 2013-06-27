@@ -31,7 +31,7 @@ URI_DEVICES = '/service/ipbx/json.php/%s/pbx_settings/devices/'
 COLUMNS = ['phonenumber', 'mac']
 
 ## VARS
-XIVO="10.152.8.251"
+XIVO="192.168.18.55"
 # XXX: there is an authenticaation problem (auth is lost (?) after two or three operations)
 #   For now you MUST create a ws user authenticated BY IP and WITHOUT username/password 
 USERNAME=None
@@ -192,15 +192,20 @@ def edit_users(user_ws, device_ws, filename):
                 
                 my_user_data_lineid = my_user_data['linefeatures'][0]['id']
                 my_user_data_linenumber = my_user_data['linefeatures'][0]['number']
+                my_user_data_protocol = my_user_data['linefeatures'][0]['protocol']
+                my_user_data_configregistrar = my_user_data['linefeatures'][0]['configregistrar']
                 my_user_data_deviceid = device_id_by_mac[row_dict['mac']]
-                
+
+
                 # Delete key linefeatures since the view method does not return
                 # the correct formating for the edit method for this specific key
                 del my_user_data['linefeatures']
                 my_user_data['linefeatures'] = {
                         "id": [my_user_data_lineid],
                         "number": [my_user_data_linenumber],
-                        "device": [my_user_data_deviceid]
+                        "device": [my_user_data_deviceid],
+                        "protocol": [my_user_data_protocol],
+                        "configregistrar": [my_user_data_configregistrar]
                 } 
 
 
