@@ -1,0 +1,98 @@
+#!/bin/bash -e
+
+GIT_DIRECTORIES="\
+    asterisk11 \
+    squeeze-xivo-skaro \
+    xivo-agent \
+    xivo-agid \
+    xivo-backup \
+    xivo-confgen \
+    xivo-config \
+    xivo-ctid \
+    xivo-dao \
+    xivo-dird \
+    xivo-fetchfw \
+    xivo-lib-js \
+    xivo-lib-python \
+    xivo-libsccp \
+    xivo-monitoring \
+    xivo-provisioning \
+    xivo-restapi \
+    xivo-skaro \
+    xivo-stat \
+    xivo-sysconfd \
+    xivo-upgrade \
+    xivo-utils \
+    xivo-web-interface \
+"
+XIVO_CLIENT_DIRECTORY="xivo-client-qt"
+
+version="$1"
+
+if [ -z "$version" ]; then
+    echo "usage: $(basename $0) <version>"
+    exit 1
+fi
+
+print_header() {
+    repository="$1"
+
+    echo "======================================"
+    echo "$repository"
+    echo
+}
+
+print_shortlog() {
+    tag_name="$1"
+
+    if [ "$(git describe origin/master)" = "$tag_name" ]; then
+	echo "No modification"
+	echo
+    else
+	git --no-pager shortlog "$tag_name..origin/master"
+
+	# XXX diff shows too much output
+	#git --no-pager diff "$tag_name" origin/master
+    fi
+}
+
+# normal repositories
+tag_name="squeeze-xivo-skaro-$version"
+
+for git_directory in $GIT_DIRECTORIES; do
+    cd "$git_directory"
+
+    print_header "$git_directory"
+    git fetch -q
+
+    if [ -z "$(git tag -l "$tag_name")" ]; then
+	echo "Error: this repository has no tag $tag_name"
+	echo
+    else
+	print_shortlog "$tag_name"
+    fi
+
+    cd "$OLDPWD"
+done
+
+# xivo client repository
+cd "$XIVO_CLIENT_DIRECTORY"
+
+print_header "$XIVO_CLIENT_DIRECTORY"
+git fetch -q
+
+tag_name_prefix="xivo-client-$version"
+tag_name=$(git tag -l "$tag_name_prefix*" | sort | tail -n1)
+if [ -z "$tag_name" ]; then
+    echo "Error: this repository has no tag $tag_name_prefix"
+    echo
+else
+    if [ "$tag_name_prefix" != "$tag_name" ]; then
+	echo "Using tag $tag_name instead of $tag_name_prefix"
+	echo
+    fi
+
+    print_shortlog "$tag_name"
+fi
+
+cd "$OLDPWD"
