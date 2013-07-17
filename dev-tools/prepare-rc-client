@@ -52,7 +52,7 @@ def update_xivo_client_repo(repo):
 
 def make_sure_repo_is_clean(repo):
     sh.cd(repo)
-    output = sh.git('status', '--short')
+    output = sh.git('status', '--short', '--untracked-files=no')
     if output.strip() != "":
         raise Exception("There are still files that haven't been committed")
 
@@ -112,7 +112,7 @@ def commit_and_push(repo):
     sh.git('add', '-u')
 
     print "WARNING: the following files are about to be committed and pushed:"
-    print sh.git('status', '--short')
+    print sh.git('status', '--short', '--untracked-files=no')
 
     confirmed = ask_for_confirmation('are you sure you want to commit ?')
     if not confirmed:
