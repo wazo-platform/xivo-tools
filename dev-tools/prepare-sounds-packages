@@ -1,26 +1,29 @@
 #!/usr/bin/env python
 import argparse
 from os import makedirs
-from os.path import isdir, abspath
+from os.path import isdir, abspath, exists
 from filecmp import dircmp
-from shutil import copy
+from shutil import move
 from string import replace
 
 GOLD_XIVO_LANG = "en_US"
 GOLD_ASTERISK_LANG = "fr_FR"
 
 
-def copy_common_files_to_destination(dcmp, new_language, gold_language):
+def move_common_files_to_destination(dcmp, new_language, gold_language):
     for name in dcmp.common_files:
         destination_dir = replace(dcmp.right, gold_language, new_language)
 
         if not isdir(destination_dir):
             makedirs(destination_dir)
             print("created destination dir %s : " % destination_dir)
-        copy(dcmp.left + '/' + name, destination_dir)
-        print("copied file %s to destination %s : " % (name, destination_dir))
+        if exists(destination_dir + '/' + name):
+            print("file %s was NOT moved since it already exists at destination %s : " % (name, destination_dir))
+        else:
+            move(dcmp.left + '/' + name, destination_dir)
+            print("moved file %s to destination %s : " % (name, destination_dir))
     for sub_dcmp in dcmp.subdirs.values():
-        copy_common_files_to_destination(sub_dcmp, new_language, gold_language)
+        move_common_files_to_destination(sub_dcmp, new_language, gold_language)
 
 
 def list_missing_files(dcmp):
@@ -45,11 +48,11 @@ if __name__ == "__main__":
 
     xivo_path = xivo_sounds_git + '/xivo/wav/'
     dcmp = dircmp(source_directory, xivo_path + '/' + GOLD_XIVO_LANG)
-    copy_common_files_to_destination(dcmp, args.new_language, GOLD_XIVO_LANG)
+    move_common_files_to_destination(dcmp, args.new_language, GOLD_XIVO_LANG)
 
     asterisk_path = xivo_sounds_git + '/asterisk/wav/'
     dcmp = dircmp(source_directory, asterisk_path + '/' + GOLD_ASTERISK_LANG)
-    copy_common_files_to_destination(dcmp, args.new_language, GOLD_ASTERISK_LANG)
+    move_common_files_to_destination(dcmp, args.new_language, GOLD_ASTERISK_LANG)
 
     dcmp = dircmp(xivo_path + GOLD_XIVO_LANG, xivo_path + args.new_language)
     list_missing_files(dcmp)
