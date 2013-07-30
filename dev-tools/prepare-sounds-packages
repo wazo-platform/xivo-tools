@@ -6,8 +6,7 @@ from filecmp import dircmp
 from shutil import move
 from string import replace
 
-GOLD_XIVO_LANG = "en_US"
-GOLD_ASTERISK_LANG = "fr_FR"
+REF_LANG = "en_US"
 
 
 def move_common_files_to_destination(dcmp, new_language, gold_language):
@@ -47,15 +46,15 @@ if __name__ == "__main__":
     xivo_sounds_git = abspath(args.xivo_sounds_git)
 
     xivo_path = xivo_sounds_git + '/xivo/wav/'
-    dcmp = dircmp(source_directory, xivo_path + '/' + GOLD_XIVO_LANG)
-    move_common_files_to_destination(dcmp, args.new_language, GOLD_XIVO_LANG)
+    dcmp = dircmp(source_directory, xivo_path + '/' + REF_LANG)
+    move_common_files_to_destination(dcmp, args.new_language, REF_LANG)
 
     asterisk_path = xivo_sounds_git + '/asterisk/wav/'
-    dcmp = dircmp(source_directory, asterisk_path + '/' + GOLD_ASTERISK_LANG)
-    move_common_files_to_destination(dcmp, args.new_language, GOLD_ASTERISK_LANG)
+    dcmp = dircmp(source_directory, asterisk_path + '/' + REF_LANG)
+    move_common_files_to_destination(dcmp, args.new_language, REF_LANG)
 
-    dcmp = dircmp(xivo_path + GOLD_XIVO_LANG, xivo_path + args.new_language)
+    dcmp = dircmp(xivo_path + REF_LANG, xivo_path + args.new_language)
     list_missing_files(dcmp)
 
-    dcmp = dircmp(asterisk_path + GOLD_ASTERISK_LANG, asterisk_path + args.new_language)
+    dcmp = dircmp(asterisk_path + REF_LANG, asterisk_path + args.new_language)
     list_missing_files(dcmp)
