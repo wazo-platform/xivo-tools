@@ -75,7 +75,7 @@ def upgrade_skaro_rc():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser('freeze XiVO')
+    parser = argparse.ArgumentParser()
     parser.add_argument('previous_version', help='previous XiVO version')
     parser.add_argument('rc_version', help='Version to freeze')
 
