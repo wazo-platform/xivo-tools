@@ -6,6 +6,7 @@ GIT_DIRECTORIES="\
     xivo-agent \
     xivo-agid \
     xivo-backup \
+    xivo-call-logs \
     xivo-confgen \
     xivo-config \
     xivo-ctid \

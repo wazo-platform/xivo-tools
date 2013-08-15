@@ -117,6 +117,7 @@ directories="$git_directory/asterisk11 \
              $git_directory/xivo-agent \
              $git_directory/xivo-agid \
              $git_directory/xivo-backup \
+             $git_directory/xivo-call-logs \
              $git_directory/xivo-confgen \
              $git_directory/xivo-config \
              $git_directory/xivo-ctid \
