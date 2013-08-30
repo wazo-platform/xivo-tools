@@ -104,7 +104,8 @@ def reset_database(database):
 
 def delete_database(db_name):
     with sh.sudo(u=POSTGRES_USER, _with=True):
-        sh.dropdb('--if-exists', db_name)
+        sql = 'DROP DATABASE IF EXISTS %s;' % db_name
+        sh.psql('-c', sql)
 
 
 def create_database(db_name, db_user):
