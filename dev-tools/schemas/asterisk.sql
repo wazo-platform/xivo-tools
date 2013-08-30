@@ -16,11 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-CREATE USER asterisk WITH PASSWORD 'proformatique';
-CREATE DATABASE asterisk WITH OWNER asterisk ENCODING 'UTF8';
-
 \connect asterisk;
-CREATE LANGUAGE plpgsql;
 
 BEGIN;
 
@@ -2809,8 +2805,6 @@ CREATE TABLE "sccpdevice" (
 	PRIMARY KEY("id")
 );
 
-END;
-
 -- grant all rights to asterisk.* for asterisk user
 CREATE OR REPLACE FUNCTION execute(text)
 RETURNS VOID AS '
@@ -2820,6 +2814,5 @@ END;
 ' LANGUAGE plpgsql;
 SELECT execute('GRANT ALL ON '||schemaname||'.'||tablename||' TO asterisk;') FROM pg_tables WHERE schemaname = 'public';
 SELECT execute('GRANT ALL ON SEQUENCE '||relname||' TO asterisk;') FROM pg_class WHERE relkind = 'S';
-
 
 COMMIT;
