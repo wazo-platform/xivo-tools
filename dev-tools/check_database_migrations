@@ -9,20 +9,34 @@ logging.basicConfig(level=logging.DEBUG)
 
 POSTGRES_USER = 'postgres'
 
+INSTALLED_SCHEMA = '/tmp/%s_installed.sql'
+MIGRATED_SCHEMA = '/tmp/%s_migrated.sql'
 
-def main():
+CWD_PATH = os.path.abspath(os.path.dirname(__file__))
+
+
+def argparser():
     parser = argparse.ArgumentParser('compare XiVO database schemas and check for inconsitencies')
     parser.add_argument('--projects', help='Path to xivo git repos',
                         default=os.path.expanduser('~/xivo'))
     parser.add_argument('--apgdiff', help='Path to apgdiff jar',
                         default='/opt/apgdiff/apgdiff-2.4.jar')
-    parser.add_argument('astschema', help='asterisk schema to start migration from')
-    parser.add_argument('xivoschema', help='xivo schema to start migration from')
+    parser.add_argument('--ast-schema',
+                        help='asterisk schema to start migration from',
+                        default=os.path.join(CWD_PATH, 'schemas', 'asterisk.sql'))
+    parser.add_argument('--xivo-schema',
+                        help='xivo schema to start migration from',
+                        default=os.path.join(CWD_PATH, 'schemas', 'xivo.sql'))
 
+    return parser
+
+
+def main():
+    parser = argparser()
     args = parser.parse_args()
 
-    differences_asterisk = compare_databases('asterisk', args.projects, args.apgdiff, args.astschema)
-    differences_xivo = compare_databases('xivo', args.projects, args.apgdiff, args.xivoschema)
+    differences_asterisk = compare_databases('asterisk', args.ast_schema, args.projects, args.apgdiff)
+    differences_xivo = compare_databases('xivo', args.xivo_schema, args.projects, args.apgdiff)
 
     if differences_asterisk or differences_xivo:
         print "Database schemas are different !"
@@ -38,26 +52,54 @@ def main():
         print "Database schemas are the same"
 
 
-def compare_databases(database, gitroot, apgdiff, schemapath):
-    logging.info("comparing installation and migration schemas for %s" % database)
-    original_schema = '/tmp/%s_original.sql' % database
-    migrated_schema = '/tmp/%s_migrated.sql' % database
+def compare_databases(database, pre_migration_script, gitroot, apgdiff):
+    install_script = path_for_install_script(gitroot, database)
+    migration_folder = path_for_migration_scripts(gitroot)
 
-    reset_database(database, database)
-    run_installation(gitroot, database)
-    extract_database_schema(database, original_schema)
+    installed_schema = generate_install_schema(database, install_script)
+    migrated_schema = generate_migrated_schema(database, pre_migration_script, migration_folder)
 
-    reset_database(database, database)
-    run_migrations(database, gitroot, schemapath)
-    extract_database_schema(database, migrated_schema)
-
-    return compare_schemas(apgdiff, original_schema, migrated_schema)
+    return compare_schemas(apgdiff, installed_schema, migrated_schema)
 
 
-def reset_database(db_name, db_user):
-    logging.info("resetting database %s", db_name)
-    delete_database(db_name)
-    create_database(db_name, db_user)
+def path_for_install_script(gitroot, database):
+    path = os.path.join(gitroot, 'xivo-config', 'xivo-config', 'datastorage', '%s.sql' % database)
+    return path
+
+
+def path_for_migration_scripts(gitroot):
+    path = os.path.join(gitroot, 'xivo-upgrade', 'xivo-upgrade', 'migration')
+    return path
+
+
+def generate_install_schema(database, install_script):
+    logging.info("generating installation schema for %s", database)
+    reset_database(database)
+    run_script(database, install_script)
+
+    filepath = INSTALLED_SCHEMA % database
+    extract_database_schema(database, filepath)
+    return filepath
+
+
+def generate_migrated_schema(database, pre_migration_script, migration_folder):
+    logging.info("generating migration schema for %s", database)
+    reset_database(database)
+    run_script(database, pre_migration_script)
+
+    migration_files = find_migration_files(migration_folder, database)
+    for migration_file in migration_files:
+        run_script(database, migration_file)
+
+    filepath = MIGRATED_SCHEMA % database
+    extract_database_schema(database, filepath)
+    return filepath
+
+
+def reset_database(database):
+    logging.info("resetting database %s", database)
+    delete_database(database)
+    create_database(database, database)
 
 
 def delete_database(db_name):
@@ -70,43 +112,28 @@ def create_database(db_name, db_user):
         sh.createdb('-E', 'utf8', '-O', db_user, db_name)
 
 
-def run_installation(gitroot, database):
-    path = os.path.join(gitroot, 'xivo-config', 'xivo-config', 'datastorage', '%s.sql' % database)
-    run_script(database, database, path)
-
-
-def run_script(db_name, db_user, filepath):
+def run_script(database, filepath):
     logging.info("running script %s", filepath)
     with sh.sudo(u=POSTGRES_USER, _with=True):
-        sh.psql('-U', db_user, db_name, '-f', filepath)
+        sh.psql('-U', database, database, '-f', filepath)
 
 
-def extract_database_schema(db_name, filepath):
-    logging.info("extracting database schema for %s", db_name)
+def extract_database_schema(database, filepath):
+    logging.info("extracting database schema for %s", database)
     with sh.sudo(u=POSTGRES_USER, _with=True):
-        sh.pg_dump('-s', '-f', filepath, db_name)
+        sh.pg_dump('-s', '-f', filepath, database)
 
 
-def run_migrations(database, gitroot, schemafile):
-    logging.info("running migrations for %s", database)
-
-    run_script(database, database, schemafile)
-
-    migration_files = find_migration_files(gitroot, database)
-    for migration_file in migration_files:
-        run_script(database, database, migration_file)
-
-
-def find_migration_files(gitroot, database):
-    path = os.path.join(gitroot, 'xivo-upgrade', 'xivo-upgrade', 'migration')
-    files = [os.path.join(path, f)
-             for f in os.listdir(path)
+def find_migration_files(migration_folder, database):
+    files = [os.path.join(migration_folder, f)
+             for f in os.listdir(migration_folder)
              if f.startswith(database)]
     files.sort()
     return files
 
 
 def compare_schemas(apgdiff, path_original, path_migrated):
+    logging.info("comparing %s and %s", path_original, path_migrated)
     output = sh.java('-jar', apgdiff, path_original, path_migrated)
     return unicode(output)
 
