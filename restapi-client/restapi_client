@@ -1,0 +1,282 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+#
+# Copyright (C) 2013 Avencall
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+from __future__ import unicode_literals
+
+import requests
+import json
+import argparse
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+
+def main():
+    parsed_args = _parse_args()
+
+    if parsed_args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+        logging.debug('Debug mode enabled.')
+
+    restapi_client = RestAPIClient(scheme=parsed_args.scheme,
+                                   hostname=parsed_args.hostname,
+                                   port=parsed_args.port,
+                                   protocol_version=parsed_args.protocol_version,
+                                   username=parsed_args.username,
+                                   password=parsed_args.password)
+    restapi_client.connect()
+
+    if parsed_args.create_extension == True:
+        restapi_client.create_extension(context=parsed_args.extension_context,
+                                        exten=parsed_args.extension_exten)
+
+    if parsed_args.create_line == True:
+        restapi_client.create_line(context=parsed_args.line_context,
+                                   device_slot=parsed_args.line_device_slot)
+
+    if parsed_args.create_user == True:
+        restapi_client.create_user(firstname=parsed_args.user_firstname,
+                                   lastname=parsed_args.user_lastname)
+
+    if parsed_args.create_user_links == True:
+        restapi_client.create_user_links()
+
+    if parsed_args.synchronize == True:
+        restapi_client.synchronize(parsed_args.device_id)
+
+
+def _parse_args():
+    parser = _new_argument_parser()
+
+    args = parser.parse_args()
+
+    if args.create_user == True and not args.user_firstname:
+        parser.error('--create_user can only be used with --firstname.')
+    if args.user_firstname and args.create_user == False:
+        parser.error('--firstname can only be used with --create_user.')
+
+    if args.create_extension == True and not args.extension_exten:
+        parser.error('--create_extension can only be used with --extension_exten.')
+    if args.extension_exten and args.create_extension == False:
+        parser.error('--extension_exten can only be used with --create_extension.')
+
+    if args.synchronize == True and not args.device_id:
+        parser.error('--synchronize can only be used with --device_id.')
+    if args.device_id and args.synchronize == False:
+        parser.error('--device_id can only be used with --synchronize.')
+
+    if args.create_user_links == True:
+        if (not args.user_links_user_id and not args.user_links_line_id and not args.user_links_extension_id) and \
+        (not args.create_user and not args.create_extension and not args.create_line):
+            msg = '--create_user_links can only be used with --user_links_user_id, --user_links_line_id, --user_links_extension_id. or \n'
+            msg += '--create_user_links can only be used with --create_user, --create_extension, --create_line.'
+            parser.error(msg)
+
+    return args
+
+
+def _new_argument_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-d',
+                        '--debug',
+                        action='store_true',
+                        default=False,
+                        help='Activate debug message. Default: %(default)s')
+    parser.add_argument('--hostname',
+                        default='skaro-rc.lan-quebec.avencall.com',
+                        help='XIVO server hostname')
+    parser.add_argument('--protocol_version',
+                        default=1.1,
+                        help='XIVO RESTAPI protocol version. Default: %(default)s')
+    parser.add_argument('--scheme',
+                        default='https',
+                        help='XIVO RESTAPI scheme. Default: %(default)s')
+    parser.add_argument('--port',
+                        type=_port_number,
+                        default=50051,
+                        help='Listen on port <port> instead of %(default)s')
+    parser.add_argument('-u', '--username',
+                        default='admin',
+                        help='authentication username')
+    parser.add_argument('-p', '--password',
+                        default='proformatique',
+                        help='authentication password')
+
+    parser.add_argument('--create_extension',
+                        action='store_true',
+                        default=False,
+                        help='Activate extension creation. Default: %(default)s')
+    parser.add_argument('--extension_exten',
+                        help='Exten for extension.')
+    parser.add_argument('--extension_context',
+                        default='default',
+                        help='Context for extension. Default: %(default)s')
+
+    parser.add_argument('--create_line',
+                        action='store_true',
+                        default=False,
+                        help='Activate line creation. Default: %(default)s')
+    parser.add_argument('--line_context',
+                        default='default',
+                        help='Context for line. Default: %(default)s')
+    parser.add_argument('--line_device_slot',
+                        default=1,
+                        help='Device slot for line. Default: %(default)s')
+
+    parser.add_argument('--create_user',
+                        action='store_true',
+                        default=False,
+                        help='Activate user creation. Default: %(default)s')
+    parser.add_argument('--user_firstname',
+                        help='Firstname for user.')
+    parser.add_argument('--user_lastname',
+                        default='',
+                        help='Lastname for user. Default: %(default)s')
+
+    parser.add_argument('--create_user_links',
+                        action='store_true',
+                        default=False,
+                        help='Activate user_links creation. Default: %(default)s')
+    parser.add_argument('--user_links_user_id',
+                        type=int,
+                        help='user_id for user_links.')
+    parser.add_argument('--user_links_line_id',
+                        type=int,
+                        help='line_id for user_links.')
+    parser.add_argument('--user_links_extension_id',
+                        type=int,
+                        help='extension_id for user_links.')
+
+    parser.add_argument('--synchronize',
+                        action='store_true',
+                        default=False,
+                        help='Send synchronize message. Default: %(default)s')
+    parser.add_argument('--device_id',
+                        help='device_id used for synchronize.')
+    return parser
+
+
+def _port_number(value):
+    try:
+        port = int(value)
+    except ValueError:
+        raise argparse.ArgumentTypeError('%r is not a valid port number' % value)
+    if port < 1 or port > 65535:
+        raise argparse.ArgumentTypeError('%r is not a valid port number' % value)
+    return port
+
+
+class RestAPIClient(object):
+
+    def __init__(self, scheme, hostname, port, protocol_version, username, password):
+        self._url = None
+        self._hostname = hostname
+        self._username = username
+        self._password = password
+        self._session = None
+        self._extension = None
+        self._line = None
+        self._users = []
+
+        self._build_url(scheme, hostname, port, protocol_version)
+
+    def _build_url(self, scheme, hostname, port, protocol_version):
+        self._url = '%s://%s:%s/%s' % (scheme, hostname, port, protocol_version)
+
+    def connect(self):
+        logging.info('Connecting to %s', self._hostname)
+
+        auth = requests.auth.HTTPDigestAuth(self._username, self._password)
+        headers = {
+           'Accept': 'application/json',
+           'Content-Type': 'application/json'
+        }
+
+        self._session = requests.Session()
+        self._session.auth = auth
+        self._session.headers = headers
+        self._session.verify = False
+
+    def disconnect(self):
+        logging.info('Disconnecting from %s', self._hostname)
+
+    def create_extension(self, exten='1000', context='default'):
+        if self._extension is not None:
+            logging.error('extension is already defined: %s', self._extension)
+
+        exteninfo = {
+            'exten': exten,
+            'context': context
+        }
+        logging.info('creating extension %s', exteninfo)
+        resp = self._check_status(self._session.post('%s/extensions' % self._url, json.dumps(exteninfo)))
+        self._extension = resp.json()
+        logging.info('Extension created with id: %d', self._extension['id'])
+
+    def create_line(self, context='default', device_slot=1):
+        if self._line is not None:
+            logging.error('line is already defined: %s', self._line)
+
+        lineinfo = {
+            'context': context,
+            'device_slot': device_slot
+        }
+        logging.info('creating line %s', lineinfo)
+        resp = self._check_status(self._session.post('%s/lines_sip' % self._url, json.dumps(lineinfo)))
+        self._line = resp.json()
+        logging.info('Line created with id: %d', self._line['id'])
+
+    def create_user(self, firstname, lastname):
+        userinfo = {
+            'firstname': firstname,
+            'lastname': lastname
+        }
+        logging.info('creating user %s', userinfo)
+        resp = self._check_status(self._session.post('%s/users' % self._url, json.dumps(userinfo)))
+        user = resp.json()
+        self._users.append(user)
+        logging.info('User created with id: %d', user['id'])
+
+    def create_user_links(self):
+        for user in self._users:
+            linkinfo = {
+                'user_id': user['id'],
+                'extension_id': self._extension['id'],
+                'line_id': self._line['id'],
+            }
+            logging.info('linking %s', linkinfo)
+            resp = self._check_status(self._session.post('%s/user_links' % self._url, json.dumps(linkinfo)))
+            link = resp.json()
+
+        resp = self._check_status(self._session.get('%s/lines_sip/%s' % (self._url, self._line['id'])))
+        line = resp.json()
+
+        logging.info('Done ! Your provisioning number is %s', line['provisioning_extension'])
+
+    def synchronize(self, device_id):
+        logging.info('Synchronize device %s', device_id)
+        self._check_status(self._session.get('%s/devices/%s/synchronize' % (self._url, device_id)))
+
+    def _check_status(self, response):
+        if response.status_code >= 300:
+            raise Exception('STATUS %s. %s' % (response.status_code, response.text))
+        return response
+
+
+if __name__ == '__main__':
+    main()
