@@ -45,19 +45,19 @@ def main():
         restapi_client.delete_extension(context=parsed_args.extension_context,
                                         exten=parsed_args.extension_exten)
 
-    if parsed_args.create_extension == True:
+    if parsed_args.create_extension:
         restapi_client.create_extension(context=parsed_args.extension_context,
                                         exten=parsed_args.extension_exten)
 
-    if parsed_args.create_line == True:
+    if parsed_args.create_line:
         restapi_client.create_line(context=parsed_args.line_context,
                                    device_slot=parsed_args.line_device_slot)
 
-    if parsed_args.create_user == True:
+    if parsed_args.create_user:
         restapi_client.create_user(firstname=parsed_args.user_firstname,
                                    lastname=parsed_args.user_lastname)
 
-    if parsed_args.create_user_links == True:
+    if parsed_args.create_user_links:
         if _has_user_link_id_parameters(parsed_args):
             user_ids = [int(u) for u in parsed_args.user_links_user_ids.split(',')]
             extension_id = int(parsed_args.user_links_extension_id)
@@ -66,7 +66,7 @@ def main():
         else:
             restapi_client.create_user_links_from_resources()
 
-    if parsed_args.synchronize == True:
+    if parsed_args.synchronize:
         restapi_client.synchronize(parsed_args.device_id)
 
 
@@ -97,20 +97,20 @@ def _parse_args():
     if args.delete_extension and not args.extension_exten:
         parser.error('--delete_extension can only be used with --extension_exten.')
 
-    if args.create_user == True and not args.user_firstname:
+    if args.create_user and not args.user_firstname:
         parser.error('--create_user can only be used with --firstname.')
-    if args.user_firstname and args.create_user == False:
+    if args.user_firstname and not args.create_user:
         parser.error('--firstname can only be used with --create_user.')
 
-    if args.create_extension == True and not args.extension_exten:
+    if args.create_extension and not args.extension_exten:
         parser.error('--create_extension can only be used with --extension_exten.')
 
-    if args.synchronize == True and not args.device_id:
+    if args.synchronize and not args.device_id:
         parser.error('--synchronize can only be used with --device_id.')
-    if args.device_id and args.synchronize == False:
+    if args.device_id and not args.synchronize:
         parser.error('--device_id can only be used with --synchronize.')
 
-    if args.create_user_links == True:
+    if args.create_user_links:
         if not (_has_user_link_parameters(args) or _has_user_link_id_parameters(args)):
             msg = '--create_user_links can only be used with --user_links_user_id, --user_links_line_id, --user_links_extension_id. or \n'
             msg += '--create_user_links can only be used with --create_user, --create_extension, --create_line.'
@@ -235,8 +235,8 @@ class RestAPIClient(object):
 
         auth = requests.auth.HTTPDigestAuth(self._username, self._password)
         headers = {
-           'Accept': 'application/json',
-           'Content-Type': 'application/json'
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
         }
 
         self._session = requests.Session()
