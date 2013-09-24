@@ -41,6 +41,10 @@ def main():
                                    password=parsed_args.password)
     restapi_client.connect()
 
+    if parsed_args.delete_extension:
+        restapi_client.delete_extension(context=parsed_args.extension_context,
+                                        exten=parsed_args.extension_exten)
+
     if parsed_args.create_extension == True:
         restapi_client.create_extension(context=parsed_args.extension_context,
                                         exten=parsed_args.extension_exten)
@@ -54,16 +58,44 @@ def main():
                                    lastname=parsed_args.user_lastname)
 
     if parsed_args.create_user_links == True:
-        restapi_client.create_user_links()
+        if _has_user_link_id_parameters(parsed_args):
+            user_ids = [int(u) for u in parsed_args.user_links_user_ids.split(',')]
+            extension_id = int(parsed_args.user_links_extension_id)
+            line_id = int(parsed_args.user_links_line_id)
+            restapi_client.create_user_links(user_ids, extension_id, line_id)
+        else:
+            restapi_client.create_user_links_from_resources()
 
     if parsed_args.synchronize == True:
         restapi_client.synchronize(parsed_args.device_id)
+
+
+def _has_user_link_id_parameters(parsed_args):
+    parameters = ['user_links_user_ids', 'user_links_extension_id', 'user_links_line_id']
+    return _has_parameters(parsed_args, parameters)
+
+
+def _has_user_link_parameters(parsed_args):
+    parameters = ['create_user', 'create_extension', 'create_line']
+    return _has_parameters(parsed_args, parameters)
+
+
+def _has_parameters(parsed_args, parameters):
+    defined = vars(parsed_args)
+    for param in parameters:
+        exists = defined.get(param, None)
+        if not exists:
+            return False
+    return True
 
 
 def _parse_args():
     parser = _new_argument_parser()
 
     args = parser.parse_args()
+
+    if args.delete_extension and not args.extension_exten:
+        parser.error('--delete_extension can only be used with --extension_exten.')
 
     if args.create_user == True and not args.user_firstname:
         parser.error('--create_user can only be used with --firstname.')
@@ -72,8 +104,6 @@ def _parse_args():
 
     if args.create_extension == True and not args.extension_exten:
         parser.error('--create_extension can only be used with --extension_exten.')
-    if args.extension_exten and args.create_extension == False:
-        parser.error('--extension_exten can only be used with --create_extension.')
 
     if args.synchronize == True and not args.device_id:
         parser.error('--synchronize can only be used with --device_id.')
@@ -81,8 +111,7 @@ def _parse_args():
         parser.error('--device_id can only be used with --synchronize.')
 
     if args.create_user_links == True:
-        if (not args.user_links_user_id and not args.user_links_line_id and not args.user_links_extension_id) and \
-        (not args.create_user and not args.create_extension and not args.create_line):
+        if not (_has_user_link_parameters(args) or _has_user_link_id_parameters(args)):
             msg = '--create_user_links can only be used with --user_links_user_id, --user_links_line_id, --user_links_extension_id. or \n'
             msg += '--create_user_links can only be used with --create_user, --create_extension, --create_line.'
             parser.error(msg)
@@ -121,6 +150,10 @@ def _new_argument_parser():
                         action='store_true',
                         default=False,
                         help='Activate extension creation. Default: %(default)s')
+    parser.add_argument('--delete_extension',
+                        action='store_true',
+                        default=False,
+                        help='Delete extension. Default: %(default)s')
     parser.add_argument('--extension_exten',
                         help='Exten for extension.')
     parser.add_argument('--extension_context',
@@ -152,9 +185,8 @@ def _new_argument_parser():
                         action='store_true',
                         default=False,
                         help='Activate user_links creation. Default: %(default)s')
-    parser.add_argument('--user_links_user_id',
-                        type=int,
-                        help='user_id for user_links.')
+    parser.add_argument('--user_links_user_ids',
+                        help='comma-seperated list of user_id for user_links.')
     parser.add_argument('--user_links_line_id',
                         type=int,
                         help='line_id for user_links.')
@@ -215,7 +247,7 @@ class RestAPIClient(object):
     def disconnect(self):
         logging.info('Disconnecting from %s', self._hostname)
 
-    def create_extension(self, exten='1000', context='default'):
+    def create_extension(self, exten, context):
         if self._extension is not None:
             logging.error('extension is already defined: %s', self._extension)
 
@@ -228,7 +260,15 @@ class RestAPIClient(object):
         self._extension = resp.json()
         logging.info('Extension created with id: %d', self._extension['id'])
 
-    def create_line(self, context='default', device_slot=1):
+    def delete_extension(self, exten, context):
+        result = self._check_status(self._session.get('%s/extensions' % self._url))
+        extensions = result.json()['items']
+        found = [e for e in extensions if e['exten'] == exten and e['context'] == context]
+        for extension in found:
+            logging.info('deleting extension %(exten)s@%(context)s', extension)
+            self._check_status(self._session.delete('%s/extensions/%s' % (self._url, extension['id'])))
+
+    def create_line(self, context, device_slot):
         if self._line is not None:
             logging.error('line is already defined: %s', self._line)
 
@@ -252,21 +292,26 @@ class RestAPIClient(object):
         self._users.append(user)
         logging.info('User created with id: %d', user['id'])
 
-    def create_user_links(self):
-        for user in self._users:
+    def create_user_links(self, user_ids, extension_id, line_id):
+        for user_id in user_ids:
             linkinfo = {
-                'user_id': user['id'],
-                'extension_id': self._extension['id'],
-                'line_id': self._line['id'],
+                'user_id': user_id,
+                'extension_id': extension_id,
+                'line_id': line_id
             }
             logging.info('linking %s', linkinfo)
             resp = self._check_status(self._session.post('%s/user_links' % self._url, json.dumps(linkinfo)))
-            link = resp.json()
 
-        resp = self._check_status(self._session.get('%s/lines_sip/%s' % (self._url, self._line['id'])))
+        resp = self._check_status(self._session.get('%s/lines_sip/%s' % (self._url, line_id)))
         line = resp.json()
 
         logging.info('Done ! Your provisioning number is %s', line['provisioning_extension'])
+
+    def create_user_links_from_resources(self):
+        user_ids = [u['id'] for u in self._users]
+        extension_id = self._extension['id']
+        line_id = self._line['id']
+        self.create_user_links(user_ids, extension_id, line_id)
 
     def synchronize(self, device_id):
         logging.info('Synchronize device %s', device_id)
