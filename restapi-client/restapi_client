@@ -49,6 +49,9 @@ def main():
         restapi_client.create_extension(context=parsed_args.context,
                                         exten=parsed_args.extension)
 
+    if parsed_args.delete_line:
+        restapi_client.delete_line(parsed_args.line_id)
+
     if parsed_args.create_line:
         restapi_client.create_line(context=parsed_args.context,
                                    device_slot=parsed_args.device_slot)
@@ -109,6 +112,9 @@ def _parse_args():
     if args.device_id and not args.synchronize:
         parser.error('--device-id can only be used with --synchronize')
 
+    if args.delete_line and not args.line_id:
+        parser.error('--delete-line can only be used with --line-id')
+
     if args.create_user_links:
         if not (_has_user_link_parameters(args) or _has_user_link_id_parameters(args)):
             msg = '--create-user-links can only be used with --user-id, --line-id, --extension-id. or \n'
@@ -163,6 +169,10 @@ def _new_argument_parser():
                         action='store_true',
                         default=False,
                         help='Activate line creation. Default: %(default)s')
+    parser.add_argument('--delete-line',
+                        action='store_true',
+                        default=False,
+                        help='Delete line. Default %(default)s')
     parser.add_argument('--device-slot',
                         default=1,
                         help='Device slot for line. Default: %(default)s')
@@ -276,6 +286,10 @@ class RestAPIClient(object):
         resp = self._check_status(self._session.post('%s/lines_sip' % self._url, json.dumps(lineinfo)))
         self._line = resp.json()
         logging.info('Line created with id: %d', self._line['id'])
+
+    def delete_line(self, line_id):
+        logging.info('Deleting line with id %s', line_id)
+        self._check_status(self._session.delete('%s/lines_sip/%s' % (self._url, line_id)))
 
     def create_user(self, firstname, lastname):
         userinfo = {
