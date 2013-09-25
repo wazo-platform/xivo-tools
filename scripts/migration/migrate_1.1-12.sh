@@ -318,3 +318,27 @@ mysql_temporary_user_file="/tmp/tmp_voicemail.csv"
 #WORK
 exec_MySQL_REQUEST "$mysql_REQUEST" "$mysql_temporary_user_file"
 move_MySQL_RESULT $mysql_final_user_file $mysql_temporary_user_file
+
+#################################################
+# MEETME MUSICONHOLD
+#################################################
+#VARIABLES
+mysql_REQUEST="SELECT name, number, admin_musiconhold, user_musiconhold FROM meetmefeatures WHERE (admin_musiconhold!='' AND admin_musiconhold!='default') OR (user_musiconhold!='' AND user_musiconhold!='default') INTO OUTFILE '/tmp/tmp_meetme_musiconhold.csv' FIELDS TERMINATED BY '|' OPTIONALLY ENCLOSED BY '';"
+mysql_final_user_file="/root/Migration-1.1-to-12/manual_meetme_musiconhold.csv"
+mysql_temporary_user_file="/tmp/tmp_meetme_musiconhold.csv"
+
+#WORK
+exec_MySQL_REQUEST "$mysql_REQUEST" "$mysql_temporary_user_file"
+move_MySQL_RESULT $mysql_final_user_file $mysql_temporary_user_file
+
+#################################################
+# MEETME FEATURE NOT IN 1.2
+#################################################
+#VARIABLES
+mysql_REQUEST="SELECT name, number, startdate, nbuserstartdeductduration, closeconfdurationexceeded, timeannounceclose FROM meetmefeatures WHERE durationm != NULL OR closeconfdurationexceeded != NULL OR nbuserstartdeductduration != NULL OR timeannounceclose != NULL INTO OUTFILE '/tmp/tmp_meetme_oldfeatures.csv' FIELDS TERMINATED BY '|' OPTIONALLY ENCLOSED BY '';"
+mysql_final_user_file="/root/Migration-1.1-to-12/manual_meetme_oldfeatures.csv"
+mysql_temporary_user_file="/tmp/tmp_meetme_oldfeatures.csv"
+
+#WORK
+exec_MySQL_REQUEST "$mysql_REQUEST" "$mysql_temporary_user_file"
+move_MySQL_RESULT $mysql_final_user_file $mysql_temporary_user_file
