@@ -60,6 +60,9 @@ def main():
         restapi_client.create_user(firstname=parsed_args.firstname,
                                    lastname=parsed_args.lastname)
 
+    if parsed_args.deassociate_line:
+        restapi_client.delete_user_links_for_line(parsed_args.line_id)
+
     if parsed_args.create_user_links:
         if _has_user_link_id_parameters(parsed_args):
             user_ids = [int(u) for u in parsed_args.user_ids.split(',')]
@@ -114,6 +117,9 @@ def _parse_args():
 
     if args.delete_line and not args.line_id:
         parser.error('--delete-line can only be used with --line-id')
+
+    if args.deassociate_line and not args.line_id:
+        parser.error('--deassociate-line can only be user with --line-id')
 
     if args.create_user_links:
         if not (_has_user_link_parameters(args) or _has_user_link_id_parameters(args)):
@@ -191,6 +197,10 @@ def _new_argument_parser():
                         action='store_true',
                         default=False,
                         help='Activate user_links creation. Default: %(default)s')
+    parser.add_argument('--deassociate-line',
+                        action='store_true',
+                        default=False,
+                        help='Deassociate all links associated to a line. Default: %(default)s')
     parser.add_argument('--user-ids',
                         help='comma-seperated list of user_ids for user_links.')
     parser.add_argument('--line-id',
@@ -316,6 +326,30 @@ class RestAPIClient(object):
         line = resp.json()
 
         logging.info('Done ! Your provisioning number is %s', line['provisioning_extension'])
+
+    def delete_user_links_for_line(self, line_id):
+        logging.info('Deassociating user links for line %s', line_id)
+        user_links = self._user_links_for_line(line_id)
+        main_link, secondary_links = self._split_main_link(user_links)
+
+        for link in secondary_links:
+            self._delete_link(link)
+
+        self._delete_link(main_link)
+
+    def _user_links_for_line(self, line_id):
+        response = self._check_status(self._session.get('%s/lines/%s/user_links' % (self._url, line_id)))
+        return response.json()['items']
+
+    def _split_main_link(self, user_links):
+        main_link = [l for l in user_links if l['main_user']][0]
+        user_links.remove(main_link)
+
+        return main_link, user_links
+
+    def _delete_link(self, link):
+        logging.info('deleting link %s', link['id'])
+        self._check_status(self._session.delete('%s/user_links/%s' % (self._url, link['id'])))
 
     def create_user_links_from_resources(self):
         user_ids = [u['id'] for u in self._users]
