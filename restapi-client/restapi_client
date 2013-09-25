@@ -42,26 +42,26 @@ def main():
     restapi_client.connect()
 
     if parsed_args.delete_extension:
-        restapi_client.delete_extension(context=parsed_args.extension_context,
-                                        exten=parsed_args.extension_exten)
+        restapi_client.delete_extension(context=parsed_args.context,
+                                        exten=parsed_args.extension)
 
     if parsed_args.create_extension:
-        restapi_client.create_extension(context=parsed_args.extension_context,
-                                        exten=parsed_args.extension_exten)
+        restapi_client.create_extension(context=parsed_args.context,
+                                        exten=parsed_args.extension)
 
     if parsed_args.create_line:
-        restapi_client.create_line(context=parsed_args.line_context,
-                                   device_slot=parsed_args.line_device_slot)
+        restapi_client.create_line(context=parsed_args.context,
+                                   device_slot=parsed_args.device_slot)
 
     if parsed_args.create_user:
-        restapi_client.create_user(firstname=parsed_args.user_firstname,
-                                   lastname=parsed_args.user_lastname)
+        restapi_client.create_user(firstname=parsed_args.firstname,
+                                   lastname=parsed_args.lastname)
 
     if parsed_args.create_user_links:
         if _has_user_link_id_parameters(parsed_args):
-            user_ids = [int(u) for u in parsed_args.user_links_user_ids.split(',')]
-            extension_id = int(parsed_args.user_links_extension_id)
-            line_id = int(parsed_args.user_links_line_id)
+            user_ids = [int(u) for u in parsed_args.user_ids.split(',')]
+            extension_id = parsed_args.extension_id
+            line_id = parsed_args.line_id
             restapi_client.create_user_links(user_ids, extension_id, line_id)
         else:
             restapi_client.create_user_links_from_resources()
@@ -71,7 +71,7 @@ def main():
 
 
 def _has_user_link_id_parameters(parsed_args):
-    parameters = ['user_links_user_ids', 'user_links_extension_id', 'user_links_line_id']
+    parameters = ['user_ids', 'extension_id', 'line_id']
     return _has_parameters(parsed_args, parameters)
 
 
@@ -94,26 +94,25 @@ def _parse_args():
 
     args = parser.parse_args()
 
-    if args.delete_extension and not args.extension_exten:
-        parser.error('--delete_extension can only be used with --extension_exten.')
+    if args.create_extension and not args.extension:
+        parser.error('--create-extension can only be used with --extension')
+    if args.delete_extension and not args.extension:
+        parser.error('--delete-extension can only be used with --extension')
 
-    if args.create_user and not args.user_firstname:
-        parser.error('--create_user can only be used with --firstname.')
-    if args.user_firstname and not args.create_user:
-        parser.error('--firstname can only be used with --create_user.')
-
-    if args.create_extension and not args.extension_exten:
-        parser.error('--create_extension can only be used with --extension_exten.')
+    if args.create_user and not args.firstname:
+        parser.error('--create-user can only be used with --firstname')
+    if args.firstname and not args.create_user:
+        parser.error('--firstname can only be used with --create-user')
 
     if args.synchronize and not args.device_id:
-        parser.error('--synchronize can only be used with --device_id.')
+        parser.error('--synchronize can only be used with --device-id')
     if args.device_id and not args.synchronize:
-        parser.error('--device_id can only be used with --synchronize.')
+        parser.error('--device-id can only be used with --synchronize')
 
     if args.create_user_links:
         if not (_has_user_link_parameters(args) or _has_user_link_id_parameters(args)):
-            msg = '--create_user_links can only be used with --user_links_user_id, --user_links_line_id, --user_links_extension_id. or \n'
-            msg += '--create_user_links can only be used with --create_user, --create_extension, --create_line.'
+            msg = '--create-user-links can only be used with --user-id, --line-id, --extension-id. or \n'
+            msg += '--create-user-links can only be used with --create-user, --create-extension, --create-line.'
             parser.error(msg)
 
     return args
@@ -129,7 +128,7 @@ def _new_argument_parser():
     parser.add_argument('--hostname',
                         default='skaro-rc.lan-quebec.avencall.com',
                         help='XIVO server hostname')
-    parser.add_argument('--protocol_version',
+    parser.add_argument('--protocol-version',
                         default=1.1,
                         help='XIVO RESTAPI protocol version. Default: %(default)s')
     parser.add_argument('--scheme',
@@ -146,60 +145,57 @@ def _new_argument_parser():
                         default='proformatique',
                         help='authentication password')
 
-    parser.add_argument('--create_extension',
+    parser.add_argument('--create-extension',
                         action='store_true',
                         default=False,
                         help='Activate extension creation. Default: %(default)s')
-    parser.add_argument('--delete_extension',
+    parser.add_argument('--delete-extension',
                         action='store_true',
                         default=False,
                         help='Delete extension. Default: %(default)s')
-    parser.add_argument('--extension_exten',
+    parser.add_argument('--extension',
                         help='Exten for extension.')
-    parser.add_argument('--extension_context',
+    parser.add_argument('--context',
                         default='default',
-                        help='Context for extension. Default: %(default)s')
+                        help='Context for extension and line. Default: %(default)s')
 
-    parser.add_argument('--create_line',
+    parser.add_argument('--create-line',
                         action='store_true',
                         default=False,
                         help='Activate line creation. Default: %(default)s')
-    parser.add_argument('--line_context',
-                        default='default',
-                        help='Context for line. Default: %(default)s')
-    parser.add_argument('--line_device_slot',
+    parser.add_argument('--device-slot',
                         default=1,
                         help='Device slot for line. Default: %(default)s')
 
-    parser.add_argument('--create_user',
+    parser.add_argument('--create-user',
                         action='store_true',
                         default=False,
                         help='Activate user creation. Default: %(default)s')
-    parser.add_argument('--user_firstname',
+    parser.add_argument('--firstname',
                         help='Firstname for user.')
-    parser.add_argument('--user_lastname',
+    parser.add_argument('--lastname',
                         default='',
                         help='Lastname for user. Default: %(default)s')
 
-    parser.add_argument('--create_user_links',
+    parser.add_argument('--create-user-links',
                         action='store_true',
                         default=False,
                         help='Activate user_links creation. Default: %(default)s')
-    parser.add_argument('--user_links_user_ids',
-                        help='comma-seperated list of user_id for user_links.')
-    parser.add_argument('--user_links_line_id',
+    parser.add_argument('--user-ids',
+                        help='comma-seperated list of user_ids for user_links.')
+    parser.add_argument('--line-id',
                         type=int,
                         help='line_id for user_links.')
-    parser.add_argument('--user_links_extension_id',
+    parser.add_argument('--extension-id',
                         type=int,
-                        help='extension_id for user_links.')
+                        help='extension-id for user_links.')
 
     parser.add_argument('--synchronize',
                         action='store_true',
                         default=False,
                         help='Send synchronize message. Default: %(default)s')
-    parser.add_argument('--device_id',
-                        help='device_id used for synchronize.')
+    parser.add_argument('--device-id',
+                        help='device-id used for synchronize.')
     return parser
 
 
