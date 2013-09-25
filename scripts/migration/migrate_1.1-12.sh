@@ -251,7 +251,7 @@ move_MySQL_RESULT $mysql_final_user_file $mysql_temporary_user_file
 # CUSTOM SUBROUTINE
 #################################################
 #VARIABLES
-mysql_REQUEST="SELECT firstname, lastname, number FROM userfeatures WHERE preprocess_subroutine!='' INTO OUTFILE '/tmp/tmp_users_subroutine.csv' FIELDS TERMINATED BY '|' OPTIONALLY ENCLOSED BY '';"
+mysql_REQUEST="SELECT firstname, lastname, number, preprocess_subroutine FROM userfeatures WHERE preprocess_subroutine!='' INTO OUTFILE '/tmp/tmp_users_subroutine.csv' FIELDS TERMINATED BY '|' OPTIONALLY ENCLOSED BY '';"
 mysql_final_user_file="/root/Migration-1.1-to-12/manual_users_subroutine.csv"
 mysql_temporary_user_file="/tmp/tmp_users_subroutine.csv"
 
@@ -263,7 +263,7 @@ move_MySQL_RESULT $mysql_final_user_file $mysql_temporary_user_file
 # CUSTOM MUSIC ON HOLD
 #################################################
 #VARIABLES
-mysql_REQUEST="SELECT firstname, lastname, number FROM userfeatures WHERE musiconhold!='' AND musiconhold!='default' INTO OUTFILE '/tmp/tmp_users_musiconhold.csv' FIELDS TERMINATED BY '|' OPTIONALLY ENCLOSED BY '';"
+mysql_REQUEST="SELECT firstname, lastname, number, musiconhold FROM userfeatures WHERE musiconhold!='' AND musiconhold!='default' INTO OUTFILE '/tmp/tmp_users_musiconhold.csv' FIELDS TERMINATED BY '|' OPTIONALLY ENCLOSED BY '';"
 mysql_final_user_file="/root/Migration-1.1-to-12/manual_users_musiconhold.csv"
 mysql_temporary_user_file="/tmp/tmp_users_musiconhold.csv"
 
