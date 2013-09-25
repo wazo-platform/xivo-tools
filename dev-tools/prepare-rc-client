@@ -4,7 +4,7 @@ import sh
 import requests
 import sys
 import argparse
-from configparser import ConfigParser
+from ConfigParser import ConfigParser
 
 TRANSIFEX_STATS_URL = "http://www.transifex.com/api/2/project/xivo/resource/xivo-client/stats/fr"
 
