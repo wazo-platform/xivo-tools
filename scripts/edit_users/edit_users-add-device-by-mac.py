@@ -194,6 +194,8 @@ def edit_users(user_ws, device_ws, filename):
                 my_user_data_linenumber = my_user_data['linefeatures'][0]['number']
                 my_user_data_protocol = my_user_data['linefeatures'][0]['protocol']
                 my_user_data_configregistrar = my_user_data['linefeatures'][0]['configregistrar']
+                my_user_data_context = my_user_data['linefeatures'][0]['context']
+
                 my_user_data_deviceid = device_id_by_mac[row_dict['mac']]
 
 
@@ -205,7 +207,8 @@ def edit_users(user_ws, device_ws, filename):
                         "number": [my_user_data_linenumber],
                         "device": [my_user_data_deviceid],
                         "protocol": [my_user_data_protocol],
-                        "configregistrar": [my_user_data_configregistrar]
+                        "configregistrar": [my_user_data_configregistrar],
+                        "context": [my_user_data_context]
                 } 
 
 
