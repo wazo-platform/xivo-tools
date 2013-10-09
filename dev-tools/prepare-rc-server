@@ -24,6 +24,10 @@ def freeze(previous, release):
     execute(clear_confgen_cache)
     execute(upgrade_skaro_rc)
 
+    print
+    print "RC is ready !"
+    print
+
 
 @hosts(KVM_HOST)
 def stop_skaro_rc():
