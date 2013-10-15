@@ -6,7 +6,7 @@ setup(
     name='xivo-client-sim',
     version='1.1',
     description='A XiVO CTI client simulator.',
-    url='https://gitorious.org/xivo/xivo-tools',
+    url='https://github.com/xivo-pbx/xivo-tools.git',
     packages=['xivo_client',
               'xivo_client.bin',
               'xivo_client.client',
