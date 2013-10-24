@@ -42,13 +42,23 @@ def request(verb, url, params=None):
     return response.json()
 
 
+def _user_name(u):
+    firstname = u['firstname']
+    lastname = u['lastname']
+
+    if lastname:
+        return '%s %s' % (firstname, lastname)
+    else:
+        return firstname
+
+
 def find_users():
     users = request('get', 'users')['items']
 
     found = [u for u in users
-             if '%s %s' % (u['firstname'], u['lastname']) in USERS]
+             if _user_name(u) in USERS]
 
-    user_names = ['%s %s' % (u['firstname'], u['lastname']) for u in found]
+    user_names = [_user_name(u) for u in found]
 
     if len(found) != len(USERS):
         raise Exception("only found the following users: %s" % ', '.join(user_names))
@@ -58,7 +68,7 @@ def find_users():
 
 def reorder_users(order, users):
     stash = dict(
-        ('%s %s' % (u['firstname'], u['lastname']), u)
+        (_user_name(u), u)
         for u in users)
 
     return [stash[name] for name in order]
@@ -166,7 +176,7 @@ def main():
     print
 
     main_user = users[0]
-    print "Done. Provisining code for %s %s is %s" % (main_user['firstname'], main_user['lastname'], line['provisioning_extension'])
+    print "Done. Provisining code for %s is %s" % (_user_name(main_user), line['provisioning_extension'])
 
 if __name__ == '__main__':
     main()
