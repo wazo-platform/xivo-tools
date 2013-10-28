@@ -41,6 +41,11 @@ def main():
                                    password=parsed_args.password)
     restapi_client.connect()
 
+    if parsed_args.create_voicemail:
+        restapi_client.create_voicemail(number=parsed_args.create_voicemail,
+                                        context=parsed_args.context,
+                                        name=parsed_args.voicemail_name)
+
     if parsed_args.delete_extension:
         restapi_client.delete_extension(context=parsed_args.context,
                                         exten=parsed_args.extension)
@@ -210,12 +215,21 @@ def _new_argument_parser():
                         type=int,
                         help='extension-id for user_links.')
 
+    parser.add_argument('--create-voicemail',
+                        metavar='VOICEMAIL_NUMBER',
+                        help='Create a voicemail.')
+
+    parser.add_argument('--voicemail-name',
+                        help='Voicemail name',
+                        default=None)
+
     parser.add_argument('--synchronize',
                         action='store_true',
                         default=False,
                         help='Send synchronize message. Default: %(default)s')
     parser.add_argument('--device-id',
                         help='device-id used for synchronize.')
+
     return parser
 
 
@@ -365,6 +379,16 @@ class RestAPIClient(object):
         if response.status_code >= 300:
             raise Exception('STATUS %s. %s' % (response.status_code, response.text))
         return response
+
+    def create_voicemail(self, number, context, name=None):
+        logging.info('Creating voicemail %s@%s' % (number, context))
+        voicemail = {
+            'number': number,
+            'context': context,
+            'name': name,
+        }
+
+        self._check_status(self._session.post('%s/voicemails' % self._url, json.dumps(voicemail)))
 
 
 if __name__ == '__main__':
