@@ -46,6 +46,10 @@ def main():
                                         context=parsed_args.context,
                                         name=parsed_args.voicemail_name)
 
+    if parsed_args.create_voicemail_link:
+        restapi_client.create_voicemail_link(user_id=parsed_args.user_id,
+                                             voicemail_id=parsed_args.voicemail_id)
+
     if parsed_args.delete_extension:
         restapi_client.delete_extension(context=parsed_args.context,
                                         exten=parsed_args.extension)
@@ -131,6 +135,9 @@ def _parse_args():
             msg = '--create-user-links can only be used with --user-id, --line-id, --extension-id. or \n'
             msg += '--create-user-links can only be used with --create-user, --create-extension, --create-line.'
             parser.error(msg)
+
+    if args.create_voicemail_link and not (args.user_id and args.voicemail_id):
+        parser.error('--create-voicemail-link can only be used with --user-id and --voicemail-id')
 
     return args
 
@@ -218,10 +225,20 @@ def _new_argument_parser():
     parser.add_argument('--create-voicemail',
                         metavar='VOICEMAIL_NUMBER',
                         help='Create a voicemail.')
-
     parser.add_argument('--voicemail-name',
                         help='Voicemail name',
                         default=None)
+
+    parser.add_argument('--create-voicemail-link',
+                        action='store_true',
+                        default=False,
+                        help='Link a user with a voicemail')
+    parser.add_argument('--user-id',
+                        type=int,
+                        help='user_id for voicemail link')
+    parser.add_argument('--voicemail-id',
+                        type=int,
+                        help='voicmail_id for voicemail link')
 
     parser.add_argument('--synchronize',
                         action='store_true',
@@ -390,6 +407,13 @@ class RestAPIClient(object):
 
         self._check_status(self._session.post('%s/voicemails' % self._url, json.dumps(voicemail)))
 
+    def create_voicemail_link(self, user_id, voicemail_id):
+        logging.info('Creating voicemail link between user %s and voicemail %s', user_id, voicemail_id)
+        link = {
+            'voicemail_id': voicemail_id
+        }
+
+        self._check_status(self._session.post('%s/users/%s/voicemail' % (self._url, user_id), link))
 
 if __name__ == '__main__':
     main()
