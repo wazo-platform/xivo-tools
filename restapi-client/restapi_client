@@ -405,7 +405,8 @@ class RestAPIClient(object):
             'name': name,
         }
 
-        self._check_status(self._session.post('%s/voicemails' % self._url, json.dumps(voicemail)))
+        response = self._check_status(self._session.post('%s/voicemails' % self._url, json.dumps(voicemail)))
+        logging.info('Created voicemail with id %s' % response.json()['id'])
 
     def create_voicemail_link(self, user_id, voicemail_id):
         logging.info('Creating voicemail link between user %s and voicemail %s', user_id, voicemail_id)
