@@ -414,7 +414,7 @@ class RestAPIClient(object):
             'voicemail_id': voicemail_id
         }
 
-        self._check_status(self._session.post('%s/users/%s/voicemail' % (self._url, user_id), link))
+        self._check_status(self._session.post('%s/users/%s/voicemail' % (self._url, user_id), json.dumps(link)))
 
 if __name__ == '__main__':
     main()
