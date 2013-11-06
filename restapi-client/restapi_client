@@ -296,6 +296,7 @@ class RestAPIClient(object):
         logging.debug('Disconnecting from %s', self._hostname)
 
     def request(self, method, url, parameters=None):
+        url = url.lstrip('/')
         full_url = '%s/%s' % (self._url, url)
         logging.debug('request: %s %s', method.upper(), full_url)
 
