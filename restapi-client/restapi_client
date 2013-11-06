@@ -278,7 +278,7 @@ class RestAPIClient(object):
         self._url = '%s://%s:%s/%s' % (scheme, hostname, port, protocol_version)
 
     def connect(self):
-        logging.info('Connecting to %s', self._hostname)
+        logging.debug('Connecting to %s', self._hostname)
 
         auth = requests.auth.HTTPDigestAuth(self._username, self._password)
         headers = {
@@ -292,7 +292,7 @@ class RestAPIClient(object):
         self._session.verify = False
 
     def disconnect(self):
-        logging.info('Disconnecting from %s', self._hostname)
+        logging.debug('Disconnecting from %s', self._hostname)
 
     def create_extension(self, exten, context):
         if self._extension is not None:
@@ -302,17 +302,17 @@ class RestAPIClient(object):
             'exten': exten,
             'context': context
         }
-        logging.info('creating extension %s', exteninfo)
+        logging.debug('creating extension %s', exteninfo)
         resp = self._check_status(self._session.post('%s/extensions' % self._url, json.dumps(exteninfo)))
         self._extension = resp.json()
-        logging.info('Extension created with id: %d', self._extension['id'])
+        logging.debug('Extension created with id: %d', self._extension['id'])
 
     def delete_extension(self, exten, context):
         result = self._check_status(self._session.get('%s/extensions' % self._url))
         extensions = result.json()['items']
         found = [e for e in extensions if e['exten'] == exten and e['context'] == context]
         for extension in found:
-            logging.info('deleting extension %(exten)s@%(context)s', extension)
+            logging.debug('deleting extension %(exten)s@%(context)s', extension)
             self._check_status(self._session.delete('%s/extensions/%s' % (self._url, extension['id'])))
 
     def create_line(self, context, device_slot):
@@ -323,13 +323,13 @@ class RestAPIClient(object):
             'context': context,
             'device_slot': device_slot
         }
-        logging.info('creating line %s', lineinfo)
+        logging.debug('creating line %s', lineinfo)
         resp = self._check_status(self._session.post('%s/lines_sip' % self._url, json.dumps(lineinfo)))
         self._line = resp.json()
-        logging.info('Line created with id: %d', self._line['id'])
+        logging.debug('Line created with id: %d', self._line['id'])
 
     def delete_line(self, line_id):
-        logging.info('Deleting line with id %s', line_id)
+        logging.debug('Deleting line with id %s', line_id)
         self._check_status(self._session.delete('%s/lines_sip/%s' % (self._url, line_id)))
 
     def create_user(self, firstname, lastname):
@@ -337,11 +337,11 @@ class RestAPIClient(object):
             'firstname': firstname,
             'lastname': lastname
         }
-        logging.info('creating user %s', userinfo)
+        logging.debug('creating user %s', userinfo)
         resp = self._check_status(self._session.post('%s/users' % self._url, json.dumps(userinfo)))
         user = resp.json()
         self._users.append(user)
-        logging.info('User created with id: %d', user['id'])
+        logging.debug('User created with id: %d', user['id'])
 
     def create_user_links(self, user_ids, extension_id, line_id):
         for user_id in user_ids:
@@ -350,7 +350,7 @@ class RestAPIClient(object):
                 'extension_id': extension_id,
                 'line_id': line_id
             }
-            logging.info('linking %s', linkinfo)
+            logging.debug('linking %s', linkinfo)
             resp = self._check_status(self._session.post('%s/user_links' % self._url, json.dumps(linkinfo)))
 
         resp = self._check_status(self._session.get('%s/lines_sip/%s' % (self._url, line_id)))
@@ -359,7 +359,7 @@ class RestAPIClient(object):
         logging.info('Done ! Your provisioning number is %s', line['provisioning_extension'])
 
     def delete_user_links_for_line(self, line_id):
-        logging.info('Deassociating user links for line %s', line_id)
+        logging.debug('Deassociating user links for line %s', line_id)
         user_links = self._user_links_for_line(line_id)
         main_link, secondary_links = self._split_main_link(user_links)
 
@@ -379,7 +379,7 @@ class RestAPIClient(object):
         return main_link, user_links
 
     def _delete_link(self, link):
-        logging.info('deleting link %s', link['id'])
+        logging.debug('deleting link %s', link['id'])
         self._check_status(self._session.delete('%s/user_links/%s' % (self._url, link['id'])))
 
     def create_user_links_from_resources(self):
@@ -389,7 +389,7 @@ class RestAPIClient(object):
         self.create_user_links(user_ids, extension_id, line_id)
 
     def synchronize(self, device_id):
-        logging.info('Synchronize device %s', device_id)
+        logging.debug('Synchronize device %s', device_id)
         self._check_status(self._session.get('%s/devices/%s/synchronize' % (self._url, device_id)))
 
     def _check_status(self, response):
@@ -398,7 +398,7 @@ class RestAPIClient(object):
         return response
 
     def create_voicemail(self, number, context, name=None):
-        logging.info('Creating voicemail %s@%s' % (number, context))
+        logging.debug('Creating voicemail %s@%s' % (number, context))
         voicemail = {
             'number': number,
             'context': context,
@@ -406,10 +406,10 @@ class RestAPIClient(object):
         }
 
         response = self._check_status(self._session.post('%s/voicemails' % self._url, json.dumps(voicemail)))
-        logging.info('Created voicemail with id %s' % response.json()['id'])
+        logging.debug('Created voicemail with id %s' % response.json()['id'])
 
     def create_voicemail_link(self, user_id, voicemail_id):
-        logging.info('Creating voicemail link between user %s and voicemail %s', user_id, voicemail_id)
+        logging.debug('Creating voicemail link between user %s and voicemail %s', user_id, voicemail_id)
         link = {
             'voicemail_id': voicemail_id
         }
