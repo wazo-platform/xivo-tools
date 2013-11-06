@@ -24,13 +24,14 @@ import argparse
 import logging
 
 logging.basicConfig(level=logging.INFO)
+logging.getLogger('requests').setLevel(logging.WARN)
 
 
 def main():
     parsed_args = _parse_args()
 
     if parsed_args.debug:
-        logging.basicConfig(level=logging.DEBUG)
+        logging.getLogger().setLevel(logging.DEBUG)
         logging.debug('Debug mode enabled.')
 
     restapi_client = RestAPIClient(scheme=parsed_args.scheme,
@@ -319,7 +320,7 @@ class RestAPIClient(object):
         }
 
         self._extension = self.request('POST', '/extensions', exteninfo)
-        logging.info('Extension created with id: %d', self._extension['id'])
+        print self._extension['id']
 
     def delete_extension(self, exten, context):
         result = self.request('GET', '/extensions')
@@ -328,7 +329,6 @@ class RestAPIClient(object):
 
         for extension in found:
             self.request('DELETE', '/extensions/%s' % extension['id'])
-            logging.info('Extension %s@%s deleted', extension['exten'], extension['context'])
 
     def create_line(self, context, device_slot):
         if self._line is not None:
@@ -340,11 +340,10 @@ class RestAPIClient(object):
         }
 
         self._line = self.request('POST', '/lines_sip', lineinfo)
-        logging.info('Line created with id: %d', self._line['id'])
+        print self._line['id']
 
     def delete_line(self, line_id):
         self.request('DELETE', '/lines_sip/%d' % line_id)
-        logging.info('Line with id %d deleted', line_id)
 
     def create_user(self, firstname, lastname):
         userinfo = {
@@ -353,7 +352,7 @@ class RestAPIClient(object):
         }
 
         user = self.request('POST', '/users', userinfo)
-        logging.info('User created with id: %d', user['id'])
+        print user['id']
 
     def create_user_links(self, user_ids, extension_id, line_id):
         for user_id in user_ids:
@@ -375,7 +374,6 @@ class RestAPIClient(object):
             self._delete_link(link)
 
         self._delete_link(main_link)
-        logging.info('User links for line %d deleted', line_id)
 
     def _user_links_for_line(self, line_id):
         response = self.request('GET', '/lines/%d/user_links' % line_id)
@@ -398,7 +396,6 @@ class RestAPIClient(object):
 
     def synchronize(self, device_id):
         self.request('GET', '/devices/%s/synchronize' % device_id)
-        logging.info('Device %d synchronized', device_id)
 
     def _check_status(self, response):
         if response.status_code >= 300:
@@ -414,7 +411,7 @@ class RestAPIClient(object):
         }
 
         response = self.request('POST', '/voicemails', voicemail)
-        logging.info('Created voicemail with id %s', response['id'])
+        print response['id']
 
     def create_voicemail_link(self, user_id, voicemail_id):
         link = {'voicemail_id': voicemail_id}
