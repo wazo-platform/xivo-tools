@@ -50,6 +50,9 @@ def main():
         restapi_client.create_voicemail_link(user_id=parsed_args.user_id,
                                              voicemail_id=parsed_args.voicemail_id)
 
+    if parsed_args.delete_voicemail_link:
+        restapi_client.delete_voicemail_link(user_id=parsed_args.user_id)
+
     if parsed_args.delete_extension:
         restapi_client.delete_extension(context=parsed_args.context,
                                         exten=parsed_args.extension)
@@ -138,6 +141,9 @@ def _parse_args():
 
     if args.create_voicemail_link and not (args.user_id and args.voicemail_id):
         parser.error('--create-voicemail-link can only be used with --user-id and --voicemail-id')
+
+    if args.delete_voicemail_link and not args.user_id :
+        parser.error('--delete_voicemail_link can only be used with --user-id')
 
     return args
 
@@ -233,12 +239,18 @@ def _new_argument_parser():
                         action='store_true',
                         default=False,
                         help='Link a user with a voicemail')
+
+    parser.add_argument('--delete-voicemail-link',
+                        action='store_true',
+                        default=False,
+                        help='Unlink a user from his voicemail')
+
     parser.add_argument('--user-id',
                         type=int,
                         help='user_id for voicemail link')
     parser.add_argument('--voicemail-id',
                         type=int,
-                        help='voicmail_id for voicemail link')
+                        help='voicemail_id for voicemail link')
 
     parser.add_argument('--synchronize',
                         action='store_true',
@@ -415,6 +427,11 @@ class RestAPIClient(object):
         }
 
         self._check_status(self._session.post('%s/users/%s/voicemail' % (self._url, user_id), json.dumps(link)))
+
+    def delete_voicemail_link(self, user_id):
+        logging.info('Deleting voicemail link between user %s and his voicemail', user_id)
+        self._check_status(self._session.delete('%s/users/%s/voicemail' % (self._url, user_id)))
+
 
 if __name__ == '__main__':
     main()
