@@ -143,7 +143,7 @@ def _parse_args():
     if args.create_voicemail_link and not (args.user_id and args.voicemail_id):
         parser.error('--create-voicemail-link can only be used with --user-id and --voicemail-id')
 
-    if args.delete_voicemail_link and not args.user_id :
+    if args.delete_voicemail_link and not args.user_id:
         parser.error('--delete_voicemail_link can only be used with --user-id')
 
     return args
@@ -319,7 +319,11 @@ class RestAPIClient(object):
         response = self._session.request(method, full_url, data=parameters)
         self._check_status(response)
 
-        received = response.json()
+        if len(response.text) > 0:
+            received = response.json()
+        else:
+            received = ''
+
         logging.debug('response: %s', received)
         return received
 
@@ -432,8 +436,8 @@ class RestAPIClient(object):
         logging.info('User %d linked with voicemail %d', user_id, voicemail_id)
 
     def delete_voicemail_link(self, user_id):
-        logging.info('Deleting voicemail link between user %s and his voicemail', user_id)
-        self._check_status(self._session.delete('%s/users/%s/voicemail' % (self._url, user_id)))
+        self.request('DELETE', '/users/%d/voicemail' % user_id)
+        logging.info('Link between User %d and voicemail deleted')
 
 
 if __name__ == '__main__':
