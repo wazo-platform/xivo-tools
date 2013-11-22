@@ -46,6 +46,9 @@ def main():
                                         context=parsed_args.context,
                                         name=parsed_args.voicemail_name)
 
+    if parsed_args.delete_voicemail:
+        restapi_client.delete_voicemail(voicemail_id=parsed_args.delete_voicemail)
+
     if parsed_args.create_voicemail_link:
         restapi_client.create_voicemail_link(user_id=parsed_args.user_id,
                                              voicemail_id=parsed_args.voicemail_id)
@@ -142,7 +145,7 @@ def _parse_args():
     if args.create_voicemail_link and not (args.user_id and args.voicemail_id):
         parser.error('--create-voicemail-link can only be used with --user-id and --voicemail-id')
 
-    if args.delete_voicemail_link and not args.user_id :
+    if args.delete_voicemail_link and not args.user_id:
         parser.error('--delete_voicemail_link can only be used with --user-id')
 
     return args
@@ -231,6 +234,9 @@ def _new_argument_parser():
     parser.add_argument('--create-voicemail',
                         metavar='VOICEMAIL_NUMBER',
                         help='Create a voicemail.')
+    parser.add_argument('--delete-voicemail',
+                        metavar='VOICEMAIL_ID',
+                        help='Delete a voicemail.')
     parser.add_argument('--voicemail-name',
                         help='Voicemail name',
                         default=None)
@@ -419,6 +425,12 @@ class RestAPIClient(object):
 
         response = self._check_status(self._session.post('%s/voicemails' % self._url, json.dumps(voicemail)))
         logging.info('Created voicemail with id %s' % response.json()['id'])
+
+    def delete_voicemail(self, voicemail_id):
+        logging.info('Deleting voicemail with id %s' % voicemail_id)
+
+        self._check_status(self._session.delete('%s/voicemails/%s' % (self._url, voicemail_id)))
+        logging.info('Deleted voicemail with id %s' % voicemail_id)
 
     def create_voicemail_link(self, user_id, voicemail_id):
         logging.info('Creating voicemail link between user %s and voicemail %s', user_id, voicemail_id)
