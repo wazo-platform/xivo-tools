@@ -76,39 +76,22 @@ def main():
         restapi_client.create_user(firstname=parsed_args.firstname,
                                    lastname=parsed_args.lastname)
 
-    if parsed_args.deassociate_line:
-        restapi_client.delete_user_links_for_line(parsed_args.line_id)
+    if parsed_args.dissociate_user_line:
+        restapi_client.delete_user_lines(parsed_args.user_id)
 
-    if parsed_args.create_user_links:
-        if _has_user_link_id_parameters(parsed_args):
-            user_ids = [int(u) for u in parsed_args.user_ids.split(',')]
-            extension_id = parsed_args.extension_id
-            line_id = parsed_args.line_id
-            restapi_client.create_user_links(user_ids, extension_id, line_id)
-        else:
-            restapi_client.create_user_links_from_resources()
+    if parsed_args.associate_user_line:
+        user_ids = [int(u) for u in parsed_args.user_ids.split(',')]
+        line_id = parsed_args.line_id
+        restapi_client.create_user_line(user_ids, line_id)
+
+    if parsed_args.dissociate_line_extension:
+        restapi_client.delete_line_extension(parsed_args.line_id)
+
+    if parsed_args.associate_line_extension:
+        restapi_client.create_line_extension(parsed_args.line_id, parsed_args.extension_id)
 
     if parsed_args.synchronize:
         restapi_client.synchronize(parsed_args.device_id)
-
-
-def _has_user_link_id_parameters(parsed_args):
-    parameters = ['user_ids', 'extension_id', 'line_id']
-    return _has_parameters(parsed_args, parameters)
-
-
-def _has_user_link_parameters(parsed_args):
-    parameters = ['create_user', 'create_extension', 'create_line']
-    return _has_parameters(parsed_args, parameters)
-
-
-def _has_parameters(parsed_args, parameters):
-    defined = vars(parsed_args)
-    for param in parameters:
-        exists = defined.get(param, None)
-        if not exists:
-            return False
-    return True
 
 
 def _parse_args():
@@ -134,14 +117,11 @@ def _parse_args():
     if args.delete_line and not args.line_id:
         parser.error('--delete-line can only be used with --line-id')
 
-    if args.deassociate_line and not args.line_id:
-        parser.error('--deassociate-line can only be user with --line-id')
+    if args.dissociate_user_line and not args.user_id:
+        parser.error('--dissociate-user-line can only be user with --user-id')
 
-    if args.create_user_links:
-        if not (_has_user_link_parameters(args) or _has_user_link_id_parameters(args)):
-            msg = '--create-user-links can only be used with --user-id, --line-id, --extension-id. or \n'
-            msg += '--create-user-links can only be used with --create-user, --create-extension, --create-line.'
-            parser.error(msg)
+    if args.associate_user_line and not (args.user_ids and args.line_id):
+        parser.error('--associate-user-line can only be used with --user-ids and --line-id')
 
     if args.create_voicemail_link and not (args.user_id and args.voicemail_id):
         parser.error('--create-voicemail-link can only be used with --user-id and --voicemail-id')
@@ -215,22 +195,32 @@ def _new_argument_parser():
                         default='',
                         help='Lastname for user. Default: %(default)s')
 
-    parser.add_argument('--create-user-links',
+    parser.add_argument('--associate-user-line',
                         action='store_true',
                         default=False,
-                        help='Activate user_links creation. Default: %(default)s')
-    parser.add_argument('--deassociate-line',
+                        help='Associate a user with a line. Default: %(default)s')
+    parser.add_argument('--dissociate-user-line',
                         action='store_true',
                         default=False,
-                        help='Deassociate all links associated to a line. Default: %(default)s')
+                        help='dissociate all lines from a user. Default: %(default)s')
+
+    parser.add_argument('--associate-line-extension',
+                        action='store_true',
+                        default=False,
+                        help='Associate a line with an extension. Default: %(default)s')
+    parser.add_argument('--dissociate-line-extension',
+                        action='store_true',
+                        default=False,
+                        help='dissociate a line from its extension. Default: %(default)s')
+
     parser.add_argument('--user-ids',
-                        help='comma-seperated list of user_ids for user_links.')
+                        help='comma-seperated list of user_ids.')
     parser.add_argument('--line-id',
                         type=int,
-                        help='line_id for user_links.')
+                        help='line-id for associations.')
     parser.add_argument('--extension-id',
                         type=int,
-                        help='extension-id for user_links.')
+                        help='extension-id for associations.')
 
     parser.add_argument('--create-voicemail',
                         metavar='VOICEMAIL_NUMBER',
@@ -333,17 +323,19 @@ class RestAPIClient(object):
         logging.debug('response: %s', received)
         return received
 
-    def create_extension(self, exten, context):
-        if self._extension is not None:
-            logging.error('extension is already defined: %s', self._extension)
+    def _check_status(self, response):
+        if response.status_code >= 300:
+            raise Exception('STATUS %s. %s' % (response.status_code, response.text))
+        return response
 
+    def create_extension(self, exten, context):
         exteninfo = {
             'exten': exten,
             'context': context
         }
 
-        self._extension = self.request('POST', '/extensions', exteninfo)
-        print self._extension['id']
+        extension = self.request('POST', '/extensions', exteninfo)
+        print extension['id']
 
     def delete_extension(self, exten, context):
         result = self.request('GET', '/extensions')
@@ -354,16 +346,13 @@ class RestAPIClient(object):
             self.request('DELETE', '/extensions/%s' % extension['id'])
 
     def create_line(self, context, device_slot):
-        if self._line is not None:
-            logging.error('line is already defined: %s', self._line)
-
         lineinfo = {
             'context': context,
             'device_slot': device_slot
         }
 
-        self._line = self.request('POST', '/lines_sip', lineinfo)
-        print self._line['id']
+        line = self.request('POST', '/lines_sip', lineinfo)
+        print line['id']
 
     def delete_line(self, line_id):
         self.request('DELETE', '/lines_sip/%d' % line_id)
@@ -377,53 +366,43 @@ class RestAPIClient(object):
         user = self.request('POST', '/users', userinfo)
         print user['id']
 
-    def create_user_links(self, user_ids, extension_id, line_id):
+    def create_user_line(self, user_ids, line_id):
         for user_id in user_ids:
             linkinfo = {
-                'user_id': user_id,
-                'extension_id': extension_id,
                 'line_id': line_id
             }
-            self.request('POST', '/user_links', linkinfo)
+            self.request('POST', '/users/%d/lines' % user_id, linkinfo)
 
         line = self.request('GET', '/lines_sip/%d' % line_id)
         logging.info('Links created. Your provisioning number is %s', line['provisioning_extension'])
 
-    def delete_user_links_for_line(self, line_id):
-        user_links = self._user_links_for_line(line_id)
-        main_link, secondary_links = self._split_main_link(user_links)
+    def delete_user_lines(self, user_id):
+        user_lines = self._lines_for_user(user_id)
 
-        for link in secondary_links:
-            self._delete_link(link)
+        for user_line in user_lines:
+            self._delete_user_line(user_line)
 
-        self._delete_link(main_link)
-
-    def _user_links_for_line(self, line_id):
-        response = self.request('GET', '/lines/%d/user_links' % line_id)
+    def _lines_for_user(self, user_id):
+        response = self.request('GET', '/users/%d/lines' % user_id)
         return response['items']
 
-    def _split_main_link(self, user_links):
-        main_link = [l for l in user_links if l['main_user']][0]
-        user_links.remove(main_link)
+    def _delete_user_line(self, user_line):
+        self.request('DELETE', '/users/%d/lines/%d' % (user_line['user_id'], user_line['line_id']))
 
-        return main_link, user_links
+    def create_line_extension(self, line_id, extension_id):
+        info = {
+            'extension_id': extension_id
+        }
 
-    def _delete_link(self, link):
-        self.request('DELETE', '/user_links/%d' % link['id'])
+        self.request('POST', '/lines/%d/extension' % line_id, info)
+        logging.info('Link created.')
 
-    def create_user_links_from_resources(self):
-        user_ids = [u['id'] for u in self._users]
-        extension_id = self._extension['id']
-        line_id = self._line['id']
-        self.create_user_links(user_ids, extension_id, line_id)
+    def delete_line_extension(self, line_id):
+        self.request('DELETE', '/lines/%d/extension' % line_id)
+        logging.info('Link deleted.')
 
     def synchronize(self, device_id):
         self.request('GET', '/devices/%s/synchronize' % device_id)
-
-    def _check_status(self, response):
-        if response.status_code >= 300:
-            raise Exception('STATUS %s. %s' % (response.status_code, response.text))
-        return response
 
     def create_voicemail(self, number, context, name=None):
         logging.debug('Creating voicemail %s@%s' % (number, context))
