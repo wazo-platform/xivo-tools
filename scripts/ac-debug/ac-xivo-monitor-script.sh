@@ -17,7 +17,7 @@
 
 
 dstat_fct() {
-    /usr/bin/dstat -tcdgilmf --output /var/local/`date +%Y%m%d`-`hostname`-dstat.log 15 $1
+    /usr/bin/dstat -tcdgilmnf --output /var/local/`date +%Y%m%d`-`hostname`-dstat.log 15 $1
 }
 
 iotop_fct() {
