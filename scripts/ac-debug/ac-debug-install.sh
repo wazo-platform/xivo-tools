@@ -91,7 +91,7 @@ touch /etc/cron.d/ac-xivo-monitor-crontab
 echo 'MAILTO=""' > /etc/cron.d/ac-xivo-monitor-crontab
 echo '' >> /etc/cron.d/ac-xivo-monitor-crontab
 echo '## Launch two monitor utilities dstat and iotop' >> /etc/cron.d/ac-xivo-monitor-crontab
-echo "02 0 * ${MONTHS_TO_MON} * root /usr/local/sbin/ac-xivo-monitor-script.sh 2870" >> /etc/cron.d/ac-xivo-monitor-crontab
+echo "02 0 * ${MONTHS_TO_MON} * root /usr/local/sbin/ac-xivo-monitor-script.sh 24 15" >> /etc/cron.d/ac-xivo-monitor-crontab
 
 
 println info "Create ac-xc-logins crontab"
