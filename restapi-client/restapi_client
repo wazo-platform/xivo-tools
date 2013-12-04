@@ -24,13 +24,14 @@ import argparse
 import logging
 
 logging.basicConfig(level=logging.INFO)
+logging.getLogger('requests').setLevel(logging.WARN)
 
 
 def main():
     parsed_args = _parse_args()
 
     if parsed_args.debug:
-        logging.basicConfig(level=logging.DEBUG)
+        logging.getLogger().setLevel(logging.DEBUG)
         logging.debug('Debug mode enabled.')
 
     restapi_client = RestAPIClient(scheme=parsed_args.scheme,
@@ -296,7 +297,7 @@ class RestAPIClient(object):
         self._url = '%s://%s:%s/%s' % (scheme, hostname, port, protocol_version)
 
     def connect(self):
-        logging.info('Connecting to %s', self._hostname)
+        logging.debug('Connecting to %s', self._hostname)
 
         auth = requests.auth.HTTPDigestAuth(self._username, self._password)
         headers = {
@@ -310,7 +311,27 @@ class RestAPIClient(object):
         self._session.verify = False
 
     def disconnect(self):
-        logging.info('Disconnecting from %s', self._hostname)
+        logging.debug('Disconnecting from %s', self._hostname)
+
+    def request(self, method, url, parameters=None):
+        url = url.lstrip('/')
+        full_url = '%s/%s' % (self._url, url)
+        logging.debug('request: %s %s', method.upper(), full_url)
+
+        if parameters:
+            logging.debug('parameters: %s', parameters)
+            parameters = json.dumps(parameters)
+
+        response = self._session.request(method, full_url, data=parameters)
+        self._check_status(response)
+
+        if len(response.text) > 0:
+            received = response.json()
+        else:
+            received = ''
+
+        logging.debug('response: %s', received)
+        return received
 
     def create_extension(self, exten, context):
         if self._extension is not None:
@@ -320,18 +341,17 @@ class RestAPIClient(object):
             'exten': exten,
             'context': context
         }
-        logging.info('creating extension %s', exteninfo)
-        resp = self._check_status(self._session.post('%s/extensions' % self._url, json.dumps(exteninfo)))
-        self._extension = resp.json()
-        logging.info('Extension created with id: %d', self._extension['id'])
+
+        self._extension = self.request('POST', '/extensions', exteninfo)
+        print self._extension['id']
 
     def delete_extension(self, exten, context):
-        result = self._check_status(self._session.get('%s/extensions' % self._url))
-        extensions = result.json()['items']
+        result = self.request('GET', '/extensions')
+        extensions = result['items']
         found = [e for e in extensions if e['exten'] == exten and e['context'] == context]
+
         for extension in found:
-            logging.info('deleting extension %(exten)s@%(context)s', extension)
-            self._check_status(self._session.delete('%s/extensions/%s' % (self._url, extension['id'])))
+            self.request('DELETE', '/extensions/%s' % extension['id'])
 
     def create_line(self, context, device_slot):
         if self._line is not None:
@@ -341,25 +361,21 @@ class RestAPIClient(object):
             'context': context,
             'device_slot': device_slot
         }
-        logging.info('creating line %s', lineinfo)
-        resp = self._check_status(self._session.post('%s/lines_sip' % self._url, json.dumps(lineinfo)))
-        self._line = resp.json()
-        logging.info('Line created with id: %d', self._line['id'])
+
+        self._line = self.request('POST', '/lines_sip', lineinfo)
+        print self._line['id']
 
     def delete_line(self, line_id):
-        logging.info('Deleting line with id %s', line_id)
-        self._check_status(self._session.delete('%s/lines_sip/%s' % (self._url, line_id)))
+        self.request('DELETE', '/lines_sip/%d' % line_id)
 
     def create_user(self, firstname, lastname):
         userinfo = {
             'firstname': firstname,
             'lastname': lastname
         }
-        logging.info('creating user %s', userinfo)
-        resp = self._check_status(self._session.post('%s/users' % self._url, json.dumps(userinfo)))
-        user = resp.json()
-        self._users.append(user)
-        logging.info('User created with id: %d', user['id'])
+
+        user = self.request('POST', '/users', userinfo)
+        print user['id']
 
     def create_user_links(self, user_ids, extension_id, line_id):
         for user_id in user_ids:
@@ -368,16 +384,12 @@ class RestAPIClient(object):
                 'extension_id': extension_id,
                 'line_id': line_id
             }
-            logging.info('linking %s', linkinfo)
-            resp = self._check_status(self._session.post('%s/user_links' % self._url, json.dumps(linkinfo)))
+            self.request('POST', '/user_links', linkinfo)
 
-        resp = self._check_status(self._session.get('%s/lines_sip/%s' % (self._url, line_id)))
-        line = resp.json()
-
-        logging.info('Done ! Your provisioning number is %s', line['provisioning_extension'])
+        line = self.request('GET', '/lines_sip/%d' % line_id)
+        logging.info('Links created. Your provisioning number is %s', line['provisioning_extension'])
 
     def delete_user_links_for_line(self, line_id):
-        logging.info('Deassociating user links for line %s', line_id)
         user_links = self._user_links_for_line(line_id)
         main_link, secondary_links = self._split_main_link(user_links)
 
@@ -387,8 +399,8 @@ class RestAPIClient(object):
         self._delete_link(main_link)
 
     def _user_links_for_line(self, line_id):
-        response = self._check_status(self._session.get('%s/lines/%s/user_links' % (self._url, line_id)))
-        return response.json()['items']
+        response = self.request('GET', '/lines/%d/user_links' % line_id)
+        return response['items']
 
     def _split_main_link(self, user_links):
         main_link = [l for l in user_links if l['main_user']][0]
@@ -397,8 +409,7 @@ class RestAPIClient(object):
         return main_link, user_links
 
     def _delete_link(self, link):
-        logging.info('deleting link %s', link['id'])
-        self._check_status(self._session.delete('%s/user_links/%s' % (self._url, link['id'])))
+        self.request('DELETE', '/user_links/%d' % link['id'])
 
     def create_user_links_from_resources(self):
         user_ids = [u['id'] for u in self._users]
@@ -407,8 +418,7 @@ class RestAPIClient(object):
         self.create_user_links(user_ids, extension_id, line_id)
 
     def synchronize(self, device_id):
-        logging.info('Synchronize device %s', device_id)
-        self._check_status(self._session.get('%s/devices/%s/synchronize' % (self._url, device_id)))
+        self.request('GET', '/devices/%s/synchronize' % device_id)
 
     def _check_status(self, response):
         if response.status_code >= 300:
@@ -416,15 +426,15 @@ class RestAPIClient(object):
         return response
 
     def create_voicemail(self, number, context, name=None):
-        logging.info('Creating voicemail %s@%s' % (number, context))
+        logging.debug('Creating voicemail %s@%s' % (number, context))
         voicemail = {
             'number': number,
             'context': context,
             'name': name,
         }
 
-        response = self._check_status(self._session.post('%s/voicemails' % self._url, json.dumps(voicemail)))
-        logging.info('Created voicemail with id %s' % response.json()['id'])
+        response = self.request('POST', '/voicemails', voicemail)
+        print response['id']
 
     def delete_voicemail(self, voicemail_id):
         logging.info('Deleting voicemail with id %s' % voicemail_id)
@@ -433,16 +443,13 @@ class RestAPIClient(object):
         logging.info('Deleted voicemail with id %s' % voicemail_id)
 
     def create_voicemail_link(self, user_id, voicemail_id):
-        logging.info('Creating voicemail link between user %s and voicemail %s', user_id, voicemail_id)
-        link = {
-            'voicemail_id': voicemail_id
-        }
-
-        self._check_status(self._session.post('%s/users/%s/voicemail' % (self._url, user_id), json.dumps(link)))
+        link = {'voicemail_id': voicemail_id}
+        self.request('POST', '/users/%d/voicemail' % user_id, link)
+        logging.info('User %d linked with voicemail %d', user_id, voicemail_id)
 
     def delete_voicemail_link(self, user_id):
-        logging.info('Deleting voicemail link between user %s and his voicemail', user_id)
-        self._check_status(self._session.delete('%s/users/%s/voicemail' % (self._url, user_id)))
+        self.request('DELETE', '/users/%d/voicemail' % user_id)
+        logging.info('Link between User %d and voicemail deleted')
 
 
 if __name__ == '__main__':
