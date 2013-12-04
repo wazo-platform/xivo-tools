@@ -36,6 +36,11 @@ ask_yn_question() {
 DST_FILE="/var/local/ac-debug-get-infos-$(date +%Y%m%d%H%M%S).txt"
 rm -f ${DST_FILE}
 
+echo "VERSION" >> ${DST_FILE}
+echo "-------" >> ${DST_FILE}
+cat /usr/share/pf-xivo/XIVO-VERSION >> ${DST_FILE}
+echo "" >> ${DST_FILE}
+
 echo "SYSTEM" >> ${DST_FILE}
 echo "------" >> ${DST_FILE}
 echo "" >> ${DST_FILE}

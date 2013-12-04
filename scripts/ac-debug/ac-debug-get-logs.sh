@@ -99,9 +99,6 @@ for log in ${MONITOR_LOG}; do
     tar rvf ${DST_FILE} $log
 done
 
-# Get XiVO Version
-tar rvf ${DST_FILE} /usr/share/pf-xivo/XIVO-VERSION
-
 println "gzip ${DST_FILE}"
 gzip ${DST_FILE}
 println info "You can now retrieve ${DST_FILE}.gz and send it to the support team"
