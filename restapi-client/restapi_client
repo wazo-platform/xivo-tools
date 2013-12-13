@@ -78,6 +78,9 @@ def main():
         restapi_client.create_line(context=parsed_args.context,
                                    device_slot=parsed_args.device_slot)
 
+    if parsed_args.delete_user:
+        restapi_client.delete_user(parsed_args.user_id)
+
     if parsed_args.create_user:
         restapi_client.create_user(firstname=parsed_args.firstname,
                                    lastname=parsed_args.lastname)
@@ -110,6 +113,8 @@ def _parse_args():
     if args.delete_extension and not (args.extension or args.extension_id):
         parser.error('--delete-extension can only be used with --extension or --extension-id')
 
+    if args.delete_user and not args.user_id:
+        parser.error('--delete-user can only be used with --user-id')
     if args.create_user and not args.firstname:
         parser.error('--create-user can only be used with --firstname')
     if args.firstname and not args.create_user:
@@ -195,6 +200,10 @@ def _new_argument_parser():
                         action='store_true',
                         default=False,
                         help='Activate user creation. Default: %(default)s')
+    parser.add_argument('--delete-user',
+                        action='store_true',
+                        default=False,
+                        help='Delete user. Default: %(default)s')
     parser.add_argument('--firstname',
                         help='Firstname for user.')
     parser.add_argument('--lastname',
@@ -365,6 +374,9 @@ class RestAPIClient(object):
 
     def delete_line(self, line_id):
         self.request('DELETE', '/lines_sip/%d' % line_id)
+
+    def delete_user(self, user_id):
+        self.request('DELETE', '/users/%d' % user_id)
 
     def create_user(self, firstname, lastname):
         userinfo = {
