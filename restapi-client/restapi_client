@@ -89,9 +89,9 @@ def main():
         restapi_client.delete_user_lines(parsed_args.user_id)
 
     if parsed_args.associate_user_line:
-        user_ids = [int(u) for u in parsed_args.user_ids.split(',')]
+        user_id = parsed_args.user_id
         line_id = parsed_args.line_id
-        restapi_client.create_user_line(user_ids, line_id)
+        restapi_client.create_user_line(user_id, line_id)
 
     if parsed_args.dissociate_line_extension:
         restapi_client.delete_line_extension(parsed_args.line_id)
@@ -131,8 +131,8 @@ def _parse_args():
     if args.dissociate_user_line and not args.user_id:
         parser.error('--dissociate-user-line can only be user with --user-id')
 
-    if args.associate_user_line and not (args.user_ids and args.line_id):
-        parser.error('--associate-user-line can only be used with --user-ids and --line-id')
+    if args.associate_user_line and not (args.user_id and args.line_id):
+        parser.error('--associate-user-line can only be used with --user-id and --line-id')
 
     if args.create_voicemail_link and not (args.user_id and args.voicemail_id):
         parser.error('--create-voicemail-link can only be used with --user-id and --voicemail-id')
@@ -228,8 +228,9 @@ def _new_argument_parser():
                         default=False,
                         help='dissociate a line from its extension. Default: %(default)s')
 
-    parser.add_argument('--user-ids',
-                        help='comma-seperated list of user_ids.')
+    parser.add_argument('--user-id',
+                        type=int,
+                        help='user-id for associations.')
     parser.add_argument('--line-id',
                         type=int,
                         help='line-id for associations.')
@@ -257,9 +258,6 @@ def _new_argument_parser():
                         default=False,
                         help='Unlink a user from his voicemail')
 
-    parser.add_argument('--user-id',
-                        type=int,
-                        help='user_id for voicemail link')
     parser.add_argument('--voicemail-id',
                         type=int,
                         help='voicemail_id for voicemail link')
@@ -387,12 +385,11 @@ class RestAPIClient(object):
         user = self.request('POST', '/users', userinfo)
         print user['id']
 
-    def create_user_line(self, user_ids, line_id):
-        for user_id in user_ids:
-            linkinfo = {
-                'line_id': line_id
-            }
-            self.request('POST', '/users/%d/lines' % user_id, linkinfo)
+    def create_user_line(self, user_id, line_id):
+        linkinfo = {
+            'line_id': line_id
+        }
+        self.request('POST', '/users/%d/lines' % user_id, linkinfo)
 
         line = self.request('GET', '/lines_sip/%d' % line_id)
         logging.info('Links created. Your provisioning number is %s', line['provisioning_extension'])
