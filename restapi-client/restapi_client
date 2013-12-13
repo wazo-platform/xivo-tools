@@ -61,8 +61,11 @@ def main():
         restapi_client.delete_voicemail_link(user_id=parsed_args.user_id)
 
     if parsed_args.delete_extension:
-        restapi_client.delete_extension(context=parsed_args.context,
-                                        exten=parsed_args.extension)
+        if parsed_args.extension_id:
+            restapi_client.delete_extension_id(parsed_args.extension_id)
+        else:
+            restapi_client.delete_extension(context=parsed_args.context,
+                                            exten=parsed_args.extension)
 
     if parsed_args.create_extension:
         restapi_client.create_extension(context=parsed_args.context,
@@ -104,8 +107,8 @@ def _parse_args():
 
     if args.create_extension and not args.extension:
         parser.error('--create-extension can only be used with --extension')
-    if args.delete_extension and not args.extension:
-        parser.error('--delete-extension can only be used with --extension')
+    if args.delete_extension and not (args.extension or args.extension_id):
+        parser.error('--delete-extension can only be used with --extension or --extension-id')
 
     if args.create_user and not args.firstname:
         parser.error('--create-user can only be used with --firstname')
@@ -347,6 +350,9 @@ class RestAPIClient(object):
 
         for extension in found:
             self.request('DELETE', '/extensions/%s' % extension['id'])
+
+    def delete_extension_id(self, extension_id):
+        self.request('DELETE', '/extensions/%d' % extension_id)
 
     def create_line(self, context, device_slot):
         lineinfo = {
