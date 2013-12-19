@@ -5,7 +5,7 @@ import json
 from pprint import pprint
 
 
-URL = 'https://skaro-rc.lan-quebec.avencall.com:50051/1.1'
+URL = 'https://xivo-test.lan-quebec.avencall.com:50051/1.1'
 USERNAME = 'admin'
 PASSWORD = 'proformatique'
 

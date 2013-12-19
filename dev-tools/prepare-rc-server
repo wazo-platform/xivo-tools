@@ -8,7 +8,7 @@ from fabric.decorators import hosts
 from fabric.tasks import execute
 
 KVM_HOST = "root@kvm-2-dev"
-SKARO_RC_HOST = "root@skaro-rc"
+SKARO_RC_HOST = "root@xivo-test"
 FARM_HOST = "root@squeeze-farm.xivo.fr"
 MIRROR_HOST = "root@mirror.xivo.fr"
 
@@ -33,7 +33,7 @@ def freeze(previous, release):
 def stop_skaro_rc():
     with hide('stdout'):
         with settings(ok_ret_codes=[0, 1]):
-            run('virsh shutdown skaro-rc')
+            run('virsh shutdown xivo-test')
 
     while _is_skaro_rc_up():
         time.sleep(1)
@@ -70,7 +70,7 @@ def clear_confgen_cache():
 
 @hosts(MIRROR_HOST)
 def synchronize_mirrors():
-    run('./update_squeeze_skaro-rc')
+    run('./update_xivo-test')
 
 
 @hosts(SKARO_RC_HOST)

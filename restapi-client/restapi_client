@@ -151,7 +151,7 @@ def _new_argument_parser():
                         default=False,
                         help='Activate debug message. Default: %(default)s')
     parser.add_argument('--hostname',
-                        default='skaro-rc.lan-quebec.avencall.com',
+                        default='xivo-test.lan-quebec.avencall.com',
                         help='XIVO server hostname. you can also export HOST as an environment variable')
     parser.add_argument('--protocol-version',
                         default=1.1,
