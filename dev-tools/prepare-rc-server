@@ -70,7 +70,7 @@ def clear_confgen_cache():
 
 @hosts(MIRROR_HOST)
 def synchronize_mirrors():
-    run('./update_xivo-test')
+    run('./update_xivo-rc')
 
 
 @hosts(SKARO_RC_HOST)
