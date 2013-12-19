@@ -101,8 +101,8 @@ def get_transifex_infos():
 
     config = ConfigParser()
     config.read(config_path)
-    username = config.get('https://www.transifex.net', 'username')
-    password = config.get('https://www.transifex.net', 'password')
+    username = config.get('https://www.transifex.com', 'username')
+    password = config.get('https://www.transifex.com', 'password')
 
     return username, password
 
