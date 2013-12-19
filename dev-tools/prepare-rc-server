@@ -33,7 +33,7 @@ def freeze(previous, release):
 def stop_skaro_rc():
     with hide('stdout'):
         with settings(ok_ret_codes=[0, 1]):
-            run('virsh shutdown xivo-test')
+            run('virsh shutdown skaro-rc')
 
     while _is_skaro_rc_up():
         time.sleep(1)
