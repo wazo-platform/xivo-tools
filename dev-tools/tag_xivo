@@ -46,14 +46,14 @@ get_answer() {
 
 create_build_cmd() {
     local version=$1
-    local cmd="$git tag -s squeeze-xivo-skaro-$version -m squeeze-xivo-skaro-$version"
+    local cmd="$git tag -s xivo-$version -m xivo-$version"
     echo $cmd
 }
 
 create_tag() {
     for dir in $directories; do
         cd $dir
-        lasttag=$(git tag | grep squeeze-xivo-skaro-$version)
+        lasttag=$(git tag | grep xivo-$version)
         if [ -z $lasttag ]; then
             cmd=$(create_build_cmd $version)
             $cmd || exit 1
