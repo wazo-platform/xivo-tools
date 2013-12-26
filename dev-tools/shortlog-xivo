@@ -5,6 +5,7 @@ GIT_DIRECTORIES="\
     squeeze-xivo-skaro \
     xivo-agent \
     xivo-agid \
+    xivo-amid \
     xivo-backup \
     xivo-bus \
     xivo-call-logs \
