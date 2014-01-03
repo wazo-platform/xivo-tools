@@ -1,7 +1,9 @@
 xivo-acceptance
 xivo-agent
 xivo-agid
+xivo-amid
 xivo-backup
+xivo-bus
 xivo-callgen
 xivo-client-qt
 xivo-confgen
