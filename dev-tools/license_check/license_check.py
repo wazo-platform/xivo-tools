@@ -51,10 +51,12 @@ LICENSE_HEADER = """# Copyright (C) %(year)s Avencall
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 """
 
+
 def add_license_file(repopath):
     licensepath = os.path.join(repopath, LICENSE_FILE_NAME)
     if not os.path.exists(licensepath):
         shutil.copyfile(LICENSE_FILE_PATH, licensepath)
+
 
 def find_all_python_files(repopath, exclude):
     python_files = []
@@ -63,6 +65,7 @@ def find_all_python_files(repopath, exclude):
             if filename.endswith(".py") and filename not in exclude:
                 python_files.append(os.path.join(path, filename))
     return python_files
+
 
 def add_headers(filepath):
     with open(filepath) as pyfile:
@@ -87,11 +90,13 @@ def add_headers(filepath):
 
     tmpfile.close()
 
+
 def remove_encoding(contents):
     contents = contents.lstrip()
     contents = ENCODING_REGEX.sub("", contents, count=1)
     contents = contents.lstrip()
     return contents
+
 
 def chop_shebang(contents):
     contents = contents.lstrip()
@@ -101,6 +106,7 @@ def chop_shebang(contents):
 
     return contents, None
 
+
 def chop_copyright(contents):
     contents = contents.lstrip()
     contents, copyright = chop_commented_license(contents)
@@ -109,6 +115,7 @@ def chop_copyright(contents):
         contents, copyright = chop_variable_license(contents)
 
     return contents, copyright
+
 
 def chop_commented_license(contents):
     reader = StringIO(contents)
@@ -127,6 +134,7 @@ def chop_commented_license(contents):
 
     return contents, None
 
+
 def chop_variable_license(contents):
     contents = contents.lstrip()
 
@@ -137,6 +145,7 @@ def chop_variable_license(contents):
         return contents, license
 
     return contents, None
+
 
 def revise_copyright_year(copyright=None):
     current_year = datetime.datetime.now().year
@@ -158,6 +167,7 @@ def revise_copyright_year(copyright=None):
     else:
         return "%s-%s" % (min_year, max_year)
 
+
 def file_with_headers(contents, year, shebang=None):
     tmpfile = tempfile.TemporaryFile()
 
@@ -172,11 +182,13 @@ def file_with_headers(contents, year, shebang=None):
 
     return tmpfile
 
+
 def has_copyright(lines):
     for line in lines:
         if COPYRIGHT_REGEX.match(line):
             return True
     return False
+
 
 def read_filelist(path):
     with open(path) as reader:
