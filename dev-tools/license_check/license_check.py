@@ -82,6 +82,7 @@ def add_headers(filepath):
     year = revise_copyright_year(copyright)
 
     contents = contents.lstrip()
+    contents = contents.rstrip()
 
     tmpfile = file_with_headers(contents, year, shebang)
 
@@ -176,8 +177,12 @@ def file_with_headers(contents, year, shebang=None):
 
     tmpfile.write('%s\n\n' % ENCODING_LINE)
     tmpfile.write(LICENSE_HEADER % {'year': year})
-    tmpfile.write('\n')
-    tmpfile.write(contents)
+    if contents:
+        tmpfile.write('\n')
+        if contents.startswith('def') or contents.startswith('class'):
+            tmpfile.write('\n')
+        tmpfile.write(contents)
+        tmpfile.write('\n')
     tmpfile.seek(0)
 
     return tmpfile
