@@ -31,6 +31,7 @@ LICENSE_FILE_NAME = 'LICENSE'
 
 ENCODING_LINE = '# -*- coding: utf-8 -*-'
 ENCODING_REGEX = re.compile(r'^# -\*- coding:(.*)-\*-')
+VIM_ENCODING_REGEX = re.compile(r'# vim: set fileencoding=.* :')
 
 VARIABLE_LICENSE_REGEX = re.compile(r'__license__ += +("+)(.*?)(\1)\n', re.S)
 
@@ -95,6 +96,8 @@ def add_headers(filepath):
 def remove_encoding(contents):
     contents = contents.lstrip()
     contents = ENCODING_REGEX.sub("", contents, count=1)
+    contents = contents.lstrip()
+    contents = VIM_ENCODING_REGEX.sub("", contents, count=1)
     contents = contents.lstrip()
     return contents
 
