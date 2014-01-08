@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2010-2013 Avencall
+# Copyright (C) 2010-2014 Avencall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -147,4 +147,3 @@ if __name__ == '__main__':
 
 	if not phonebook_export(args[0], options):
 		sys.exit(1)
-
