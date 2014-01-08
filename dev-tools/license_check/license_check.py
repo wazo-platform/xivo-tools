@@ -126,7 +126,7 @@ def chop_commented_license(contents):
 
     comments = []
     line = reader.readline()
-    while line and line.startswith('#'):
+    while line.startswith('#') or line == '\n' and not has_copyright(comments):
         comments.append(line)
         line = reader.readline()
 
