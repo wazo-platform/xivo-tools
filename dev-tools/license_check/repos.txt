@@ -19,8 +19,10 @@ xivo-lib-python
 xivo-libsccp
 xivo-loadtest
 xivo-presentations
+xivo-provd-plugins
 xivo-provd-plugins-addons
 xivo-provisioning
+xivo-restapi
 xivo-skaro
 xivo-stat
 xivo-tools
