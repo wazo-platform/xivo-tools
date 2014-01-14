@@ -1,0 +1,60 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
+import subprocess
+import sys
+
+
+class DPKGVersionCompareException(Exception):
+    pass
+
+
+def _dpkg_compare_versions(version1, op, version2):
+    return_code = subprocess.call(['dpkg', '--compare-versions', version1, op, version2])
+    if return_code == 2:
+        raise DPKGVersionCompareException("%r %s %r" % (version1, op, version2))
+    return return_code == 0
+
+
+def is_version_lesser(version, reference_version):
+    return _dpkg_compare_versions(version, 'lt', reference_version)
+
+
+def is_version_equal(version, reference_version):
+    return _dpkg_compare_versions(version, 'eq', reference_version)
+
+
+def compare_versions(version, reference_version):
+    if is_version_lesser(version, reference_version):
+        return -1
+    elif is_version_equal(version, reference_version):
+        return 0
+    else:
+        return 1
+
+
+def sort_and_print_versions(versions):
+    sorted_versions = sorted(versions, cmp=compare_versions)
+    previous_version = sorted_versions[0]
+    print previous_version,
+    for version in sorted_versions[1:]:
+        if is_version_equal(version, previous_version):
+            print '<=',
+        else:
+            print '<',
+        previous_version = version
+        print version,
+    print
+
+
+def main():
+    versions = sys.argv[1:]
+    if not versions:
+        print >> sys.stderr, "Must give at least 1 version as argument"
+        raise SystemExit(1)
+    else:
+        sort_and_print_versions(versions)
+
+
+if __name__ == '__main__':
+    main()
