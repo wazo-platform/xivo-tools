@@ -18,6 +18,7 @@ xivo-lib-js
 xivo-lib-python
 xivo-libsccp
 xivo-loadtest
+xivo-manage-db
 xivo-presentations
 xivo-provd-plugins
 xivo-provd-plugins-addons
