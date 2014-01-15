@@ -130,14 +130,14 @@ directories="$git_directory/asterisk11 \
              $git_directory/xivo-lib-js \
              $git_directory/xivo-lib-python \
              $git_directory/xivo-libsccp \
-             $git_directory/xivo-provisioning \
              $git_directory/xivo-monitoring \
+             $git_directory/xivo-provisioning \
              $git_directory/xivo-restapi \
              $git_directory/xivo-skaro \
              $git_directory/xivo-stat \
              $git_directory/xivo-sysconfd \
-             $git_directory/xivo-utils \
              $git_directory/xivo-upgrade \
+             $git_directory/xivo-utils \
              $git_directory/xivo-web-interface \
             "
 
