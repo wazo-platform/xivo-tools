@@ -38,7 +38,7 @@ rm -f ${DST_FILE}
 
 echo "VERSION" >> ${DST_FILE}
 echo "-------" >> ${DST_FILE}
-cat /usr/share/pf-xivo/XIVO-VERSION >> ${DST_FILE}
+cat /usr/share/*xivo/XIVO-VERSION >> ${DST_FILE}
 echo "" >> ${DST_FILE}
 
 echo "SYSTEM" >> ${DST_FILE}

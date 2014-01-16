@@ -29,4 +29,4 @@ Running
 
 Example:
 
-   ./visualplan visualplan.log /usr/share/pf-xivo-base-config/dialplan/*
+   ./visualplan visualplan.log /usr/share/*xivo*-config/dialplan/*
