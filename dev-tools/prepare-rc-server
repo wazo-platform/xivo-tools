@@ -9,7 +9,7 @@ from fabric.tasks import execute
 
 KVM_HOST = "root@kvm-2-dev"
 SKARO_RC_HOST = "root@xivo-test"
-FARM_HOST = "root@squeeze-farm.xivo.fr"
+FARM_HOST = "root@wheezy-farm.xivo.fr"
 MIRROR_HOST = "root@mirror.xivo.fr"
 
 CONNECTION_ATTEMPTS = 20
