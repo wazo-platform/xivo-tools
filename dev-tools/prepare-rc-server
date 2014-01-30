@@ -49,7 +49,7 @@ def _is_skaro_rc_up():
 @hosts(KVM_HOST)
 def revert_snapshot(version):
     with hide('stdout'):
-        run('virsh snapshot-revert --force skaro-rc skaro-rc_%s' % version)
+        run('virsh snapshot-revert --force skaro-rc %s' % version)
 
 
 @hosts(KVM_HOST)
