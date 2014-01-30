@@ -2,7 +2,11 @@
 
 GIT_DIRECTORIES="\
     asterisk11 \
-    squeeze-xivo-skaro \
+    bntools \
+    dahdi-linux \
+    dahdi-tools \
+    libpri \
+    xivo \
     xivo-agent \
     xivo-agid \
     xivo-amid \
@@ -18,10 +22,10 @@ GIT_DIRECTORIES="\
     xivo-lib-js \
     xivo-lib-python \
     xivo-libsccp \
+    xivo-manage-db \
     xivo-monitoring \
     xivo-provisioning \
     xivo-restapi \
-    xivo-skaro \
     xivo-stat \
     xivo-sysconfd \
     xivo-upgrade \
@@ -60,7 +64,7 @@ print_shortlog() {
 }
 
 # normal repositories
-tag_name="squeeze-xivo-skaro-$version"
+tag_name="xivo-$version"
 
 for git_directory in $GIT_DIRECTORIES; do
     cd "$git_directory"
