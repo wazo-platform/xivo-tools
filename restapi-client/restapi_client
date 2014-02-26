@@ -99,6 +99,9 @@ def main():
     if parsed_args.associate_line_extension:
         restapi_client.create_line_extension(parsed_args.line_id, parsed_args.extension_id)
 
+    if parsed_args.autoprov:
+        restapi_client.reset_to_autoprov(parsed_args.device_id)
+
     if parsed_args.synchronize:
         restapi_client.synchronize(parsed_args.device_id)
 
@@ -124,6 +127,8 @@ def _parse_args():
         parser.error('--synchronize can only be used with --device-id')
     if args.device_id and not args.synchronize:
         parser.error('--device-id can only be used with --synchronize')
+    if args.autoprov and not args.device_id:
+        parser.error('--autoprov can only be user with --device-id')
 
     if args.delete_line and not args.line_id:
         parser.error('--delete-line can only be used with --line-id')
@@ -266,6 +271,10 @@ def _new_argument_parser():
                         action='store_true',
                         default=False,
                         help='Send synchronize message. Default: %(default)s')
+    parser.add_argument('--autoprov',
+                        action='store_true',
+                        default=False,
+                        help='Reset device to autoprov.')
     parser.add_argument('--device-id',
                         help='device-id used for synchronize.')
 
@@ -421,6 +430,9 @@ class RestAPIClient(object):
 
     def synchronize(self, device_id):
         self.request('GET', '/devices/%s/synchronize' % device_id)
+
+    def reset_to_autoprov(self, device_id):
+        self.request('GET', '/devices/%s/autoprov' % device_id)
 
     def create_voicemail(self, number, context, name=None):
         logging.debug('Creating voicemail %s@%s' % (number, context))
