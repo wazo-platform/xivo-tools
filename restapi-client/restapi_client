@@ -458,7 +458,7 @@ class RestAPIClient(object):
 
     def delete_voicemail_link(self, user_id):
         self.request('DELETE', '/users/%d/voicemail' % user_id)
-        logging.info('Link between User %d and voicemail deleted')
+        logging.info('Link between User %d and voicemail deleted', user_id)
 
 
 if __name__ == '__main__':
