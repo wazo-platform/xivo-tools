@@ -63,12 +63,12 @@ def compare_databases(database, pre_migration_script, gitroot, apgdiff):
 
 
 def path_for_install_script(gitroot, database):
-    path = os.path.join(gitroot, 'xivo-manage-db', 'xivo-manage-db', 'datastorage', '%s.sql' % database)
+    path = os.path.join(gitroot, 'xivo-manage-db', 'datastorage', '%s.sql' % database)
     return path
 
 
 def path_for_migration_scripts(gitroot):
-    path = os.path.join(gitroot, 'xivo-manage-db', 'xivo-manage-db', 'migration')
+    path = os.path.join(gitroot, 'xivo-manage-db', 'migration')
     return path
 
 
