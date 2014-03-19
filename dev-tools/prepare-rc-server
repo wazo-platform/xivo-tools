@@ -8,7 +8,7 @@ from fabric.decorators import hosts
 from fabric.tasks import execute
 
 KVM_HOST = "root@kvm-2-dev"
-SKARO_RC_HOST = "root@xivo-test"
+XIVO_TEST_HOST = "root@xivo-test"
 FARM_HOST = "root@wheezy-farm.xivo.fr"
 MIRROR_HOST = "root@mirror.xivo.fr"
 
@@ -16,13 +16,13 @@ CONNECTION_ATTEMPTS = 20
 
 
 def freeze(previous, release):
-    execute(stop_skaro_rc)
+    execute(stop_xivo_test)
     execute(revert_snapshot, previous)
-    execute(start_skaro_rc)
+    execute(start_xivo_test)
     execute(build_packages)
     execute(synchronize_mirrors)
     execute(clear_confgen_cache)
-    execute(upgrade_skaro_rc)
+    execute(upgrade_xivo_test)
 
     print
     print "RC is ready !"
@@ -30,31 +30,31 @@ def freeze(previous, release):
 
 
 @hosts(KVM_HOST)
-def stop_skaro_rc():
+def stop_xivo_test():
     with hide('stdout'):
         with settings(ok_ret_codes=[0, 1]):
-            run('virsh shutdown skaro-rc')
+            run('virsh shutdown xivo-test')
 
-    while _is_skaro_rc_up():
+    while _is_xivo_test_up():
         time.sleep(1)
 
 
-def _is_skaro_rc_up():
+def _is_xivo_test_up():
     with settings(ok_ret_codes=[0, 1]):
         with hide('running', 'stdout'):
-            output = run('virsh list | grep skaro-rc')
+            output = run('virsh list | grep xivo-test')
     return output.return_code == 0
 
 
 @hosts(KVM_HOST)
 def revert_snapshot(version):
     with hide('stdout'):
-        run('virsh snapshot-revert --force skaro-rc %s' % version)
+        run('virsh snapshot-revert --force xivo-test %s' % version)
 
 
 @hosts(KVM_HOST)
-def start_skaro_rc():
-    run('virsh start skaro-rc')
+def start_xivo_test():
+    run('virsh start xivo-test')
 
 
 @hosts(FARM_HOST)
@@ -62,7 +62,7 @@ def build_packages():
     run('packaging-farm --cd skaro rebuild')
 
 
-@hosts(SKARO_RC_HOST)
+@hosts(XIVO_TEST_HOST)
 def clear_confgen_cache():
     with settings(connection_attempts=CONNECTION_ATTEMPTS):
         run('rm -f /var/lib/xivo-confgend/asterisk/*')
@@ -73,8 +73,8 @@ def synchronize_mirrors():
     run('./update_xivo-rc')
 
 
-@hosts(SKARO_RC_HOST)
-def upgrade_skaro_rc():
+@hosts(XIVO_TEST_HOST)
+def upgrade_xivo_test():
     run('xivo-upgrade -f')
 
 
