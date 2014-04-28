@@ -17,6 +17,8 @@ def main():
     pg_install_srv = pg_mgr.install_service()
     dev_mgr = provd_client.device_manager()
 
+    installed_plugins = pg_install_srv.installed()
+
     # find all Aastra devices
     aastra_devices = dev_mgr.find({'plugin': 'xivo-aastra-switchboard'})
 
@@ -25,7 +27,8 @@ def main():
 
     # if no devices found, exit
     if not aastra_devices and not snom_devices:
-        print 'Nothing to do. Exiting.'
+        print 'No switchboard devices found.'
+        uninstall_old_plugins(pg_install_srv, installed_plugins)
         sys.exit(0)
 
     print 'Found %s devices using the xivo-aastra-switchboard plugin.' % len(aastra_devices)
@@ -50,7 +53,6 @@ def main():
             sys.exit(1)
 
         # install or upgrade the plugin
-        installed_plugins = pg_install_srv.installed()
         if aastra_plugin_name in installed_plugins:
             upgrade_pkg(pg_install_srv, aastra_plugin_name, 'Upgrading the %s plugin...' % aastra_plugin_name)
         else:
@@ -92,7 +94,6 @@ def main():
             sys.exit(1)
 
         # install or upgrade the plugin
-        installed_plugins = pg_install_srv.installed()
         if snom_plugin_name in installed_plugins:
             upgrade_pkg(pg_install_srv, snom_plugin_name, 'Upgrading the %s plugin...' % snom_plugin_name)
         else:
@@ -133,11 +134,14 @@ def main():
     for device in chain(aastra_devices, snom_devices):
         sync_dev(dev_mgr, device, 'Synchronizing device %s...' % (device.get(u'mac', 'unknown')))
 
-    # uninstall the old plugins
-    if aastra_devices:
+    uninstall_old_plugins(pg_install_srv, installed_plugins)
+
+
+def uninstall_old_plugins(pg_install_srv, installed_plugins):
+    if 'xivo-aastra-switchboard' in installed_plugins:
         print 'Uninstalling xivo-aastra-switchboard plugin...'
         pg_install_srv.uninstall('xivo-aastra-switchboard')
-    if snom_devices:
+    if 'xivo-snom-switchboard' in installed_plugins:
         print 'Uninstalling xivo-snom-switchboard plugin...'
         pg_install_srv.uninstall('xivo-snom-switchboard')
 
