@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import StringIO
 import argparse
 import logging
 import os
@@ -74,8 +75,8 @@ def path_for_migration_scripts(gitroot):
 
 def generate_install_schema(database, install_script):
     logging.info("generating installation schema for %s", database)
-    reset_database(database)
-    run_script(database, install_script)
+    delete_database(database)
+    run_script(install_script)
 
     filepath = INSTALLED_SCHEMA % database
     extract_database_schema(database, filepath)
@@ -84,39 +85,58 @@ def generate_install_schema(database, install_script):
 
 def generate_migrated_schema(database, pre_migration_script, migration_folder):
     logging.info("generating migration schema for %s", database)
-    reset_database(database)
-    run_script(database, pre_migration_script)
+    user = database
+
+    delete_database(database)
+    create_database(database, user)
+    run_script(pre_migration_script, user=user, database=database)
 
     migration_files = find_migration_files(migration_folder, database)
     for migration_file in migration_files:
-        run_script(database, migration_file)
+        run_script(migration_file, user=user, database=database)
 
     filepath = MIGRATED_SCHEMA % database
     extract_database_schema(database, filepath)
     return filepath
 
 
-def reset_database(database):
-    logging.info("resetting database %s", database)
-    delete_database(database)
-    create_database(database, database)
-
-
 def delete_database(db_name):
+    logging.info("deleting database %s", db_name)
     with sh.sudo(u=POSTGRES_USER, _with=True):
         sql = 'DROP DATABASE IF EXISTS %s;' % db_name
         sh.psql('-c', sql)
 
 
 def create_database(db_name, db_user):
+    logging.info("creating database %s", db_name)
     with sh.sudo(u=POSTGRES_USER, _with=True):
         sh.createdb('-E', 'utf8', '-O', db_user, db_name)
 
 
-def run_script(database, filepath):
+def run_script(filepath, user=None, database=None):
     logging.info("running script %s", filepath)
+    error_buffer = StringIO.StringIO()
+
+    options = {'f': filepath, '_err': error_buffer}
+    if user:
+        options['U'] = user
+    if database:
+        options['d'] = database
+
     with sh.sudo(u=POSTGRES_USER, _with=True):
-        sh.psql('-U', database, database, '-f', filepath)
+        sh.psql(**options)
+
+    errors = filter_errors(error_buffer)
+    if errors:
+        logging.error("error while executing %s: %s", filepath, errors)
+
+
+def filter_errors(error_buffer):
+    output = error_buffer.getvalue()
+    errors = '\n'.join(line
+                       for line in output.splitlines()
+                       if 'NOTICE' not in line)
+    return errors
 
 
 def extract_database_schema(database, filepath):
