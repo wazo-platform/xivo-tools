@@ -2171,7 +2171,6 @@ CREATE TABLE "useriax" (
  "ipaddr" varchar(255) NOT NULL DEFAULT '',
  "regseconds" INTEGER NOT NULL DEFAULT 0,
  "immediate" INTEGER DEFAULT NULL, -- BOOLEAN
- "keyrotate" INTEGER DEFAULT NULL, -- BOOLEAN
  "parkinglot" INTEGER DEFAULT NULL,
  "protocol" varchar(15) NOT NULL DEFAULT 'iax' CHECK (protocol = 'iax'), -- ENUM
  "category" useriax_category NOT NULL,
