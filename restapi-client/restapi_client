@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
-#
-# Copyright (C) 2013 Avencall
+# -*- coding: utf-8 -*-
+
+# Copyright (C) 2014 Avencall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,450 +16,232 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from __future__ import unicode_literals
-
-import os
+import click as c
+import logging
 import requests
 import json
-import argparse
-import logging
+import sys
 
-logging.basicConfig(level=logging.INFO)
-logging.getLogger('requests').setLevel(logging.WARN)
+restapi = None
 
 
-def main():
-    parsed_args = _parse_args()
+class RestApi(object):
 
-    if parsed_args.debug:
-        logging.getLogger().setLevel(logging.DEBUG)
-        logging.debug('Debug mode enabled.')
+    @classmethod
+    def from_options(cls, host, port, username, password):
+        url = "https://%s:%d/1.1" % (host, port)
+        return cls(url, username, password)
 
-    hostname = os.environ.get('HOST', parsed_args.hostname)
+    def __init__(self, base_url, username, password):
+        self.base_url = base_url
+        self.session = requests.Session()
+        self.session.verify = False
+        self.session.auth = requests.auth.HTTPDigestAuth(username, password)
+        self.session.headers = {'Accept': 'application/json',
+                                'Content-Type': 'application/json'}
 
-    restapi_client = RestAPIClient(scheme=parsed_args.scheme,
-                                   hostname=hostname,
-                                   port=parsed_args.port,
-                                   protocol_version=parsed_args.protocol_version,
-                                   username=parsed_args.username,
-                                   password=parsed_args.password)
-    restapi_client.connect()
+    def __call__(self, method, url, **parameters):
+        full_url = self._build_url(url)
 
-    if parsed_args.create_voicemail:
-        restapi_client.create_voicemail(number=parsed_args.create_voicemail,
-                                        context=parsed_args.context,
-                                        name=parsed_args.voicemail_name)
+        logging.debug('parameters: %s', parameters)
+        parameters = json.dumps(parameters) if parameters else None
 
-    if parsed_args.delete_voicemail:
-        restapi_client.delete_voicemail(voicemail_id=parsed_args.delete_voicemail)
-
-    if parsed_args.create_voicemail_link:
-        restapi_client.create_voicemail_link(user_id=parsed_args.user_id,
-                                             voicemail_id=parsed_args.voicemail_id)
-
-    if parsed_args.delete_voicemail_link:
-        restapi_client.delete_voicemail_link(user_id=parsed_args.user_id)
-
-    if parsed_args.delete_extension:
-        if parsed_args.extension_id:
-            restapi_client.delete_extension_id(parsed_args.extension_id)
-        else:
-            restapi_client.delete_extension(context=parsed_args.context,
-                                            exten=parsed_args.extension)
-
-    if parsed_args.create_extension:
-        restapi_client.create_extension(context=parsed_args.context,
-                                        exten=parsed_args.extension)
-
-    if parsed_args.delete_line:
-        restapi_client.delete_line(parsed_args.line_id)
-
-    if parsed_args.create_line:
-        restapi_client.create_line(context=parsed_args.context,
-                                   device_slot=parsed_args.device_slot)
-
-    if parsed_args.delete_user:
-        restapi_client.delete_user(parsed_args.user_id)
-
-    if parsed_args.create_user:
-        restapi_client.create_user(firstname=parsed_args.firstname,
-                                   lastname=parsed_args.lastname)
-
-    if parsed_args.dissociate_user_line:
-        restapi_client.delete_user_lines(parsed_args.user_id)
-
-    if parsed_args.associate_user_line:
-        user_id = parsed_args.user_id
-        line_id = parsed_args.line_id
-        restapi_client.create_user_line(user_id, line_id)
-
-    if parsed_args.dissociate_line_extension:
-        restapi_client.delete_line_extension(parsed_args.line_id)
-
-    if parsed_args.associate_line_extension:
-        restapi_client.create_line_extension(parsed_args.line_id, parsed_args.extension_id)
-
-    if parsed_args.autoprov:
-        restapi_client.reset_to_autoprov(parsed_args.device_id)
-
-    if parsed_args.synchronize:
-        restapi_client.synchronize(parsed_args.device_id)
-
-
-def _parse_args():
-    parser = _new_argument_parser()
-
-    args = parser.parse_args()
-
-    if args.create_extension and not args.extension:
-        parser.error('--create-extension can only be used with --extension')
-    if args.delete_extension and not (args.extension or args.extension_id):
-        parser.error('--delete-extension can only be used with --extension or --extension-id')
-
-    if args.delete_user and not args.user_id:
-        parser.error('--delete-user can only be used with --user-id')
-    if args.create_user and not args.firstname:
-        parser.error('--create-user can only be used with --firstname')
-    if args.firstname and not args.create_user:
-        parser.error('--firstname can only be used with --create-user')
-
-    if args.synchronize and not args.device_id:
-        parser.error('--synchronize can only be used with --device-id')
-    if args.device_id and not args.synchronize:
-        parser.error('--device-id can only be used with --synchronize')
-    if args.autoprov and not args.device_id:
-        parser.error('--autoprov can only be user with --device-id')
-
-    if args.delete_line and not args.line_id:
-        parser.error('--delete-line can only be used with --line-id')
-
-    if args.dissociate_user_line and not args.user_id:
-        parser.error('--dissociate-user-line can only be user with --user-id')
-
-    if args.associate_user_line and not (args.user_id and args.line_id):
-        parser.error('--associate-user-line can only be used with --user-id and --line-id')
-
-    if args.create_voicemail_link and not (args.user_id and args.voicemail_id):
-        parser.error('--create-voicemail-link can only be used with --user-id and --voicemail-id')
-
-    if args.delete_voicemail_link and not args.user_id:
-        parser.error('--delete_voicemail_link can only be used with --user-id')
-
-    return args
-
-
-def _new_argument_parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-d',
-                        '--debug',
-                        action='store_true',
-                        default=False,
-                        help='Activate debug message. Default: %(default)s')
-    parser.add_argument('--hostname',
-                        default='xivo-test.lan-quebec.avencall.com',
-                        help='XIVO server hostname. you can also export HOST as an environment variable')
-    parser.add_argument('--protocol-version',
-                        default=1.1,
-                        help='XIVO RESTAPI protocol version. Default: %(default)s')
-    parser.add_argument('--scheme',
-                        default='https',
-                        help='XIVO RESTAPI scheme. Default: %(default)s')
-    parser.add_argument('--port',
-                        type=_port_number,
-                        default=50051,
-                        help='Listen on port <port> instead of %(default)s')
-    parser.add_argument('-u', '--username',
-                        default='admin',
-                        help='authentication username')
-    parser.add_argument('-p', '--password',
-                        default='proformatique',
-                        help='authentication password')
-
-    parser.add_argument('--create-extension',
-                        action='store_true',
-                        default=False,
-                        help='Activate extension creation. Default: %(default)s')
-    parser.add_argument('--delete-extension',
-                        action='store_true',
-                        default=False,
-                        help='Delete extension. Default: %(default)s')
-    parser.add_argument('--extension',
-                        help='Exten for extension.')
-    parser.add_argument('--context',
-                        default='default',
-                        help='Context for extension and line. Default: %(default)s')
-
-    parser.add_argument('--create-line',
-                        action='store_true',
-                        default=False,
-                        help='Activate line creation. Default: %(default)s')
-    parser.add_argument('--delete-line',
-                        action='store_true',
-                        default=False,
-                        help='Delete line. Default %(default)s')
-    parser.add_argument('--device-slot',
-                        default=1,
-                        help='Device slot for line. Default: %(default)s')
-
-    parser.add_argument('--create-user',
-                        action='store_true',
-                        default=False,
-                        help='Activate user creation. Default: %(default)s')
-    parser.add_argument('--delete-user',
-                        action='store_true',
-                        default=False,
-                        help='Delete user. Default: %(default)s')
-    parser.add_argument('--firstname',
-                        help='Firstname for user.')
-    parser.add_argument('--lastname',
-                        default='',
-                        help='Lastname for user. Default: %(default)s')
-
-    parser.add_argument('--associate-user-line',
-                        action='store_true',
-                        default=False,
-                        help='Associate a user with a line. Default: %(default)s')
-    parser.add_argument('--dissociate-user-line',
-                        action='store_true',
-                        default=False,
-                        help='dissociate all lines from a user. Default: %(default)s')
-
-    parser.add_argument('--associate-line-extension',
-                        action='store_true',
-                        default=False,
-                        help='Associate a line with an extension. Default: %(default)s')
-    parser.add_argument('--dissociate-line-extension',
-                        action='store_true',
-                        default=False,
-                        help='dissociate a line from its extension. Default: %(default)s')
-
-    parser.add_argument('--user-id',
-                        type=int,
-                        help='user-id for associations.')
-    parser.add_argument('--line-id',
-                        type=int,
-                        help='line-id for associations.')
-    parser.add_argument('--extension-id',
-                        type=int,
-                        help='extension-id for associations.')
-
-    parser.add_argument('--create-voicemail',
-                        metavar='VOICEMAIL_NUMBER',
-                        help='Create a voicemail.')
-    parser.add_argument('--delete-voicemail',
-                        metavar='VOICEMAIL_ID',
-                        help='Delete a voicemail.')
-    parser.add_argument('--voicemail-name',
-                        help='Voicemail name',
-                        default=None)
-
-    parser.add_argument('--create-voicemail-link',
-                        action='store_true',
-                        default=False,
-                        help='Link a user with a voicemail')
-
-    parser.add_argument('--delete-voicemail-link',
-                        action='store_true',
-                        default=False,
-                        help='Unlink a user from his voicemail')
-
-    parser.add_argument('--voicemail-id',
-                        type=int,
-                        help='voicemail_id for voicemail link')
-
-    parser.add_argument('--synchronize',
-                        action='store_true',
-                        default=False,
-                        help='Send synchronize message. Default: %(default)s')
-    parser.add_argument('--autoprov',
-                        action='store_true',
-                        default=False,
-                        help='Reset device to autoprov.')
-    parser.add_argument('--device-id',
-                        help='device-id used for synchronize.')
-
-    return parser
-
-
-def _port_number(value):
-    try:
-        port = int(value)
-    except ValueError:
-        raise argparse.ArgumentTypeError('%r is not a valid port number' % value)
-    if port < 1 or port > 65535:
-        raise argparse.ArgumentTypeError('%r is not a valid port number' % value)
-    return port
-
-
-class RestAPIClient(object):
-
-    def __init__(self, scheme, hostname, port, protocol_version, username, password):
-        self._url = None
-        self._hostname = hostname
-        self._username = username
-        self._password = password
-        self._session = None
-        self._extension = None
-        self._line = None
-        self._users = []
-
-        self._build_url(scheme, hostname, port, protocol_version)
-
-    def _build_url(self, scheme, hostname, port, protocol_version):
-        self._url = '%s://%s:%s/%s' % (scheme, hostname, port, protocol_version)
-
-    def connect(self):
-        logging.debug('Connecting to %s', self._hostname)
-
-        auth = requests.auth.HTTPDigestAuth(self._username, self._password)
-        headers = {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-
-        self._session = requests.Session()
-        self._session.auth = auth
-        self._session.headers = headers
-        self._session.verify = False
-
-    def disconnect(self):
-        logging.debug('Disconnecting from %s', self._hostname)
-
-    def request(self, method, url, parameters=None):
-        url = url.lstrip('/')
-        full_url = '%s/%s' % (self._url, url)
-        logging.debug('request: %s %s', method.upper(), full_url)
-
-        if parameters:
-            logging.debug('parameters: %s', parameters)
-            parameters = json.dumps(parameters)
-
-        response = self._session.request(method, full_url, data=parameters)
+        response = self.session.request(method, full_url, data=parameters)
         self._check_status(response)
+        return self._decode_response(response)
 
-        if len(response.text) > 0:
-            received = response.json()
-        else:
-            received = ''
-
-        logging.debug('response: %s', received)
-        return received
+    def _build_url(self, url):
+        return '/'.join((self.base_url, url.lstrip('/')))
 
     def _check_status(self, response):
         if response.status_code >= 300:
-            raise Exception('STATUS %s. %s' % (response.status_code, response.text))
-        return response
+            logging.error('status: %d. response: %s', response.status_code, response.text)
+            sys.exit(1)
 
-    def create_extension(self, exten, context):
-        exteninfo = {
-            'exten': exten,
-            'context': context
-        }
+    def _decode_response(self, response):
+        decoded = response.json() if response.text else ''
+        logging.debug('response: %s', decoded)
+        return decoded
 
-        extension = self.request('POST', '/extensions', exteninfo)
-        print extension['id']
 
-    def delete_extension(self, exten, context):
-        result = self.request('GET', '/extensions')
-        extensions = result['items']
-        found = [e for e in extensions if e['exten'] == exten and e['context'] == context]
+@c.group()
+@c.option('--debug', '-d', default=False, is_flag=True)
+@c.option('--host', '-H', default='xivo-test', envvar='HOST')
+@c.option('--port', '-p', default=50051, envvar='PORT', type=c.INT)
+@c.option('--username', '-u', default='admin', envvar='USERNAME')
+@c.option('--password', '-P', default='proformatique', envvar='PASSWORD')
+def cli(debug, host, port, username, password):
+    level = logging.DEBUG if debug else logging.INFO
+    logging.basicConfig(level=level)
 
-        for extension in found:
-            self.request('DELETE', '/extensions/%s' % extension['id'])
+    logging.debug("host: %s, port: %d, username: %s, password: %s", host, port, username, password)
+    global restapi
+    restapi = RestApi.from_options(host, port, username, password)
 
-    def delete_extension_id(self, extension_id):
-        self.request('DELETE', '/extensions/%d' % extension_id)
 
-    def create_line(self, context, device_slot):
-        lineinfo = {
-            'context': context,
-            'device_slot': device_slot
-        }
+@c.command('extension')
+@c.argument('exten')
+@c.option('--context', default='default')
+def create_extension(exten, context):
+    logging.debug('creating extension %s@%s', exten, context)
+    extension = restapi('POST', '/extensions', exten=exten, context=context)
+    c.echo(extension['id'])
 
-        line = self.request('POST', '/lines_sip', lineinfo)
-        print line['id']
 
-    def delete_line(self, line_id):
-        self.request('DELETE', '/lines_sip/%d' % line_id)
+@c.command('line')
+@c.option('--context', default='default')
+@c.option('--slot', default=1, type=c.INT)
+def create_line(context, slot):
+    logging.debug('creating line (context: %s, slot: %d)', context, slot)
+    line = restapi('POST', '/lines_sip', context=context, device_slot=slot)
+    c.echo(line['id'])
 
-    def delete_user(self, user_id):
-        self.request('DELETE', '/users/%d' % user_id)
 
-    def create_user(self, firstname, lastname):
-        userinfo = {
-            'firstname': firstname,
-            'lastname': lastname
-        }
+@c.command('user')
+@c.argument('name', nargs=-1)
+def create_user(name):
+    firstname, lastname = name[0], ' '.join(name[1:])
+    logging.debug('creating user %s %s', firstname, lastname)
 
-        user = self.request('POST', '/users', userinfo)
-        print user['id']
+    user = restapi('POST', '/users', firstname=firstname, lastname=lastname)
+    c.echo(user['id'])
 
-    def create_user_line(self, user_id, line_id):
-        linkinfo = {
-            'line_id': line_id
-        }
-        self.request('POST', '/users/%d/lines' % user_id, linkinfo)
 
-        line = self.request('GET', '/lines_sip/%d' % line_id)
-        logging.info('Links created. Your provisioning number is %s', line['provisioning_extension'])
+@c.command('voicemail')
+@c.argument('number')
+@c.option('--context', default='default')
+@c.option('--name')
+def create_voicemail(number, context, name=None):
+    logging.debug('creating voicemail %s@%s (name: %s)', number, context, name)
+    voicemail = restapi('POST', '/voicemails', number=number, name=name, context=context)
+    c.echo(voicemail['id'])
 
-    def delete_user_lines(self, user_id):
-        user_lines = self._lines_for_user(user_id)
 
-        for user_line in user_lines:
-            self._delete_user_line(user_line)
+@c.command('extension')
+@c.argument('extension_id', type=c.INT)
+def delete_extension(extension_id):
+    logging.debug('deleting extension id %d', extension_id)
+    restapi('DELETE', '/extensions/%d' % extension_id)
 
-    def _lines_for_user(self, user_id):
-        response = self.request('GET', '/users/%d/lines' % user_id)
-        return response['items']
 
-    def _delete_user_line(self, user_line):
-        self.request('DELETE', '/users/%d/lines/%d' % (user_line['user_id'], user_line['line_id']))
+@c.command('line')
+@c.argument('line_id', type=c.INT)
+def delete_line(line_id):
+    logging.debug('deleting line id %d', line_id)
+    restapi('DELETE', '/lines_sip/%d' % line_id)
 
-    def create_line_extension(self, line_id, extension_id):
-        info = {
-            'extension_id': extension_id
-        }
 
-        self.request('POST', '/lines/%d/extension' % line_id, info)
-        logging.info('Link created.')
+@c.command('user')
+@c.argument('user_id', type=c.INT)
+def delete_user(user_id):
+    logging.debug('deleting user id %d', user_id)
+    restapi('DELETE', '/users/%d' % user_id)
 
-    def delete_line_extension(self, line_id):
-        self.request('DELETE', '/lines/%d/extension' % line_id)
-        logging.info('Link deleted.')
 
-    def synchronize(self, device_id):
-        self.request('GET', '/devices/%s/synchronize' % device_id)
+@c.command('voicemail')
+@c.argument('voicemail_id', type=c.INT)
+def delete_voicemail(voicemail_id):
+    logging.debug('deleting voicemail id %d', voicemail_id)
+    restapi('DELETE', '/voicemails/%d' % voicemail_id)
 
-    def reset_to_autoprov(self, device_id):
-        self.request('GET', '/devices/%s/autoprov' % device_id)
 
-    def create_voicemail(self, number, context, name=None):
-        logging.debug('Creating voicemail %s@%s' % (number, context))
-        voicemail = {
-            'number': number,
-            'context': context,
-            'name': name,
-        }
+@c.command('line-extension')
+@c.argument('line_id', type=c.INT)
+@c.argument('extension_id', type=c.INT)
+def associate_line_extension(line_id, extension_id):
+    logging.info('associating line %d with extension %d', line_id, extension_id)
+    restapi('POST', '/lines/%d/extensions' % line_id, extension_id=extension_id)
 
-        response = self.request('POST', '/voicemails', voicemail)
-        print response['id']
 
-    def delete_voicemail(self, voicemail_id):
-        logging.info('Deleting voicemail with id %s' % voicemail_id)
+@c.command('user-line')
+@c.argument('user_id', type=c.INT)
+@c.argument('line_id', type=c.INT)
+def associate_user_line(user_id, line_id):
+    logging.info('associating user %d with line %d', user_id, line_id)
+    restapi('POST', '/users/%d/lines' % user_id, line_id=line_id)
 
-        self._check_status(self._session.delete('%s/voicemails/%s' % (self._url, voicemail_id)))
-        logging.info('Deleted voicemail with id %s' % voicemail_id)
 
-    def create_voicemail_link(self, user_id, voicemail_id):
-        link = {'voicemail_id': voicemail_id}
-        self.request('POST', '/users/%d/voicemail' % user_id, link)
-        logging.info('User %d linked with voicemail %d', user_id, voicemail_id)
+@c.command('user-voicemail')
+@c.argument('user_id', type=c.INT)
+@c.argument('voicemail_od', type=c.INT)
+def associate_user_voicemail(user_id, voicemail_id):
+    logging.info('associating user %d with voicemail %d', user_id, voicemail_id)
+    restapi('POST', '/users/%d/voicemail' % user_id, voicemail_id=voicemail_id)
 
-    def delete_voicemail_link(self, user_id):
-        self.request('DELETE', '/users/%d/voicemail' % user_id)
-        logging.info('Link between User %d and voicemail deleted', user_id)
+
+@c.command('line-extension')
+@c.argument('line_id', type=c.INT)
+@c.argument('extension_id', type=c.INT)
+def dissociate_line_extension(line_id, extension_id):
+    logging.info('dissociating line %d with extension %d', line_id, extension_id)
+    restapi('DELETE', '/lines/%d/extensions/%d' % (line_id, extension_id))
+
+
+@c.command('user-line')
+@c.argument('user_id', type=c.INT)
+@c.argument('line_id', type=c.INT)
+def dissociate_user_line(user_id, line_id):
+    logging.info('dissociating user %d with line %d', user_id, line_id)
+    restapi('DELETE', '/users/%d/lines/%d' % (user_id, line_id))
+
+
+@c.command('user-voicemail')
+@c.argument('user_id', type=c.INT)
+def dissociate_user_voicemail(user_id):
+    logging.info('dissociating user %d from voicemail', user_id)
+    restapi('DELETE', '/users/%d/voicemail' % user_id)
+
+
+@c.command('synchronize')
+@c.argument('device_id')
+def synchronize_device(device_id):
+    logging.info('synchronizing device %s', device_id)
+    restapi('GET', '/devices/%s/synchronize' % device_id)
+
+
+@c.command('autoprov')
+@c.argument('device_id')
+def autoprov_device(device_id):
+    logging.info('resetting device %s to autoprov', device_id)
+    restapi('GET', '/devices/%s/autoprov' % device_id)
+
+
+def build_parser():
+    create = c.Group('create')
+    create.add_command(create_extension)
+    create.add_command(create_line)
+    create.add_command(create_user)
+    create.add_command(create_voicemail)
+
+    delete = c.Group('delete')
+    delete.add_command(delete_extension)
+    delete.add_command(delete_line)
+    delete.add_command(delete_user)
+    delete.add_command(delete_voicemail)
+
+    associate = c.Group('associate')
+    associate.add_command(associate_line_extension)
+    associate.add_command(associate_user_line)
+    associate.add_command(associate_user_voicemail)
+
+    dissociate = c.Group('dissociate')
+    dissociate.add_command(dissociate_line_extension)
+    dissociate.add_command(dissociate_user_line)
+    dissociate.add_command(dissociate_user_voicemail)
+
+    device = c.Group('device')
+    device.add_command(synchronize_device)
+    device.add_command(autoprov_device)
+
+    cli.add_command(create)
+    cli.add_command(delete)
+    cli.add_command(associate)
+    cli.add_command(dissociate)
+    cli.add_command(device)
+
+    return cli
 
 
 if __name__ == '__main__':
-    main()
+    parser = build_parser()
+    parser()
