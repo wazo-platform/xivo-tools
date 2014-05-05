@@ -62,7 +62,7 @@ class RestApi(object):
             sys.exit(1)
 
     def _decode_response(self, response):
-        decoded = response.json() if response.text else ''
+        decoded = response.json() if response.text else None
         logging.debug('response: %s', decoded)
         return decoded
 
