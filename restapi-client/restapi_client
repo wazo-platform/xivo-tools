@@ -42,13 +42,16 @@ class RestApi(object):
 
     def __call__(self, method, url, **parameters):
         full_url = self._build_url(url)
-
-        logging.debug('parameters: %s', parameters)
-        parameters = json.dumps(parameters) if parameters else None
+        parameters = self._encode_parameters(parameters)
 
         response = self.session.request(method, full_url, data=parameters)
+
         self._check_status(response)
         return self._decode_response(response)
+
+    def _encode_parameters(self, parameters):
+        logging.debug('parameters: %s', parameters)
+        return json.dumps(parameters) if parameters else None
 
     def _build_url(self, url):
         return '/'.join((self.base_url, url.lstrip('/')))
