@@ -29,7 +29,7 @@ class RestApi(object):
 
     @classmethod
     def from_options(cls, host, port, username, password):
-        url = "https://%s:%d/1.1" % (host, port)
+        url = "https://{}:{}/1.1".format(host, port)
         return cls(url, username, password)
 
     def __init__(self, base_url, username, password):
@@ -58,7 +58,9 @@ class RestApi(object):
 
     def _check_status(self, response):
         if response.status_code >= 300:
-            logging.error('status: %d. response: %s', response.status_code, response.text)
+            logging.error('status: %d. response: %s',
+                          response.status_code,
+                          response.text)
             sys.exit(1)
 
     def _decode_response(self, response):
@@ -77,7 +79,8 @@ def cli(debug, host, port, username, password):
     level = logging.DEBUG if debug else logging.INFO
     logging.basicConfig(level=level)
 
-    logging.debug("host: %s, port: %d, username: %s, password: %s", host, port, username, password)
+    logging.debug("host: %s, port: %d, username: %s, password: %s", host, port,
+                  username, password)
     global restapi
     restapi = RestApi.from_options(host, port, username, password)
 
@@ -124,28 +127,28 @@ def create_voicemail(number, context, name=None):
 @c.argument('extension_id', type=c.INT)
 def delete_extension(extension_id):
     logging.debug('deleting extension id %d', extension_id)
-    restapi('DELETE', '/extensions/%d' % extension_id)
+    restapi('DELETE', '/extensions/{}'.format(extension_id))
 
 
 @c.command('line')
 @c.argument('line_id', type=c.INT)
 def delete_line(line_id):
     logging.debug('deleting line id %d', line_id)
-    restapi('DELETE', '/lines_sip/%d' % line_id)
+    restapi('DELETE', '/lines_sip/{}'.format(line_id))
 
 
 @c.command('user')
 @c.argument('user_id', type=c.INT)
 def delete_user(user_id):
     logging.debug('deleting user id %d', user_id)
-    restapi('DELETE', '/users/%d' % user_id)
+    restapi('DELETE', '/users/{}'.format(user_id))
 
 
 @c.command('voicemail')
 @c.argument('voicemail_id', type=c.INT)
 def delete_voicemail(voicemail_id):
     logging.debug('deleting voicemail id %d', voicemail_id)
-    restapi('DELETE', '/voicemails/%d' % voicemail_id)
+    restapi('DELETE', '/voicemails/{}'.format(voicemail_id))
 
 
 @c.command('line-extension')
@@ -153,7 +156,9 @@ def delete_voicemail(voicemail_id):
 @c.argument('extension_id', type=c.INT)
 def associate_line_extension(line_id, extension_id):
     logging.info('associating line %d with extension %d', line_id, extension_id)
-    restapi('POST', '/lines/%d/extensions' % line_id, extension_id=extension_id)
+
+    url = '/lines/{}/extensions'.format(line_id)
+    restapi('POST', url, extension_id=extension_id)
 
 
 @c.command('user-line')
@@ -161,7 +166,7 @@ def associate_line_extension(line_id, extension_id):
 @c.argument('line_id', type=c.INT)
 def associate_user_line(user_id, line_id):
     logging.info('associating user %d with line %d', user_id, line_id)
-    restapi('POST', '/users/%d/lines' % user_id, line_id=line_id)
+    restapi('POST', '/users/{}/lines'.format(user_id), line_id=line_id)
 
 
 @c.command('user-voicemail')
@@ -169,44 +174,46 @@ def associate_user_line(user_id, line_id):
 @c.argument('voicemail_od', type=c.INT)
 def associate_user_voicemail(user_id, voicemail_id):
     logging.info('associating user %d with voicemail %d', user_id, voicemail_id)
-    restapi('POST', '/users/%d/voicemail' % user_id, voicemail_id=voicemail_id)
+
+    url = '/users/{}/voicemail'.format(user_id)
+    restapi('POST', url, voicemail_id=voicemail_id)
 
 
 @c.command('line-extension')
 @c.argument('line_id', type=c.INT)
 @c.argument('extension_id', type=c.INT)
 def dissociate_line_extension(line_id, extension_id):
-    logging.info('dissociating line %d with extension %d', line_id, extension_id)
-    restapi('DELETE', '/lines/%d/extensions/%d' % (line_id, extension_id))
+    logging.info('dissociating line %d from extension %d', line_id, extension_id)
+    restapi('DELETE', '/lines/{}/extensions/{}'.format(line_id, extension_id))
 
 
 @c.command('user-line')
 @c.argument('user_id', type=c.INT)
 @c.argument('line_id', type=c.INT)
 def dissociate_user_line(user_id, line_id):
-    logging.info('dissociating user %d with line %d', user_id, line_id)
-    restapi('DELETE', '/users/%d/lines/%d' % (user_id, line_id))
+    logging.info('dissociating user %d from line %d', user_id, line_id)
+    restapi('DELETE', '/users/{}/lines/{}'.format(user_id, line_id))
 
 
 @c.command('user-voicemail')
 @c.argument('user_id', type=c.INT)
 def dissociate_user_voicemail(user_id):
     logging.info('dissociating user %d from voicemail', user_id)
-    restapi('DELETE', '/users/%d/voicemail' % user_id)
+    restapi('DELETE', '/users/{}/voicemail'.format(user_id))
 
 
 @c.command('synchronize')
 @c.argument('device_id')
 def synchronize_device(device_id):
     logging.info('synchronizing device %s', device_id)
-    restapi('GET', '/devices/%s/synchronize' % device_id)
+    restapi('GET', '/devices/%s/synchronize'.format(device_id))
 
 
 @c.command('autoprov')
 @c.argument('device_id')
 def autoprov_device(device_id):
     logging.info('resetting device %s to autoprov', device_id)
-    restapi('GET', '/devices/%s/autoprov' % device_id)
+    restapi('GET', '/devices/%s/autoprov'.format(device_id))
 
 
 def build_parser():
