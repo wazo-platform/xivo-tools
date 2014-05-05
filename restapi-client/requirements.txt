@@ -1,2 +1,2 @@
-click
+git+https://github.com/mitsuhiko/click.git
 requests
