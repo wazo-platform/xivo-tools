@@ -168,6 +168,9 @@ def associate_user_line(user_id, line_id):
     logging.info('associating user %d with line %d', user_id, line_id)
     restapi('POST', '/users/{}/lines'.format(user_id), line_id=line_id)
 
+    line = restapi('GET', '/lines_sip/{}'.format(line_id))
+    logging.info('Your provisioning number is %s', line['provisioning_extension'])
+
 
 @c.command('user-voicemail')
 @c.argument('user_id', type=c.INT)
