@@ -76,13 +76,19 @@ class RestApi(object):
 @c.option('--username', '-u', default='admin', envvar='USERNAME')
 @c.option('--password', '-P', default='proformatique', envvar='PASSWORD')
 def cli(debug, host, port, username, password):
-    level = logging.DEBUG if debug else logging.INFO
-    logging.basicConfig(level=level)
+    setup_logging(debug)
 
     logging.debug("host: %s, port: %d, username: %s, password: %s", host, port,
                   username, password)
     global restapi
     restapi = RestApi.from_options(host, port, username, password)
+
+
+def setup_logging(debug=False):
+    client_level = logging.DEBUG if debug else logging.INFO
+    requests_level = logging.DEBUG if debug else logging.WARN
+    logging.basicConfig(level=client_level)
+    logging.getLogger('requests').setLevel(requests_level)
 
 
 @c.command('extension')
