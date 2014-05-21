@@ -180,7 +180,7 @@ def associate_user_line(user_id, line_id):
 
 @c.command('user-voicemail')
 @c.argument('user_id', type=c.INT)
-@c.argument('voicemail_od', type=c.INT)
+@c.argument('voicemail_id', type=c.INT)
 def associate_user_voicemail(user_id, voicemail_id):
     logging.info('associating user %d with voicemail %d', user_id, voicemail_id)
 
