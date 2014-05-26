@@ -1,10 +1,10 @@
 import requests
 import os
 
-from contextlib import contextmanager
+from contextlib import contextmanager as _contextmanager
 from fabric.api import run, hosts, env, local, lcd, abort, cd, execute
 from fabric.contrib.console import confirm
-from ConfigParser import ConfigParser
+from ConfigParser import ConfigParser as _ConfigParser
 
 MASTER_HOST = "root@xivo-test"
 SLAVE_HOST = "root@xivo-test-slave"
@@ -17,11 +17,11 @@ env.hosts = [MASTER_HOST]
 
 SCRIPT_PATH = os.path.abspath(os.path.dirname(__file__))
 
-config = ConfigParser()
+config = _ConfigParser()
 config.read(os.path.join(SCRIPT_PATH, 'defaults.ini'))
 
 
-class Jenkins(object):
+class _Jenkins(object):
 
     def __init__(self, url, token):
         self.url = url
@@ -59,8 +59,8 @@ class Jenkins(object):
         return response
 
 
-jenkins = Jenkins(config.get('jenkins', 'url'),
-                  config.get('jenkins', 'token'))
+jenkins = _Jenkins(config.get('jenkins', 'url'),
+                   config.get('jenkins', 'token'))
 
 
 def build_report():
@@ -103,14 +103,14 @@ def upgrade_xivo_load():
 @hosts(LOAD_HOST)
 def stop_load_tests():
     """stop load tests on xivo-load"""
-    url = '{}/stop'.format(monitoring_url())
+    url = '{}/stop'.format(_monitoring_url())
     requests.post(url)
 
 
 @hosts(LOAD_HOST)
 def start_load_tests():
     """start load tests on xivo-load"""
-    url = '{}/start'.format(monitoring_url())
+    url = '{}/start'.format(_monitoring_url())
     response = requests.post(url)
     assert response.status_code == 200, "{}: {}".format(response.status_code, response.text)
 
@@ -125,9 +125,9 @@ def bump_doc(old, new):
     """update documentation to next version number"""
     doc_path = config.get('doc', 'repo')
 
-    git_pull_master(doc_path)
-    update_symlinks(old, new)
-    commit_and_push(doc_path, "bump doc to {new}".format(new=new))
+    _git_pull_master(doc_path)
+    update_doc_symlinks(old, new)
+    _commit_and_push(doc_path, "bump doc to {new}".format(new=new))
     merge_doc_to_production()
     update_doc_version(old, new)
 
@@ -189,7 +189,7 @@ def publish_rc_to_prod():
     codename = "xivo-five"
     path = "/data/reprepro/xivo/conf/distributions"
 
-    with active_distribution(codename, path):
+    with _active_distribution(codename, path):
         run("reprepro -vb /data/reprepro/xivo update xivo-five")
 
 
@@ -202,7 +202,7 @@ def create_archive(version):
 def add_pxe_archive(version):
     """add entry to PXE for an archive"""
     path = config.get('pxe', 'repo')
-    git_pull_master(path)
+    _git_pull_master(path)
 
     cmd = "grep {version} {path}/xivo_versions_data || sed -i '/xivo_versions/ a\\{version} \\\\' {path}/xivo_versions_data"
     local(cmd.format(path=path, version=version))
@@ -224,7 +224,8 @@ def update_archive_on_mirror(version):
         run("git pull")
 
     run("reprepro -vb {path} export".format(path=archive_path))
-    with active_distribution(codename, distribution_file):
+
+    with _active_distribution(codename, distribution_file):
         cmd = "reprepro -vb {path} update xivo-{version}"
         run(cmd.format(path=archive_path, version=version))
 
@@ -238,17 +239,17 @@ def bump_version(new):
     """bump version number in git repo"""
     repo = config.get('version', 'repo')
 
-    git_pull_master(repo)
-    local('echo {new} > {repo}/VERSION'.format(repo=repo))
-    commit_and_push(repo, "bump version ({new})".format(new=new))
+    _git_pull_master(repo)
+    local('echo {new} > {repo}/VERSION'.format(new=new, repo=repo))
+    _commit_and_push(repo, "bump version ({new})".format(new=new))
 
 
-def monitoring_url():
+def _monitoring_url():
     return "{}/api/{}".format(config.get('load_tests', 'monitor_url'),
                               config.get('load_tests', 'server_name'))
 
 
-def git_pull_master(path):
+def _git_pull_master(path):
     msg = '{path}: not on master ! (currently on {branch}). continue anyway ?'
 
     with lcd(path):
@@ -261,14 +262,14 @@ def git_pull_master(path):
         local('git pull')
 
 
-def commit_and_push(path, message):
+def _commit_and_push(path, message):
     with lcd(path):
         local('git commit -a -m "{message}"'.format(message=message))
         local('git push')
 
 
-@contextmanager
-def active_distribution(codename, path):
+@_contextmanager
+def _active_distribution(codename, path):
     comment_cmd = "sed -i '/Codename: {codename}/,/^$/ s/#Update/Update/' {path}"
     decomment_cmd = "sed -i '/Codename: {codename}/,/^$/ s/Update/#Update/' {path}"
 
