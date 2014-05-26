@@ -64,50 +64,65 @@ jenkins = Jenkins(config.get('jenkins', 'url'),
 
 
 def build_report():
+    """build HTML report on tests executed automatically"""
     jenkins.launch('report')
 
 
 @hosts(MASTER_HOST)
 def shutdown_master():
+    """shutdown xivo-test (once all tests are finished)"""
     run('/sbin/poweroff')
 
 
 @hosts(SLAVE_HOST)
 def shutdown_slave():
+    """shutdown xivo-test-slave (once all tests are finished)"""
     run('/sbin/poweroff')
 
 
 @hosts(BUILDER_HOST)
-def rsync_binaries(version):
+def copy_binaries(version):
+    """copy ISO and xivo client debs onto mirror"""
     run('/root/rsync-mirror-iso {version}'.format(version=version))
+
+
+@hosts(MIRROR_HOST)
+def publish_binaries():
+    """make ISO and debs public"""
+    run('/root/publish-binary')
 
 
 @hosts(LOAD_HOST)
 def upgrade_xivo_load():
+    """run xivo-upgrade on xivo-load and restart load tests"""
     stop_load_tests()
     run('xivo-upgrade -f')
     start_load_tests()
 
 
-@hosts(GATEWAY_HOST)
-def upgrade_dev_gateway():
-    run('xivo-upgrade -f')
-
-
 @hosts(LOAD_HOST)
 def stop_load_tests():
+    """stop load tests on xivo-load"""
     url = '{}/stop'.format(monitoring_url())
     requests.post(url)
 
 
 @hosts(LOAD_HOST)
 def start_load_tests():
+    """start load tests on xivo-load"""
     url = '{}/start'.format(monitoring_url())
     response = requests.post(url)
     assert response.status_code == 200, "{}: {}".format(response.status_code, response.text)
 
 
+@hosts(GATEWAY_HOST)
+def upgrade_dev_gateway():
+    """run xivo-upgrade on xivo-dev-gateway"""
+    run('xivo-upgrade -f')
+
+
 def bump_doc(old, new):
+    """update documentation to next version number"""
     doc_path = config.get('doc', 'repo')
 
     git_pull_master(doc_path)
@@ -118,12 +133,14 @@ def bump_doc(old, new):
 
 
 def update_doc_version(old, new):
+    """update version number in sphinx config"""
     doc_repo = config.get('doc', 'repo')
     cmd = "sed -i 's/{old}/{new}/g' {repo}/source/conf.py"
     local(cmd.format(old=old, new=new, repo=doc_repo))
 
 
 def merge_doc_to_production():
+    """merge master branch into production"""
     repo = config.get('doc', 'repo')
     with lcd(repo):
         local('git checkout production')
@@ -132,41 +149,42 @@ def merge_doc_to_production():
         local('git push')
 
 
-def update_symlinks(old, new):
+def update_doc_symlinks(old, new):
+    """update symlinks for production documentation"""
     doc_repo = config.get('doc', 'repo')
     path = "{repo}/source/_templates".format(repo=doc_repo)
     with lcd(path):
         local('./update-symlink {old} {new}'.format(old=old, new=new))
 
 
-def rebuild_doc():
+def build_doc():
+    """build production documentation"""
     jenkins.launch('doc')
 
 
 def tag_repos(version):
+    """tag xivo repos with version number"""
     repos = config.get('general', 'repos')
     cmd = "{repos}/xivo-tools/dev-tools/tag_xivo -v {version} -d {repos}"
     local(cmd.format(repos=repos, version=version))
 
 
 def build_xivo_fai():
+    """build xivo-fai"""
     jenkins.launch('fai')
 
 
 @hosts(MIRROR_HOST)
-def publish_binary():
-    run('/root/publish-binary')
-
-
-@hosts(MIRROR_HOST)
 def backport_squeeze():
+    """generate upgrade packages for squeeze"""
     run('/root/backport-squeeze')
 
 
 @hosts(MIRROR_HOST)
-def sync_prod():
-    if not confirm("Are you sure you want to synchronize the official XiVO mirror ?"):
-        abort("canceled synchronization")
+def publish_rc_to_prod():
+    """publish RC debian packages on official mirror"""
+    if not confirm("Are you sure you want to publish packages on official mirror ?"):
+        abort("publish cancelled")
 
     codename = "xivo-five"
     path = "/data/reprepro/xivo/conf/distributions"
@@ -175,12 +193,14 @@ def sync_prod():
         run("reprepro -vb /data/reprepro/xivo update xivo-five")
 
 
-def update_pxe_archive(version):
-    add_pxe_version(version)
-    execute(update_pxe_on_mirror, version)
+def create_archive(version):
+    """create an archived version of xivo on mirror and PXE"""
+    add_pxe_archive(version)
+    execute(update_archive_on_mirror, version)
 
 
-def add_pxe_version(version):
+def add_pxe_archive(version):
+    """add entry to PXE for an archive"""
     path = config.get('pxe', 'repo')
     git_pull_master(path)
 
@@ -190,11 +210,12 @@ def add_pxe_version(version):
     with lcd(path):
         local('./create_archive_files')
 
-    commit_and_push(path, "add {version}".format(version=version))
+    _commit_and_push(path, "add {version}".format(version=version))
 
 
 @hosts(MIRROR_HOST)
-def update_pxe_on_mirror(version):
+def update_archive_on_mirror(version):
+    """update distributions and mirrors for archive"""
     codename = "xivo-{version}".format(version=version)
     archive_path = "/data/reprepro/archive"
     distribution_file = "{}/conf/distributions".format(archive_path)
@@ -209,10 +230,12 @@ def update_pxe_on_mirror(version):
 
 
 def prepare_xivo_version(prod, dev):
+    """update xivo version numbers on mirror"""
     jenkins.launch('version', XIVO_VERSION_DEV=dev, XIVO_VERSION_PROD=prod)
 
 
 def bump_version(new):
+    """bump version number in git repo"""
     repo = config.get('version', 'repo')
 
     git_pull_master(repo)
