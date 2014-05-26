@@ -21,8 +21,50 @@ config = ConfigParser()
 config.read(os.path.join(SCRIPT_PATH, 'defaults.ini'))
 
 
+class Jenkins(object):
+
+    def __init__(self, url, token):
+        self.url = url
+        self.token = token
+
+    def launch(self, job_name, **kwargs):
+        if kwargs:
+            self._launch_post(job_name, kwargs)
+        else:
+            self._launch_get(job_name)
+
+    def _launch_get(self, job_name):
+        url = self._build_url('build', job_name)
+        params = {'token': self.token}
+
+        return self._get_response('GET', url, params)
+
+    def _launch_post(self, job_name, params):
+        url = self._build_url('buildWithParameters', job_name)
+        params['token'] = self.token
+
+        self._get_response('POST', url, params)
+
+    def _build_url(self, endpoint, job_name):
+        url = "{url}/job/{name}/{endpoint}".format(url=self.url,
+                                                   endpoint=endpoint,
+                                                   name=job_name)
+        return url
+
+    def _get_response(self, method, url, params):
+        response = requests.request(method, url, params=params)
+        msg = "{}: {}".format(response.status_code, response.text.encode('utf8'))
+        assert response.status_code == 201, msg
+
+        return response
+
+
+jenkins = Jenkins(config.get('jenkins', 'url'),
+                  config.get('jenkins', 'token'))
+
+
 def build_report():
-    launch_jenkins_job('report')
+    jenkins.launch('report')
 
 
 @hosts(MASTER_HOST)
@@ -98,7 +140,7 @@ def update_symlinks(old, new):
 
 
 def rebuild_doc():
-    launch_jenkins_job('doc')
+    jenkins.launch('doc')
 
 
 def tag_repos(version):
@@ -108,7 +150,7 @@ def tag_repos(version):
 
 
 def build_xivo_fai():
-    launch_jenkins_job('fai')
+    jenkins.launch('fai')
 
 
 @hosts(MIRROR_HOST)
@@ -167,7 +209,7 @@ def update_pxe_on_mirror(version):
 
 
 def prepare_xivo_version(prod, dev):
-    launch_jenkins_job('version', XIVO_VERSION_DEV=dev, XIVO_VERSION_PROD=prod)
+    jenkins.launch('version', XIVO_VERSION_DEV=dev, XIVO_VERSION_PROD=prod)
 
 
 def bump_version(new):
@@ -176,36 +218,6 @@ def bump_version(new):
     git_pull_master(repo)
     local('echo {new} > {repo}/VERSION'.format(repo=repo))
     commit_and_push(repo, "bump version ({new})".format(new=new))
-
-
-def launch_jenkins_job(section, **kwargs):
-    if kwargs:
-        launch_parameterized_build(section, kwargs)
-    else:
-        launch_build(section)
-
-
-def launch_build(section):
-    token = config.get('jenkins', 'token')
-    name = config.get(section, 'job_name')
-
-    params = {'token': token}
-    url = "{}/job/{}/build".format(config.get('jenkins', 'url'), name)
-
-    response = requests.get(url, params=params)
-    assert response.status_code == 201, (response.status_code, response.text)
-
-
-def launch_parameterized_build(section, params):
-    token = config.get('jenkins', 'token')
-    name = config.get(section, 'job_name')
-
-    params['token'] = token
-
-    url = "{}/job/{}/buildWithParameters".format(config.get('jenkins', 'url'), name)
-
-    response = requests.post(url, params=params)
-    assert response.status_code == 201, (response.status_code, response.text)
 
 
 def monitoring_url():
