@@ -127,9 +127,10 @@ def bump_doc(old, new):
 
     _git_pull_master(doc_path)
     update_doc_symlinks(old, new)
-    _commit_and_push(doc_path, "bump doc to {new}".format(new=new))
+    _commit_and_push(doc_path, "update symlinks for {new}".format(new=new))
     merge_doc_to_production()
     update_doc_version(old, new)
+    _commit_and_push(doc_path, "bump version to {new}".format(new=new))
 
 
 def update_doc_version(old, new):
