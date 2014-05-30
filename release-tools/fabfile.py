@@ -158,11 +158,6 @@ def update_doc_symlinks(old, new):
         local('./update-symlink {old} {new}'.format(old=old, new=new))
 
 
-def build_doc():
-    """build production documentation"""
-    jenkins.launch('doc')
-
-
 def tag_repos(version):
     """tag xivo repos with version number"""
     repos = config.get('general', 'repos')
