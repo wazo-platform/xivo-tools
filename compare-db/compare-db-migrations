@@ -3,32 +3,31 @@ import StringIO
 import argparse
 import logging
 import os
-import sys
 import sh
+import sys
+import sqlalchemy as sa
+
+from ConfigParser import ConfigParser
+from contextlib import contextmanager
+
+from alembic.config import Config as AlembicConfig
+from alembic import command as alembic_command
+
+from xivo_dao import alchemy
+from xivo_dao.helpers import db_manager
 
 logging.basicConfig(level=logging.DEBUG)
 
-POSTGRES_USER = 'postgres'
-
-INSTALLED_SCHEMA = '/tmp/%s_installed.sql'
-MIGRATED_SCHEMA = '/tmp/%s_migrated.sql'
-
 CWD_PATH = os.path.abspath(os.path.dirname(__file__))
+DB_URI = "postgres://{username}:{password}@{host}/{dbname}"
+
+config = ConfigParser()
+config.read(os.path.join(CWD_PATH, 'defaults.ini'))
 
 
 def argparser():
     parser = argparse.ArgumentParser('compare XiVO database schemas and check for inconsitencies')
-    parser.add_argument('--projects', help='Path to xivo git repos',
-                        default=os.path.expanduser('~/xivo'))
-    parser.add_argument('--apgdiff', help='Path to apgdiff jar',
-                        default='/opt/apgdiff/apgdiff-2.4.jar')
-    parser.add_argument('--ast-schema',
-                        help='asterisk schema to start migration from',
-                        default=os.path.join(CWD_PATH, 'schemas', 'asterisk.sql'))
-    parser.add_argument('--xivo-schema',
-                        help='xivo schema to start migration from',
-                        default=os.path.join(CWD_PATH, 'schemas', 'xivo.sql'))
-
+    parser.add_argument('--config', help='config file')
     return parser
 
 
@@ -36,99 +35,126 @@ def main():
     parser = argparser()
     args = parser.parse_args()
 
-    differences_asterisk = compare_databases('asterisk', args.ast_schema, args.projects, args.apgdiff)
-    differences_xivo = compare_databases('xivo', args.xivo_schema, args.projects, args.apgdiff)
+    if args.config:
+        config.read(args.config)
 
-    if differences_asterisk or differences_xivo:
-        print "Database schemas are different !"
-        print "Differences in asterisk :"
+    generate_installation_schema()
+    generate_migration_schema()
+
+    installed_schema = config.get('schema', 'installed')
+    migrated_schema = config.get('schema', 'migrated')
+    differences = compare_schemas(installed_schema, migrated_schema)
+
+    if differences:
         print
-        print differences_asterisk
+        print "Differences detected between installed and migrated schema: "
         print
-        print "Differences in xivo :"
-        print
-        print differences_xivo
+        print differences
         sys.exit(1)
-    else:
-        print "Database schemas are the same"
 
 
-def compare_databases(database, pre_migration_script, gitroot, apgdiff):
-    install_script = path_for_install_script(gitroot, database)
-    migration_folder = path_for_migration_scripts(gitroot)
+def generate_installation_schema():
+    schema = config.get('schema', 'installed')
+    alembic_cfg = build_alembic_config()
 
-    installed_schema = generate_install_schema(database, install_script)
-    migrated_schema = generate_migrated_schema(database, pre_migration_script, migration_folder)
-
-    return compare_schemas(apgdiff, installed_schema, migrated_schema)
-
-
-def path_for_install_script(gitroot, database):
-    path = os.path.join(gitroot, 'xivo-manage-db', 'datastorage', '%s.sql' % database)
-    return path
+    reset_database()
+    create_tables()
+    populate_db()
+    #make sure stamp doesn't show up in diff
+    alembic_command.stamp(alembic_cfg, 'head')
+    extract_schema(schema)
 
 
-def path_for_migration_scripts(gitroot):
-    path = os.path.join(gitroot, 'xivo-manage-db', 'migration')
-    return path
+def generate_migration_schema():
+    schema = config.get('schema', 'migrated')
+    script = os.path.join(CWD_PATH, 'asterisk_migration.sql')
+
+    reset_database()
+    run_script(script)
+    run_alembic_migrations()
+    extract_schema(schema)
 
 
-def generate_install_schema(database, install_script):
-    logging.info("generating installation schema for %s", database)
-    delete_database(database)
-    run_script(install_script)
-
-    filepath = INSTALLED_SCHEMA % database
-    extract_database_schema(database, filepath)
-    return filepath
+def reset_database():
+    drop_database()
+    create_database()
 
 
-def generate_migrated_schema(database, pre_migration_script, migration_folder):
-    logging.info("generating migration schema for %s", database)
-    user = database
+def drop_database():
+    logging.info("dropping database")
 
-    delete_database(database)
-    create_database(database, user)
-    run_script(pre_migration_script, user=user, database=database)
-
-    migration_files = find_migration_files(migration_folder, database)
-    for migration_file in migration_files:
-        run_script(migration_file, user=user, database=database)
-
-    filepath = MIGRATED_SCHEMA % database
-    extract_database_schema(database, filepath)
-    return filepath
-
-
-def delete_database(db_name):
-    logging.info("deleting database %s", db_name)
-    with sh.sudo(u=POSTGRES_USER, _with=True):
-        sql = 'DROP DATABASE IF EXISTS %s;' % db_name
+    with db_superuser():
+        sql = 'DROP DATABASE IF EXISTS %s;' % config.get('database', 'dbname')
         sh.psql('-c', sql)
 
 
-def create_database(db_name, db_user):
-    logging.info("creating database %s", db_name)
-    with sh.sudo(u=POSTGRES_USER, _with=True):
+def create_database():
+    logging.info("creating database")
+
+    db_name = config.get('database', 'dbname')
+    db_user = config.get('database', 'username')
+    with db_superuser():
         sh.createdb('-E', 'utf8', '-O', db_user, db_name)
 
 
-def run_script(filepath, user=None, database=None):
+def create_tables():
+    logging.info("creating tables")
+
+    engine = sa.create_engine(sqlalchemy_url())
+    db_manager.Base.metadata.create_all(bind=engine)
+    db_manager.close()
+    engine.dispose()
+
+
+def populate_db():
+    path = "{}/populate/populate.sql".format(config.get('repos', 'manage_db'))
+    run_script(path)
+
+
+def run_alembic_migrations():
+    logging.info("running alembic migrations")
+    alembic_cfg = build_alembic_config()
+    alembic_command.stamp(alembic_cfg, 'base')
+    alembic_command.upgrade(alembic_cfg, 'head')
+
+
+def build_alembic_config():
+    alembic_path = "{}/alembic".format(config.get('repos', 'manage_db'))
+    ini_file = "{}/alembic.ini".format(config.get('repos', 'manage_db'))
+
+    alembic_cfg = AlembicConfig(ini_file)
+    alembic_cfg.set_main_option("script_location", alembic_path)
+    alembic_cfg.set_main_option("sqlalchemy.url", sqlalchemy_url())
+    return alembic_cfg
+
+
+def sqlalchemy_url():
+    return DB_URI.format(username=config.get('database', 'username'),
+                         password=config.get('database', 'password'),
+                         host=config.get('database', 'host'),
+                         dbname=config.get('database', 'dbname'))
+
+
+@contextmanager
+def db_superuser():
+    superuser = config.get('database', 'superuser')
+    with sh.sudo(u=superuser, _with=True):
+        yield
+
+
+def run_script(filepath):
     logging.info("running script %s", filepath)
+
+    username = config.get('database', 'username')
+    database = config.get('database', 'dbname')
     error_buffer = StringIO.StringIO()
 
-    options = {'f': filepath, '_err': error_buffer}
-    if user:
-        options['U'] = user
-    if database:
-        options['d'] = database
-
-    with sh.sudo(u=POSTGRES_USER, _with=True):
-        sh.psql(**options)
+    with db_superuser():
+        sh.psql(U=username, d=database, f=filepath, _err=error_buffer)
 
     errors = filter_errors(error_buffer)
     if errors:
-        logging.error("error while executing %s: %s", filepath, errors)
+        logging.warn("errors while executing %s: %s", filepath, errors)
 
 
 def filter_errors(error_buffer):
@@ -139,21 +165,16 @@ def filter_errors(error_buffer):
     return errors
 
 
-def extract_database_schema(database, filepath):
-    logging.info("extracting database schema for %s", database)
-    with sh.sudo(u=POSTGRES_USER, _with=True):
+def extract_schema(filepath):
+    logging.info("extracting database schema")
+
+    database = config.get('database', 'dbname')
+    with db_superuser():
         sh.pg_dump('-s', '-f', filepath, database)
 
 
-def find_migration_files(migration_folder, database):
-    files = [os.path.join(migration_folder, f)
-             for f in os.listdir(migration_folder)
-             if f.startswith(database)]
-    files.sort()
-    return files
-
-
-def compare_schemas(apgdiff, path_original, path_migrated):
+def compare_schemas(path_original, path_migrated):
+    apgdiff = config.get('apgdiff', 'jar')
     logging.info("comparing %s and %s", path_original, path_migrated)
     output = sh.java('-jar', apgdiff, path_original, path_migrated)
     return unicode(output)
