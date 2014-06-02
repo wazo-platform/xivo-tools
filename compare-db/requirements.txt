@@ -1,0 +1,4 @@
+alembic
+psycopg2
+sh
+git+https://github.com/xivo-pbx/xivo-dao
