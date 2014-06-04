@@ -53,6 +53,7 @@ def clear_confgen_cache():
 
 @hosts(MIRROR_HOST)
 def synchronize_mirrors():
+    run('./update_xivo-dev')
     run('./update_xivo-rc')
 
 
