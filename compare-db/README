@@ -1,0 +1,30 @@
+Setup
+=====
+
+sudo
+----
+
+Make sudo not ask password for postgres user. With visudo, add the line:
+
+<your_user>     ALL=(postgres) NOPASSWD:ALL
+
+This line should appear after all rules that match <your_user>.
+
+
+Database user password
+----------------------
+
+sudo -u postgres psql
+alter user asterisk with password 'proformatique';
+
+
+Postgres authentification
+-------------------------
+
+In /etc/postgres/9.1/main/pg_hba.conf, change the line:
+
+local   all             all                                     peer
+
+for:
+
+local   all             all                                     trust
