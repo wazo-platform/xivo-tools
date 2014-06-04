@@ -5,7 +5,6 @@ from fabric.api import run
 from fabric.decorators import hosts
 from fabric.tasks import execute
 
-KVM_HOST = "root@kvm-2-dev"
 XIVO_TEST_HOST = "root@xivo-test"
 XIVO_TEST_SLAVE_HOST = "root@xivo-test-slave"
 FARM_HOST = "root@wheezy-farm.xivo.fr"
