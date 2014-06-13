@@ -147,23 +147,23 @@ def upgrade_dev_gateway():
     run('xivo-upgrade -f')
 
 
-def bump_doc(old, new):
+def bump_doc(prod, dev):
     """update documentation to next version number"""
     doc_path = config.get('doc', 'repo')
 
     _git_pull_master(doc_path)
-    update_doc_symlinks(old, new)
-    _commit_and_push(doc_path, "update symlinks for {new}".format(new=new))
+    update_doc_symlinks(prod, dev)
+    _commit_and_push(doc_path, "update symlinks for {dev}".format(dev=dev))
     merge_doc_to_production()
-    update_doc_version(old, new)
-    _commit_and_push(doc_path, "bump version to {new}".format(new=new))
+    update_doc_version(prod, dev)
+    _commit_and_push(doc_path, "bump version to {dev}".format(dev=dev))
 
 
-def update_doc_version(old, new):
+def update_doc_version(prod, dev):
     """update version number in sphinx config"""
     doc_repo = config.get('doc', 'repo')
-    cmd = "sed -i 's/{old}/{new}/g' {repo}/source/conf.py"
-    local(cmd.format(old=old, new=new, repo=doc_repo))
+    cmd = "sed -i 's/{prod}/{dev}/g' {repo}/source/conf.py"
+    local(cmd.format(prod=prod, dev=dev, repo=doc_repo))
 
 
 def merge_doc_to_production():
@@ -176,12 +176,12 @@ def merge_doc_to_production():
         local('git push')
 
 
-def update_doc_symlinks(old, new):
+def update_doc_symlinks(prod, dev):
     """update symlinks for production documentation"""
     doc_repo = config.get('doc', 'repo')
     path = "{repo}/source/_templates".format(repo=doc_repo)
     with lcd(path):
-        local('./update-symlink {old} {new}'.format(old=old, new=new))
+        local('./update-symlink {prod} {dev}'.format(prod=prod, dev=dev))
 
 
 def tag_repos(version):
