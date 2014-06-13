@@ -217,11 +217,11 @@ def publish_rc_to_prod():
 
 def create_archive(version):
     """create an archived version of xivo on mirror and PXE"""
-    add_pxe_archive(version)
-    execute(update_archive_on_mirror, version)
+    _add_pxe_archive(version)
+    execute(_update_archive_on_mirror, version)
 
 
-def add_pxe_archive(version):
+def _add_pxe_archive(version):
     """add entry to PXE for an archive"""
     path = config.get('pxe', 'repo')
     _git_pull_master(path)
@@ -236,7 +236,7 @@ def add_pxe_archive(version):
 
 
 @hosts(MIRROR_HOST)
-def update_archive_on_mirror(version):
+def _update_archive_on_mirror(version):
     """update distributions and mirrors for archive"""
     codename = "xivo-{version}".format(version=version)
     archive_path = "/data/reprepro/archive"
