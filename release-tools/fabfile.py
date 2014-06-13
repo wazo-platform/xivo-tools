@@ -28,7 +28,8 @@ class _Jenkins(object):
         self.url = url
         self.token = token
 
-    def launch(self, job_name, **kwargs):
+    def launch(self, section, **kwargs):
+        job_name = config.get(section, 'job_name')
         if kwargs:
             self._launch_post(job_name, kwargs)
         else:
