@@ -1,0 +1,19 @@
+#!/bin/bash
+
+version="$1"
+
+if [ -z "$version" ]; then
+    echo "usage: $0 <version>"
+    exit 1
+fi
+
+src='/var/www/builder/'
+dest="/data/iso/archives/.xivo-$version"
+
+rsync -v -rlpt --progress \
+    --include "/*$version*" \
+    --exclude '/*' \
+    "$src" www-data@mirror.xivo.fr:"$dest"
+
+echo
+echo "created dot-directory '$dest' on remote"
