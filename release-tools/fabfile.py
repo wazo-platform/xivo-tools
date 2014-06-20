@@ -17,8 +17,9 @@ env.hosts = [MASTER_HOST]
 
 SCRIPT_PATH = os.path.abspath(os.path.dirname(__file__))
 
+config_file_names = [os.path.join(SCRIPT_PATH, file_name) for file_name in ('defaults.ini', 'defaults.ini.local')]
 config = _ConfigParser()
-config.read(os.path.join(SCRIPT_PATH, 'defaults.ini'))
+config.read(config_file_names)
 
 
 class _Jenkins(object):
