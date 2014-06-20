@@ -2,7 +2,7 @@ import requests
 import os
 
 from contextlib import contextmanager as _contextmanager
-from fabric.api import abort, cd, env, execute, hosts, local, lcd, puts, run
+from fabric.api import abort, cd, env, execute, hosts, local, lcd, puts, run, sudo
 from fabric.contrib.console import confirm
 from ConfigParser import ConfigParser as _ConfigParser
 
@@ -12,6 +12,7 @@ LOAD_HOST = "root@xivo-load"
 BUILDER_HOST = "root@builder-wheezy"
 MIRROR_HOST = "root@mirror.xivo.fr"
 GATEWAY_HOST = "root@xivo-dev-gateway"
+
 
 env.hosts = [MASTER_HOST]
 
@@ -65,9 +66,19 @@ jenkins = _Jenkins(config.get('jenkins', 'url'),
                    config.get('jenkins', 'token'))
 
 
-def build_report():
+def build_report_auto():
     """build HTML report on tests executed automatically"""
     jenkins.launch('report')
+
+
+@hosts(BUILDER_HOST)
+def build_report_manual(version):
+    """build HTML report on tests executed manually"""
+    url = "{lordboard}/report.html".format(lordboard=config.get('lordboard', 'url'))
+    path = '/var/www/builder/tests-report-xivo-manual-{version}.html'.format(version=version)
+
+    command = 'curl {url} -o {path}'.format(url=url, path=path)
+    sudo(command, user='builder')
 
 
 @hosts(MASTER_HOST)
