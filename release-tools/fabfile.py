@@ -267,9 +267,9 @@ def _commit_and_push(path, message):
 
 @_contextmanager
 def _active_distribution(codename, path):
-    comment_cmd = "sed -i '/Codename: {codename}/,/^$/ s/#Update/Update/' {path}"
-    decomment_cmd = "sed -i '/Codename: {codename}/,/^$/ s/Update/#Update/' {path}"
+    uncomment_cmd = "sed -i '/Codename: {codename}/,/^$/ s/#Update/Update/' {path}"
+    comment_cmd = "sed -i '/Codename: {codename}/,/^$/ s/Update/#Update/' {path}"
 
-    run(comment_cmd.format(codename=codename, path=path))
+    run(uncomment_cmd.format(codename=codename, path=path))
     yield
-    run(decomment_cmd.format(codename=codename, path=path))
+    run(comment_cmd.format(codename=codename, path=path))
