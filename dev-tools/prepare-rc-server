@@ -37,8 +37,10 @@ def check_slave_started():
 
 @hosts(XIVO_TEST_HOST)
 def backup_server():
+    run('xivo-service stop')
     run('xivo-backup data /var/backups/xivo/data')
     run('xivo-backup db /var/backups/xivo/db')
+    run('xivo-service start')
 
 
 @hosts(FARM_HOST)
