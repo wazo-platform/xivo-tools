@@ -98,7 +98,23 @@ def copy_binaries(version):
 @hosts(MIRROR_HOST)
 def publish_binaries():
     """make ISO and debs public"""
-    run('/root/publish-binary')
+
+    with cd('/data/iso'):
+        binaries_path = 'archives'
+        candidates = run("find {path} -maxdepth 1 -name '.xivo-*' -printf '%f\n'".format(path=binaries_path)).split('\r\n')
+        if not candidates:
+            abort('Nothing to publish')
+
+        for hidden_name in candidates:
+            visible_name = hidden_name[1:]
+            if confirm('Do you want to publish {candidate}?'.format(candidate=visible_name)):
+                command = 'mv "{path}/{hidden}" "{path}/{visible}"'.format(path=binaries_path,
+                                                                           hidden=hidden_name,
+                                                                           visible=visible_name)
+                run(command)
+                command = 'ln -sfn "archives/{candidate}" xivo-current'.format(candidate=visible_name)
+                run(command)
+                puts('{candidate} is now the current version'.format(candidate=visible_name))
 
 
 @hosts(LOAD_HOST)
