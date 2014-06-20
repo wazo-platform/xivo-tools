@@ -2,7 +2,7 @@ import requests
 import os
 
 from contextlib import contextmanager as _contextmanager
-from fabric.api import run, hosts, env, local, lcd, abort, cd, execute
+from fabric.api import abort, cd, env, execute, hosts, local, lcd, puts, run
 from fabric.contrib.console import confirm
 from ConfigParser import ConfigParser as _ConfigParser
 
@@ -83,8 +83,16 @@ def shutdown_slave():
 
 @hosts(BUILDER_HOST)
 def copy_binaries(version):
-    """copy ISO and xivo client debs onto mirror"""
-    run('/root/rsync-mirror-iso {version}'.format(version=version))
+    """copy ISO and xivo client debs onto mirror (but not publicly visible)"""
+
+    options = "-v -rlpt --progress --include '/*{version}*' --exclude '/*'".format(version=version)
+    src = '/var/www/builder/'
+    dest = 'www-data@mirror.xivo.fr:/data/iso/archives/.xivo-{version}'.format(version=version)
+
+    command = 'rsync {options} "{src}" "{dest}"'.format(options=options, src=src, dest=dest)
+    run(command)
+
+    puts('Created dot-directory "{dest}"'.format(dest=dest))
 
 
 @hosts(MIRROR_HOST)
