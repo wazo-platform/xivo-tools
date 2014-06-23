@@ -155,6 +155,8 @@ def bump_doc(prod, dev):
     update_doc_symlinks(prod, dev)
     _commit_and_push(doc_path, "update symlinks for {dev}".format(dev=dev))
     merge_doc_to_production()
+    with lcd(doc_path):
+        local('git checkout master')
     update_doc_version(prod, dev)
     _commit_and_push(doc_path, "bump version to {dev}".format(dev=dev))
 
