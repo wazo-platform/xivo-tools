@@ -152,24 +152,20 @@ def bump_doc(prod, dev):
     doc_path = config.get('doc', 'repo')
 
     _git_pull_master(doc_path)
-    update_doc_symlinks(prod, dev)
-    _commit_and_push(doc_path, "update symlinks for {dev}".format(dev=dev))
-    merge_doc_to_production()
-    with lcd(doc_path):
-        local('git checkout master')
-    update_doc_version(prod, dev)
-    _commit_and_push(doc_path, "bump version to {dev}".format(dev=dev))
+    _update_doc_symlinks(prod, dev)
+    _merge_doc_to_production()
+    _update_doc_version(prod, dev)
 
 
-def update_doc_version(prod, dev):
-    """update version number in sphinx config"""
-    doc_repo = config.get('doc', 'repo')
-    cmd = "sed -i 's/{prod}/{dev}/g' {repo}/source/conf.py"
-    local(cmd.format(prod=prod, dev=dev, repo=doc_repo))
+def _update_doc_symlinks(prod, dev):
+    repo = config.get('doc', 'repo')
+    path = "{repo}/source/_templates".format(repo=repo)
+    with lcd(path):
+        local('./update-symlink {prod} {dev}'.format(prod=prod, dev=dev))
+    _commit_and_push(repo, "update symlinks for {dev}".format(dev=dev))
 
 
-def merge_doc_to_production():
-    """merge master branch into production"""
+def _merge_doc_to_production():
     repo = config.get('doc', 'repo')
     with lcd(repo):
         local('git checkout production')
@@ -178,12 +174,13 @@ def merge_doc_to_production():
         local('git push')
 
 
-def update_doc_symlinks(prod, dev):
-    """update symlinks for production documentation"""
-    doc_repo = config.get('doc', 'repo')
-    path = "{repo}/source/_templates".format(repo=doc_repo)
-    with lcd(path):
-        local('./update-symlink {prod} {dev}'.format(prod=prod, dev=dev))
+def _update_doc_version(prod, dev):
+    repo = config.get('doc', 'repo')
+    with lcd(repo):
+        local('git checkout master')
+    cmd = "sed -i 's/{prod}/{dev}/g' {repo}/source/conf.py"
+    local(cmd.format(prod=prod, dev=dev, repo=repo))
+    _commit_and_push(repo, "bump version to {dev}".format(dev=dev))
 
 
 def tag_repos(version):
