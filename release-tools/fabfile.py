@@ -230,6 +230,7 @@ def _add_pxe_archive(version):
     local(cmd.format(path=path, version=version))
 
     with lcd(path):
+        local('./get_or_update_sources')
         local('./create_archive_files')
 
     _commit_and_push(path, "add {version}".format(version=version))
