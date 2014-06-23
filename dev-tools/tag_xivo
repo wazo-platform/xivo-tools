@@ -24,7 +24,7 @@ update_repository() {
     for dir in $directories; do
         cd $dir
         echo "updating $dir"
-        $git fetch -q origin
+        $git fetch -q origin || exit 1
         echo "done"
         cd "$OLDPWD"
     done
