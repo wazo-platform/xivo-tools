@@ -24,9 +24,9 @@ update_repository() {
     for dir in $directories; do
         cd $dir
         echo "updating $dir"
-        $git checkout master -q && $git pull -q || exit 1
+        $git fetch -q origin
         echo "done"
-        cd - > /dev/null
+        cd "$OLDPWD"
     done
 }
 
@@ -46,7 +46,7 @@ get_answer() {
 
 create_build_cmd() {
     local version=$1
-    local cmd="$git tag -s xivo-$version -m xivo-$version"
+    local cmd="$git tag -s xivo-$version -m xivo-$version origin/master"
     echo $cmd
 }
 
