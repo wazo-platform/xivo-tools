@@ -1,0 +1,31 @@
+Configure
+=========
+
+* Copy defaults.ini to defaults.ini.local
+* Edit defaults.ini.local to:
+
+  * Change the repos paths
+  * Add Jenkins token ; you can get the value from Jenkins job configuration of e.g. xivo-doc):
+
+[jenkins]
+token = a_long_incomprehensible_string
+
+Run
+===
+
+List the targets
+----------------
+
+fab -l
+
+
+Run a target
+------------
+
+fab my_target
+
+
+Run a target with arguments
+---------------------------
+
+fab my_target:arg1,arg2
