@@ -11,7 +11,7 @@ MASTER_HOST = "root@xivo-test"
 SLAVE_HOST = "root@xivo-test-slave"
 LOAD_HOST = "root@xivo-load"
 BUILDER_HOST = "root@builder-wheezy"
-MIRROR_HOST = "root@mirror.xivo.fr"
+MIRROR_HOST = "root@mirror.xivo.io"
 GATEWAY_HOST = "root@xivo-dev-gateway"
 
 
@@ -100,7 +100,7 @@ def copy_binaries(version):
 
     options = "-v -rlpt --progress --include '/*{version}*' --exclude '/*'".format(version=version)
     src = '/var/www/builder/'
-    dest = 'www-data@mirror.xivo.fr:/data/iso/archives/.xivo-{version}'.format(version=version)
+    dest = 'www-data@mirror.xivo.io:/data/iso/archives/.xivo-{version}'.format(version=version)
 
     command = 'rsync {options} "{src}" "{dest}"'.format(options=options, src=src, dest=dest)
     run(command)

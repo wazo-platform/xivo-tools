@@ -13,7 +13,7 @@ dest="/data/iso/archives/.xivo-$version"
 rsync -v -rlpt --progress \
     --include "/*$version*" \
     --exclude '/*' \
-    "$src" www-data@mirror.xivo.fr:"$dest"
+    "$src" www-data@mirror.xivo.io:"$dest"
 
 echo
 echo "created dot-directory '$dest' on remote"

@@ -4,7 +4,7 @@
 
 PKGNAME="$1"
 BRANCH="master"
-GIT_ROOT="git://git.xivo.fr/official"
+GIT_ROOT="git://git.xivo.io/official"
 
 [ -n "$2" ] && BRANCH="$2"
 

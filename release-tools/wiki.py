@@ -1,7 +1,7 @@
 import requests
 import datetime
 
-WIKI_URL = "https://wiki.xivo.fr/api.php"
+WIKI_URL = "https://wiki.xivo.io/api.php"
 
 TEMPLATE = r"""
 {{{{Robelbox|title=Downloads|theme={{{{{{theme|3}}}}}}}}}}

@@ -7,8 +7,8 @@ from fabric.tasks import execute
 
 XIVO_TEST_HOST = "root@xivo-test"
 XIVO_TEST_SLAVE_HOST = "root@xivo-test-slave"
-FARM_HOST = "root@wheezy-farm.xivo.fr"
-MIRROR_HOST = "root@mirror.xivo.fr"
+FARM_HOST = "root@wheezy-farm.xivo.io"
+MIRROR_HOST = "root@mirror.xivo.io"
 
 
 def freeze(previous, release):
