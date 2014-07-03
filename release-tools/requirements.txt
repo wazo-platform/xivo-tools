@@ -1,0 +1,6 @@
+fabric
+twitter
+requests
+jinja2
+click
+marrow.mailer
