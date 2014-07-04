@@ -3,6 +3,7 @@ import requests
 import jinja2
 import click
 import twitter
+import ircbot
 from ConfigParser import ConfigParser
 from marrow.mailer import Mailer, Message
 
@@ -48,6 +49,8 @@ def publish_announces(version, path):
     publish_email(version, email)
     click.echo("Publishing twitter")
     publish_twitter(version)
+    click.echo("Publishing irc")
+    publish_irc(version)
 
 
 def generate_announce(version, media):
@@ -160,6 +163,10 @@ def add_tokens_to_config(oauth_token, oauth_secret):
     new_config.set('twitter', 'oauth_secret', oauth_secret)
     with open(configfile, 'w') as f:
         new_config.write(f)
+
+
+def publish_irc(version):
+    ircbot.publish_irc_topic(config, version)
 
 
 if __name__ == "__main__":
