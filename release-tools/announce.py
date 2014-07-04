@@ -44,7 +44,9 @@ def publish_announces(version, path):
     with open(emailpath) as f:
         email = f.read().decode('utf8')
 
+    click.echo("Publishing email")
     publish_email(version, email)
+    click.echo("Publishing twitter")
     publish_twitter(version)
 
 
@@ -104,7 +106,7 @@ def issues_for_version(version_id):
 
 
 def publish_email(version, announce):
-    subject = config.get('redmine', 'title').format(version=version)
+    subject = config.get('email', 'subject').format(version=version)
 
     mailer = Mailer({'manager': {'use': 'immediate'},
                      'transport': {'use': 'smtp',
