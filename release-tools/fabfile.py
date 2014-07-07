@@ -3,7 +3,7 @@ import os
 import wiki
 
 from contextlib import contextmanager as _contextmanager
-from fabric.api import abort, cd, env, execute, hosts, local, lcd, puts, run, sudo
+from fabric.api import abort, cd, execute, hosts, local, lcd, puts, run, sudo
 from fabric.contrib.console import confirm
 from ConfigParser import ConfigParser as _ConfigParser
 
@@ -14,8 +14,6 @@ BUILDER_HOST = "root@builder-wheezy"
 MIRROR_HOST = "root@mirror.xivo.io"
 GATEWAY_HOST = "root@xivo-dev-gateway"
 
-
-env.hosts = [MASTER_HOST]
 
 SCRIPT_PATH = os.path.abspath(os.path.dirname(__file__))
 
