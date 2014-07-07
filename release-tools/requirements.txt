@@ -1,6 +1,7 @@
-fabric
-twitter
-requests
-jinja2
 click
+fabric
+irc
+jinja2
 marrow.mailer
+requests
+twitter
