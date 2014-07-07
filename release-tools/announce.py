@@ -131,14 +131,14 @@ def publish_email(version, announce):
 
 
 def publish_twitter(version):
-    check_twitter_oauth()
+    oauth_token, oauth_secret = check_twitter_oauth()
     version_id = find_version_id(version)
     status = config.get('twitter', 'status').format(version=version, version_id=version_id)
 
     server = twitter.Twitter(auth=twitter.OAuth(config.get('twitter', 'api_key'),
                                                 config.get('twitter', 'api_secret'),
-                                                config.get('twitter', 'oauth_key'),
-                                                config.get('twitter', 'oauth_secret')))
+                                                oauth_token,
+                                                oauth_secret))
     server.statuses.update(status=status)
 
 
@@ -149,6 +149,11 @@ def check_twitter_oauth():
                                                         config.get('twitter', 'api_key'),
                                                         config.get('twitter', 'api_secret'))
         add_tokens_to_config(oauth_token, oauth_secret)
+    else:
+        oauth_token = config.get('twitter', 'oauth_token')
+        oauth_secret = config.get('twitter', 'oauth_secret')
+
+    return oauth_token, oauth_secret
 
 
 def add_tokens_to_config(oauth_token, oauth_secret):
