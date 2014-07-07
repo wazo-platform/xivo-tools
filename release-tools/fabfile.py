@@ -174,7 +174,7 @@ def _update_doc_symlinks(prod, dev):
     path = "{repo}/source/_templates".format(repo=repo)
     with lcd(path):
         local('./update-symlink {prod} {dev}'.format(prod=prod, dev=dev))
-    _commit_and_push(repo, "update symlinks for {dev}".format(dev=dev))
+    _commit_and_push(repo, "update symlinks for {prod}".format(prod=prod))
 
 
 def _merge_doc_to_production():
