@@ -135,10 +135,10 @@ def publish_twitter(version):
     version_id = find_version_id(version)
     status = config.get('twitter', 'status').format(version=version, version_id=version_id)
 
-    server = twitter.Twitter(auth=twitter.OAuth(config.get('twitter', 'api_key'),
-                                                config.get('twitter', 'api_secret'),
-                                                oauth_token,
-                                                oauth_secret))
+    server = twitter.Twitter(auth=twitter.OAuth(oauth_token,
+                                                oauth_secret,
+                                                config.get('twitter', 'api_key'),
+                                                config.get('twitter', 'api_secret')))
     server.statuses.update(status=status)
 
 
