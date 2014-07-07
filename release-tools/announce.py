@@ -45,12 +45,12 @@ def publish_announces(version, path):
     with open(emailpath) as f:
         email = f.read().decode('utf8')
 
-    # click.echo("Publishing email")
-    # publish_email(version, email)
+    click.echo("Publishing email")
+    publish_email(version, email)
     click.echo("Publishing twitter")
     publish_twitter(version)
-    # click.echo("Publishing irc")
-    # publish_irc(version)
+    click.echo("Publishing irc")
+    publish_irc(version)
 
 
 def generate_announce(version, media):
