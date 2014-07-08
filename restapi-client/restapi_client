@@ -211,6 +211,18 @@ def dissociate_user_voicemail(user_id):
     restapi('DELETE', '/users/{}/voicemail'.format(user_id))
 
 
+@c.command('device')
+@c.option('--ip', default=None)
+@c.option('--mac', default=None)
+@c.option('--vendor', default='Aastra')
+@c.option('--model', default='6757i')
+@c.option('--plugin', default='xivo-aastra-3.2.2-SP3')
+def create_device(ip, mac, vendor, model, plugin):
+    logging.debug('creating device with ip: %s and mac: %s', ip, mac)
+    device = restapi('POST', '/devices', ip=ip, mac=mac, vendor=vendor, model=model, plugin=plugin)
+    c.echo(device['id'])
+
+
 @c.command('synchronize')
 @c.argument('device_id')
 def synchronize_device(device_id):
@@ -231,6 +243,7 @@ def build_parser():
     create.add_command(create_line)
     create.add_command(create_user)
     create.add_command(create_voicemail)
+    create.add_command(create_device)
 
     delete = c.Group('delete')
     delete.add_command(delete_extension)
