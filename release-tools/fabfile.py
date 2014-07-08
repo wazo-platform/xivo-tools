@@ -103,7 +103,11 @@ def copy_binaries(version):
 def _list_files(path, pattern='*'):
     command = "find {path} -mindepth 1 -maxdepth 1 -name '{pattern}' -printf '%f\n' | sort".format(path=path,
                                                                                                    pattern=pattern)
-    return run(command).split('\r\n')
+    raw_output = run(command)
+    if raw_output:
+        return raw_output.split('\r\n')
+
+    return []
 
 
 @hosts(BUILDER_HOST)
