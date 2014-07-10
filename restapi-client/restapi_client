@@ -25,6 +25,24 @@ import sys
 restapi = None
 
 
+class KeyValueParamType(c.ParamType):
+    name = 'keyvalue'
+
+    def __init__(self, **converters):
+        self._converters = converters
+
+    def convert(self, text, param, ctx):
+        try:
+            key, value = text.split(':', 1)
+        except ValueError:
+            self.fail("missing ':' in key-value pair")
+
+        if key in self._converters:
+            value = self._converters[key].convert(value, None, None)
+
+        return (key, value)
+
+
 class RestApi(object):
 
     @classmethod
@@ -49,6 +67,9 @@ class RestApi(object):
         self._check_status(response)
         return self._decode_response(response)
 
+    def with_dict(self, method, url, parameters):
+        self.__call__(method, url, **parameters)
+
     def _encode_parameters(self, parameters):
         logging.debug('parameters: %s', parameters)
         return json.dumps(parameters) if parameters else None
@@ -67,6 +88,12 @@ class RestApi(object):
         decoded = response.json() if response.text else None
         logging.debug('response: %s', decoded)
         return decoded
+
+
+voicemail_type = KeyValueParamType(max_messages=c.INT,
+                                   attach_audio=c.BOOL,
+                                   delete_messages=c.BOOL,
+                                   ask_password=c.BOOL)
 
 
 @c.group()
@@ -127,6 +154,16 @@ def create_voicemail(number, context, name=None):
     logging.debug('creating voicemail %s@%s (name: %s)', number, context, name)
     voicemail = restapi('POST', '/voicemails', number=number, name=name, context=context)
     c.echo(voicemail['id'])
+
+
+@c.command('voicemail', help="Update a voicemail using a space-seperated list of 'name:value' parameters")
+@c.argument('voicemail_id', type=c.INT)
+@c.argument('parameters', nargs=-1, type=voicemail_type)
+def update_voicemail(voicemail_id, parameters):
+    parameters = dict(parameters)
+    logging.info('updating voicemail %d (%s)', voicemail_id, parameters)
+
+    restapi.with_dict('PUT', '/voicemails/{}'.format(voicemail_id), parameters)
 
 
 @c.command('extension')
@@ -245,6 +282,9 @@ def build_parser():
     create.add_command(create_voicemail)
     create.add_command(create_device)
 
+    update = c.Group('update')
+    update.add_command(update_voicemail)
+
     delete = c.Group('delete')
     delete.add_command(delete_extension)
     delete.add_command(delete_line)
@@ -266,6 +306,7 @@ def build_parser():
     device.add_command(autoprov_device)
 
     cli.add_command(create)
+    cli.add_command(update)
     cli.add_command(delete)
     cli.add_command(associate)
     cli.add_command(dissociate)
