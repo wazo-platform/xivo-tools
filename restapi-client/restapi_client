@@ -249,11 +249,11 @@ def dissociate_user_voicemail(user_id):
 
 
 @c.command('device')
+@c.argument('mac', default=None)
 @c.option('--ip', default=None)
-@c.option('--mac', default=None)
 @c.option('--vendor', default='Aastra')
 @c.option('--model', default='6757i')
-@c.option('--plugin', default='xivo-aastra-3.2.2-SP3')
+@c.option('--plugin', default='xivo-aastra-3.3.1-SP2')
 def create_device(ip, mac, vendor, model, plugin):
     logging.debug('creating device with ip: %s and mac: %s', ip, mac)
     device = restapi('POST', '/devices', ip=ip, mac=mac, vendor=vendor, model=model, plugin=plugin)
