@@ -184,7 +184,7 @@ class XivoConfigure(object):
             'deletable': False,
             'displayname': 'local',
             'parent_ids': [],
-            'raw_config': {'X_key': 'xivo'},
+            'raw_config': {},
             'proxy_main': self.address,
             'registrar_main': self.address
         }
@@ -200,8 +200,7 @@ class XivoConfigure(object):
             'deletable': False,
             'displayname': 'base',
             'parent_ids': [],
-            'raw_config': {'X_key': 'xivo',
-                           'ntp_enabled': True,
+            'raw_config': {'ntp_enabled': True,
                            'ntp_ip': self.address,
                            'X_xivo_phonebook_ip': self.address},
         }
@@ -210,6 +209,21 @@ class XivoConfigure(object):
             provd_http_request.run('provd/cfg_mgr/configs', data=data)
         except urllib2.HTTPError:
             logging.warning('Provd config base already exist, pass.')
+
+        config = {
+            'X_type': 'device',
+            'id': 'defaultconfigdevice',
+            'label': 'Default config device',
+            'deletable': False,
+            'parent_ids': [],
+            'raw_config': {'ntp_enabled': True,
+                           'ntp_ip': self.address},
+        }
+        data = {'config': config}
+        try:
+            provd_http_request.run('provd/cfg_mgr/configs', data=data)
+        except urllib2.HTTPError:
+            logging.warning('Provd config defaultconfigdevice already exist, pass.')
 
     def netiface(self):
         logging.info('Configuring network')
