@@ -1,0 +1,56 @@
+#!/bin/sh
+
+COUNT="$1"
+START_EXTENSION="$2"
+CONTEXT="$3"
+HOST='xdev'
+RESTAPI_CLIENT="./restapi_client --host $HOST"
+
+
+generate_mac() {
+	local mac="00"
+	for i in $(seq 5); do
+		local random=$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 2 | head -n 1)
+		mac="$mac:$random"
+	done
+	echo $mac
+}
+
+main() {
+	local extension="$START_EXTENSION"
+	local context="$CONTEXT"
+	
+	for i in `seq $COUNT` ; do
+		local device_id=$($RESTAPI_CLIENT create device $(generate_mac))
+		local user_id=$($RESTAPI_CLIENT create user User $extension)
+		local line_id=$($RESTAPI_CLIENT create line --context $context)
+		local extension_id=$($RESTAPI_CLIENT create extension --context $context $extension)
+		
+		$RESTAPI_CLIENT associate line-extension $line_id $extension_id
+		$RESTAPI_CLIENT associate user-line $user_id $line_id
+		
+		associate_device_to_line $device_id $line_id
+		
+		extension=$(($extension+ 1))
+	done
+}
+
+associate_device_to_line() {
+	local device_id="$1"
+	local line_id="$2"
+	
+	sql_cmd="UPDATE linefeatures SET device='$device_id' WHERE id=(SELECT id FROM linefeatures WHERE id=$line_id)"
+	
+ssh "$HOST" sh -e <<EOF
+	sudo -u postgres psql asterisk -c "$sql_cmd"
+EOF
+}
+
+dump_infos() {
+	echo "USER_ID: $USER_ID"
+	echo "LINE_ID: $LINE_ID"
+	echo "EXTENSION_ID: $EXTENSION_ID"
+	echo "DEVICE_ID: $DEVICE_ID"
+}
+
+main
