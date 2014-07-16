@@ -1,0 +1,97 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+import argparse
+import os
+import sys
+
+
+xivo_repositories = [
+    'asterisk11',
+    'bntools',
+    'create_archive_file',
+    'dahdi-linux',
+    'dahdi-tools',
+    'debian-installer',
+    'libpri',
+    'pylinphonelib',
+    'xivo',
+    'xivo-acceptance',
+    'xivo-agent',
+    'xivo-agid',
+    'xivo-amid',
+    'xivo-backup',
+    'xivo-build-tools',
+    'xivo-bus',
+    'xivo-call-logs',
+    'xivo-ci',
+    'xivo-client-qt',
+    'xivo-confgen',
+    'xivo-config',
+    'xivo-ctid',
+    'xivo-dao',
+    'xivo-dird',
+    'xivo-doc',
+    'xivo-fetchfw',
+    'xivo-install-cd',
+    'xivo-lib-js',
+    'xivo-lib-python',
+    'xivo-libsccp',
+    'xivo-loadtest',
+    'xivo-manage-db',
+    'xivo-migration-scripts',
+    'xivo-monitoring',
+    'xivo-provd-plugins',
+    'xivo-provisioning',
+    'xivo-restapi',
+    'xivo-sounds',
+    'xivo-stat',
+    'xivo-sysconfd',
+    'xivo-tools',
+    'xivo-upgrade',
+    'xivo-utils',
+    'xivo-web-interface',
+    'xivo-ws',
+]
+
+
+def _parse_args():
+    parser = _new_argument_parser()
+    return parser.parse_args()
+
+
+def _new_argument_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--directory", help='directory containing all xivo repositories (default : $HOME/xivo_src)',
+                        default=os.environ['HOME'] + '/xivo_src')
+    return parser
+
+
+def _is_dir(directory, base_directory):
+    return os.path.isdir(os.path.join(base_directory, directory))
+
+
+def _list_missing_repos(base_directory):
+    listdir = os.listdir(base_directory)
+    existing_repos = set(
+        [directory for directory in listdir if _is_dir(directory, base_directory)])
+    required_repos = set(xivo_repositories)
+    return list(required_repos - existing_repos)
+
+
+def _warn_then_exit(missing_repos, base):
+    print("ERROR: Following repositories are missing in base directory %s : %s"
+          % (base, ', '.join(missing_repos)))
+    sys.exit(1)
+
+
+if __name__ == "__main__":
+    parsed_args = _parse_args()
+    base = parsed_args.directory
+    try:
+        missing_repos = _list_missing_repos(base)
+        if missing_repos:
+            _warn_then_exit(missing_repos, base)
+    except OSError:
+        print("ERROR: Base directory %s does not exist!" % base)
+        sys.exit(3)
