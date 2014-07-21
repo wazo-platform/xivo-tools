@@ -181,7 +181,6 @@ def new_skill(skill_cat, skill_name):
     return {
             "name": unicode(skill_name).lower().replace(' ',''),
             "description": unicode(skill_name),
-            "printscreen": "",
             "category_name": unicode(skill_cat)
             }
 
