@@ -9,11 +9,11 @@ import sh
 
 def main(directory, prefix):
     assert_no_missing_repos(directory)
-    leftover = _find_prefixed_leftover_branches(directory, prefix)
+    leftover = _find_prefixed_unmerged_branches(directory, prefix)
     _display_unmerged_branches(leftover)
 
 
-def _find_prefixed_leftover_branches(directory, prefix):
+def _find_prefixed_unmerged_branches(directory, prefix):
     leftover = []
     for repository in xivo_repositories:
         repository_path = os.path.join(directory, repository)
