@@ -9,7 +9,8 @@ import sh
 
 def main(directory, prefix):
     assert_no_missing_repos(directory)
-    print _find_prefixed_leftover_branches(directory, prefix)
+    leftover = _find_prefixed_leftover_branches(directory, prefix)
+    _display_unmerged_branches(leftover)
 
 
 def _find_prefixed_leftover_branches(directory, prefix):
@@ -37,6 +38,11 @@ def _find_repo_unmerged_branches(repository_path):
 
 def _is_prefixed(branch, prefix):
     return branch.startswith(prefix) or branch.startswith('remotes/origin/' + prefix)
+
+
+def _display_unmerged_branches(leftover):
+    for repo, branch in leftover:
+        print("{0} : {1}".format(repo, branch))
 
 
 def _parse_args():
