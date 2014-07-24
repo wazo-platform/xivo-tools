@@ -18,7 +18,7 @@ def _find_prefixed_leftover_branches(directory, prefix):
         repository_path = os.path.join(directory, repository)
         current_leftover = [(repository, branch)
                             for branch in _find_repo_unmerged_branches(repository_path)
-                            if branch.startswith(prefix)]
+                            if _is_prefixed(branch, prefix)]
         leftover.extend(current_leftover)
 
     return leftover
@@ -33,6 +33,10 @@ def _find_repo_unmerged_branches(repository_path):
                          _cwd=repository_path)
     return [b[2:] for b in raw_results.split('\n')
             if b.strip()]
+
+
+def _is_prefixed(branch, prefix):
+    return branch.startswith(prefix) or branch.startswith('remotes/origin/' + prefix)
 
 
 def _parse_args():
