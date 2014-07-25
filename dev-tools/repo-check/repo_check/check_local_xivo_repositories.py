@@ -12,6 +12,11 @@ class ReposNotFound(Exception):
         Exception.__init__(self, 'XiVO repository Not Found exception: missing %s' % repos)
 
 
+def main():
+    parsed_args = _parse_args()
+    assert_no_missing_repos(parsed_args.directory)
+
+
 def assert_no_missing_repos(directory):
     try:
         missing_repos = _list_missing_repos(directory)
@@ -48,5 +53,4 @@ def _parse_args():
 
 
 if __name__ == "__main__":
-    parsed_args = _parse_args()
-    assert_no_missing_repos(parsed_args.directory)
+    main()

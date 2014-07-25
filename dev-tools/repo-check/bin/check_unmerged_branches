@@ -1,0 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: UTF-8 -*-
+
+from repo_check.check_unmerged_branches import main
+main()

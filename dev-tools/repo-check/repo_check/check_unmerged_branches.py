@@ -7,9 +7,12 @@ from repo_check.check_local_xivo_repositories import assert_no_missing_repos
 import sh
 
 
-def main(directory, prefix):
+def main():
+    parsed_args = _parse_args()
+    directory = parsed_args.directory
+
     assert_no_missing_repos(directory)
-    leftover = _find_prefixed_unmerged_branches(directory, prefix)
+    leftover = _find_prefixed_unmerged_branches(directory, parsed_args.prefix)
     _display_unmerged_branches(leftover)
 
 
@@ -56,5 +59,4 @@ def _parse_args():
 
 
 if __name__ == "__main__":
-    parsed_args = _parse_args()
-    main(parsed_args.directory, parsed_args.prefix)
+    main()
