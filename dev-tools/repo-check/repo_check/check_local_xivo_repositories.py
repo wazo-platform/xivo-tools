@@ -9,7 +9,7 @@ import sys
 class ReposNotFound(Exception):
     def __init__(self, repos):
         self.repos = repos
-        Exception.__init__(self, 'XiVO repository Not Found exception: missing %s' % repos)
+        super(ReposNotFound, self).__init__('XiVO repository Not Found exception: missing %s' % repos)
 
 
 def main():
@@ -33,9 +33,9 @@ def assert_no_missing_repos(directory):
 
 
 def _list_missing_repos(base_directory):
-    listdir = os.listdir(base_directory)
+    dir_list = os.listdir(base_directory)
     existing_repos = set(
-        [directory for directory in listdir if _is_dir(directory, base_directory)])
+        directory for directory in dir_list if _is_dir(directory, base_directory))
     required_repos = set(xivo_repositories)
     return list(required_repos - existing_repos)
 

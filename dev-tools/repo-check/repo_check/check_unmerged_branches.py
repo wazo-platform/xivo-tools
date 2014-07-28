@@ -2,9 +2,12 @@
 
 import argparse
 import os
+from itertools import imap
 from repo_check.repositories import xivo_repositories
 from repo_check.check_local_xivo_repositories import assert_no_missing_repos
-import sh
+from sh import git
+
+git_branches = git.bake('branch', '-a', '--no-color', '--no-merged', 'origin/master')
 
 
 def main():
@@ -14,6 +17,10 @@ def main():
     assert_no_missing_repos(directory)
     leftover = _find_prefixed_unmerged_branches(directory, parsed_args.prefix)
     _display_unmerged_branches(leftover)
+
+
+def _clean_branch_name(raw_line):
+    return raw_line[2:-1]
 
 
 def _find_prefixed_unmerged_branches(directory, prefix):
@@ -29,14 +36,9 @@ def _find_prefixed_unmerged_branches(directory, prefix):
 
 
 def _find_repo_unmerged_branches(repository_path):
-    raw_results = sh.git('branch',
-                         '-a',
-                         '--no-color',
-                         '--no-merged',
-                         'origin/master',
-                         _cwd=repository_path)
-    return [b[2:] for b in raw_results.split('\n')
-            if b.strip()]
+    branches = imap(_clean_branch_name, git_branches(_cwd=repository_path, _iter=True))
+    for branch in branches:
+        yield branch
 
 
 def _is_prefixed(branch, prefix):
