@@ -13,10 +13,10 @@ def find_repo_unmerged_branches(repository_path):
 
 def find_repo_merged_branches(repository_path):
     git_branches = git.bake('branch', '-a', '--no-color', '--merged', 'origin/master')
-    branches = imap(_clean_branch_name, git_branches(_cwd=repository_path, _iter=True))
-    for branch in branches:
-        if 'master' not in branch:
-            yield branch
+    for raw_branch in git_branches(_cwd=repository_path, _iter=True):
+        if 'master' in raw_branch:
+            continue
+        yield _clean_branch_name(raw_branch)
 
 
 def _clean_branch_name(raw_line):
