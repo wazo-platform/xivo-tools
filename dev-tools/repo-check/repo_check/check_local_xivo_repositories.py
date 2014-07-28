@@ -35,7 +35,7 @@ def assert_no_missing_repos(directory):
 def _list_missing_repos(base_directory):
     listdir = os.listdir(base_directory)
     existing_repos = set(
-        [directory for directory in listdir if _is_dir(directory, base_directory)])
+        directory for directory in listdir if _is_dir(directory, base_directory))
     required_repos = set(xivo_repositories)
     return list(required_repos - existing_repos)
 
