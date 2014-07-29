@@ -6,7 +6,7 @@ import csv
 import sys
 from provd.rest.client.client import new_provisioning_client
 
-FIELDS = [u'id', u'mac', u'ip', u'vendor', u'model', u'version', u'config', u'plugin']
+FIELDS = [u'id', u'mac', u'ip', u'vendor', u'model', u'version', u'config', u'plugin', u'configured']
 
 
 def main():
@@ -20,7 +20,7 @@ def main():
     writer = csv.writer(sys.stdout)
     writer.writerow([f.encode('utf-8') for f in FIELDS])
     for device in devices:
-	writer.writerow([device.get(f, u'').encode('utf-8') for f in FIELDS])
+	writer.writerow([unicode(device.get(f, u'')).encode('utf-8') for f in FIELDS])
 
 
 def parse_args():
