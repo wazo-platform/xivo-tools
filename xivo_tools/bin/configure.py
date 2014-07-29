@@ -171,12 +171,8 @@ class XivoConfigure(object):
 
     def provd(self):
         logging.info('Configuring provd')
-        data = {
-            # code generated from '2346789bcdfghjkmnpqrtvwxyzBCDFGHJKLMNPQRTVWXYZ'
-            'var_val': 'ap%s' % '12345678'
-        }
-        qry = build_update_query('staticsip', data, {'var_name': 'autocreate_prefix', 'category': 'general'})
-        exec_sql(qry, data)
+        autocreate_prefix = 'ap12345678'
+        self._create_provd_autocreate_prefix(autocreate_prefix)
 
         config = {
             'X_type': 'registrar',
@@ -188,11 +184,7 @@ class XivoConfigure(object):
             'proxy_main': self.address,
             'registrar_main': self.address
         }
-        data = {'config': config}
-        try:
-            provd_http_request.run('provd/cfg_mgr/configs', data=data)
-        except urllib2.HTTPError:
-            logging.warning('Provd config default already exist, pass.')
+        self._create_provd_config(config)
 
         config = {
             'X_type': 'internal',
@@ -204,11 +196,7 @@ class XivoConfigure(object):
                            'ntp_ip': self.address,
                            'X_xivo_phonebook_ip': self.address},
         }
-        data = {'config': config}
-        try:
-            provd_http_request.run('provd/cfg_mgr/configs', data=data)
-        except urllib2.HTTPError:
-            logging.warning('Provd config base already exist, pass.')
+        self._create_provd_config(config)
 
         config = {
             'X_type': 'device',
@@ -219,11 +207,45 @@ class XivoConfigure(object):
             'raw_config': {'ntp_enabled': True,
                            'ntp_ip': self.address},
         }
+        self._create_provd_config(config)
+
+        config = {
+            'X_type': 'internal',
+            'id': 'autoprov',
+            'deletable': False,
+            'parent_ids': ['base', 'defaultconfigdevice'],
+            'role': 'autocreate',
+            'raw_config': {
+                'sccp_call_managers': {
+                    '1': {'ip': self.address}
+                },
+                'sip_lines': {
+                    '1': {
+                          'display_name': 'Autoprov',
+                          'number': 'autoprov',
+                          'password': 'autoprov',
+                          'proxy_ip': self.address,
+                          'registrar_ip': self.address,
+                          'username': autocreate_prefix
+                    }
+                }
+            },
+        }
+        self._create_provd_config(config)
+
+    def _create_provd_config(self, config):
         data = {'config': config}
         try:
             provd_http_request.run('provd/cfg_mgr/configs', data=data)
         except urllib2.HTTPError:
-            logging.warning('Provd config defaultconfigdevice already exist, pass.')
+            logging.warning('Provd config %s already exist, pass.', config['id'])
+
+    def _create_provd_autocreate_prefix(self, autocreate_prefix):
+        data = {
+            'var_val': autocreate_prefix
+        }
+        qry = build_update_query('staticsip', data, {'var_name': 'autocreate_prefix', 'category': 'general'})
+        exec_sql(qry, data)
 
     def netiface(self):
         logging.info('Configuring network')
