@@ -35,6 +35,6 @@ def display_branches(leftover):
 
 
 def fetch_all_repositories(repository_paths):
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=010) as executor:
         futures = [executor.submit(_fetch_repo, repo) for repo in repository_paths]
         wait(futures)
