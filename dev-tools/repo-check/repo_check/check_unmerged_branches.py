@@ -3,7 +3,7 @@
 import argparse
 import os
 from repo_check.check_local_xivo_repositories import assert_no_missing_repos
-from repo_check.git import find_repo_unmerged_branches, display_branches
+from repo_check.git import find_repo_unmerged_branches, display_branches, fetch_all_repositories
 from repo_check.repositories import xivo_repositories
 
 
@@ -12,6 +12,7 @@ def main():
     directory = parsed_args.directory
 
     assert_no_missing_repos(directory)
+    fetch_all_repositories(os.path.join(directory, xivo_rep) for xivo_rep in xivo_repositories)
     leftover = _find_prefixed_unmerged_branches(directory, parsed_args.prefix)
     display_branches(leftover)
 
