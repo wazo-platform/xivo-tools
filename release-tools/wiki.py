@@ -1,5 +1,5 @@
 import requests
-import datetime
+from datetime import datetime
 
 WIKI_URL = "https://wiki.xivo.io/api.php"
 
