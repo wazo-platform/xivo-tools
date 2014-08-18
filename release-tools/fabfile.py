@@ -3,7 +3,7 @@ import os
 import wiki
 
 from contextlib import contextmanager as _contextmanager
-from fabric.api import abort, cd, execute, hosts, local, lcd, puts, run, sudo
+from fabric.api import abort, cd, execute, hosts, local, lcd, puts, run
 from fabric.contrib.console import confirm
 from ConfigParser import ConfigParser as _ConfigParser
 
@@ -67,17 +67,12 @@ jenkins = _Jenkins(config.get('jenkins', 'url'),
 
 def build_report_auto():
     """build HTML report on tests executed automatically"""
-    jenkins.launch('report')
+    jenkins.launch('report_auto')
 
 
-@hosts(BUILDER_HOST)
-def build_report_manual(version):
+def build_report_manual():
     """build HTML report on tests executed manually"""
-    url = "{lordboard}/report.html".format(lordboard=config.get('lordboard', 'url'))
-    path = '/var/www/builder/tests-report-xivo-manual-{version}.html'.format(version=version)
-
-    command = 'curl {url} -o {path}'.format(url=url, path=path)
-    sudo(command, user='builder')
+    jenkins.launch('report_manual')
 
 
 @hosts(MASTER_HOST)
