@@ -1,10 +1,15 @@
 #!/bin/sh
 
-COUNT="$1"
-START_EXTENSION="$2"
-CONTEXT="$3"
-HOST='xdev'
+HOST="$1"
+COUNT="$2"
+START_EXTENSION="$3"
+CONTEXT="$4"
 RESTAPI_CLIENT="./restapi_client --host $HOST"
+
+if [ -z "$HOST" -o -z "$COUNT" -o -z "$START_EXTENSION" -o -z "$CONTEXT" ]; then
+	echo "usage: $0 <host> <count> <start_extension> <context>"
+	exit 1
+fi
 
 
 generate_mac() {
