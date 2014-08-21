@@ -39,6 +39,7 @@ xivo_repositories = [
     'xivo-provd-plugins',
     'xivo-provisioning',
     'xivo-restapi',
+    'xivo-restapi-tests',
     'xivo-sounds',
     'xivo-stat',
     'xivo-sysconfd',
