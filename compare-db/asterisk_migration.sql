@@ -6174,6 +6174,2206 @@ ALTER TABLE ONLY voicemail ALTER COLUMN uniqueid SET DEFAULT nextval('voicemail_
 
 
 --
+-- Data for Name: accessfeatures; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY accessfeatures (id, host, commented, feature) FROM stdin;
+\.
+
+
+--
+-- Name: accessfeatures_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('accessfeatures_id_seq', 1, false);
+
+
+--
+-- Data for Name: accesswebservice; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY accesswebservice (id, name, login, passwd, host, obj, disable, description) FROM stdin;
+\.
+
+
+--
+-- Name: accesswebservice_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('accesswebservice_id_seq', 1, false);
+
+
+--
+-- Data for Name: agent_login_status; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY agent_login_status (agent_id, login_at, extension, context, interface, state_interface, agent_number) FROM stdin;
+\.
+
+
+--
+-- Data for Name: agent_membership_status; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY agent_membership_status (agent_id, queue_id, queue_name, penalty) FROM stdin;
+\.
+
+
+--
+-- Data for Name: agentfeatures; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY agentfeatures (id, numgroup, firstname, lastname, number, passwd, context, language, autologoff, "group", description, preprocess_subroutine) FROM stdin;
+\.
+
+
+--
+-- Name: agentfeatures_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('agentfeatures_id_seq', 1, false);
+
+
+--
+-- Data for Name: agentglobalparams; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY agentglobalparams (id, category, option_name, option_value) FROM stdin;
+2	general	persistentagents	yes
+7	general	multiplelogin	no
+8	agents	maxlogintries	3
+9	agents	endcall	no
+\.
+
+
+--
+-- Name: agentglobalparams_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('agentglobalparams_id_seq', 9, true);
+
+
+--
+-- Data for Name: agentgroup; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY agentgroup (id, groupid, name, groups, commented, deleted, description) FROM stdin;
+1	1	default		0	0	
+\.
+
+
+--
+-- Name: agentgroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('agentgroup_id_seq', 1, true);
+
+
+--
+-- Data for Name: agentqueueskill; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY agentqueueskill (agentid, skillid, weight) FROM stdin;
+\.
+
+
+--
+-- Data for Name: attachment; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY attachment (id, name, object_type, object_id, file, size, mime) FROM stdin;
+\.
+
+
+--
+-- Name: attachment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('attachment_id_seq', 1, false);
+
+
+--
+-- Data for Name: call_log; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY call_log (id, date, source_name, source_exten, destination_name, destination_exten, duration, user_field, answered, source_line_identity, destination_line_identity) FROM stdin;
+\.
+
+
+--
+-- Name: call_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('call_log_id_seq', 1, false);
+
+
+--
+-- Data for Name: callerid; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY callerid (mode, callerdisplay, type, typeval) FROM stdin;
+\.
+
+
+--
+-- Data for Name: callfilter; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY callfilter (id, name, type, bosssecretary, callfrom, ringseconds, commented, description) FROM stdin;
+\.
+
+
+--
+-- Name: callfilter_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('callfilter_id_seq', 1, false);
+
+
+--
+-- Data for Name: callfiltermember; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY callfiltermember (id, callfilterid, type, typeval, ringseconds, priority, bstype, active) FROM stdin;
+\.
+
+
+--
+-- Name: callfiltermember_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('callfiltermember_id_seq', 1, false);
+
+
+--
+-- Data for Name: cel; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY cel (id, eventtype, eventtime, userdeftype, cid_name, cid_num, cid_ani, cid_rdnis, cid_dnid, exten, context, channame, appname, appdata, amaflags, accountcode, peeraccount, uniqueid, linkedid, userfield, peer, call_log_id) FROM stdin;
+\.
+
+
+--
+-- Name: cel_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('cel_id_seq', 1, false);
+
+
+--
+-- Data for Name: context; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY context (name, displayname, entity, contexttype, commented, description) FROM stdin;
+__switchboard_directory	Switchboard	xivo_entity	others	0	
+\.
+
+
+--
+-- Data for Name: contextinclude; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY contextinclude (context, include, priority) FROM stdin;
+\.
+
+
+--
+-- Data for Name: contextmember; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY contextmember (context, type, typeval, varname) FROM stdin;
+\.
+
+
+--
+-- Data for Name: contextnumbers; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY contextnumbers (context, type, numberbeg, numberend, didlength) FROM stdin;
+\.
+
+
+--
+-- Data for Name: contexttype; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY contexttype (id, name, commented, deletable, description) FROM stdin;
+1	internal	0	0	
+2	incall	0	0	
+3	outcall	0	0	
+4	services	0	0	
+5	others	0	0	
+\.
+
+
+--
+-- Name: contexttype_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('contexttype_id_seq', 5, true);
+
+
+--
+-- Data for Name: cti_preference; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY cti_preference (id, option) FROM stdin;
+1	loginwindow.url
+2	xlet.identity.logagent
+3	xlet.identity.pauseagent
+4	xlet.agentdetails.noqueueaction
+5	xlet.agentdetails.hideastid
+6	xlet.agentdetails.hidecontext
+7	xlet.agents.fontname
+8	xlet.agents.fontsize
+9	xlet.agents.iconsize
+10	xlet.queues.statsfetchperiod
+11	presence.autochangestate
+\.
+
+
+--
+-- Name: cti_preference_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('cti_preference_id_seq', 11, true);
+
+
+--
+-- Data for Name: cti_profile; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY cti_profile (id, name, presence_id, phonehints_id) FROM stdin;
+2	Client	1	1
+1	Agent	1	1
+5	Supervisor	1	1
+7	Switchboard	1	1
+\.
+
+
+--
+-- Name: cti_profile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('cti_profile_id_seq', 7, true);
+
+
+--
+-- Data for Name: cti_profile_preference; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY cti_profile_preference (profile_id, preference_id, value) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cti_profile_service; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY cti_profile_service (profile_id, service_id) FROM stdin;
+2	5
+2	6
+2	7
+2	8
+\.
+
+
+--
+-- Data for Name: cti_profile_xlet; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY cti_profile_xlet (xlet_id, profile_id, layout_id, closable, movable, floating, scrollable, "order") FROM stdin;
+1	1	2	t	t	t	t	0
+1	2	2	t	t	t	t	0
+1	5	2	t	t	t	t	0
+2	2	2	t	t	t	t	2
+8	5	1	t	t	t	f	\N
+10	2	2	t	t	t	t	1
+12	1	1	t	t	f	t	\N
+13	5	1	t	t	t	t	\N
+14	1	1	t	t	f	t	\N
+14	5	1	t	t	t	t	\N
+15	1	1	f	t	f	t	\N
+15	5	1	f	t	t	t	\N
+16	5	1	f	t	t	t	\N
+17	5	1	t	t	t	t	\N
+1	7	2	t	t	t	t	0
+18	7	1	t	t	t	t	1
+2	7	1	t	t	t	t	2
+4	2	3	t	t	t	t	0
+12	2	3	t	t	t	t	1
+6	2	3	t	t	t	t	2
+3	2	3	t	t	t	t	3
+5	2	3	t	t	t	t	4
+7	2	3	t	t	t	t	5
+11	2	3	t	t	t	t	6
+8	2	3	t	t	t	t	7
+23	7	1	t	t	t	t	3
+\.
+
+
+--
+-- Data for Name: cti_service; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY cti_service (id, key) FROM stdin;
+1	enablevm
+2	callrecord
+3	incallrec
+4	incallfilter
+5	enablednd
+6	fwdunc
+7	fwdbusy
+8	fwdrna
+\.
+
+
+--
+-- Name: cti_service_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('cti_service_id_seq', 8, true);
+
+
+--
+-- Data for Name: cti_xlet; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY cti_xlet (id, plugin_name) FROM stdin;
+1	identity
+2	dial
+3	history
+4	search
+6	fax
+7	features
+8	conference
+9	datetime
+10	tabber
+11	mylocaldir
+12	customerinfo
+13	agents
+14	agentdetails
+15	queues
+16	queuemembers
+17	queueentrydetails
+18	switchboard
+5	remotedirectory
+23	directory
+24	agentstatusdashboard
+\.
+
+
+--
+-- Name: cti_xlet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('cti_xlet_id_seq', 24, true);
+
+
+--
+-- Data for Name: cti_xlet_layout; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY cti_xlet_layout (id, name) FROM stdin;
+1	dock
+2	grid
+3	tab
+\.
+
+
+--
+-- Name: cti_xlet_layout_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('cti_xlet_layout_id_seq', 3, true);
+
+
+--
+-- Data for Name: cticontexts; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY cticontexts (id, name, directories, display, description, deletable) FROM stdin;
+1	default	xivodir,internal	Display	Contexte par défaut	1
+2	__switchboard_directory	xivodir	switchboard		1
+\.
+
+
+--
+-- Name: cticontexts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('cticontexts_id_seq', 2, true);
+
+
+--
+-- Data for Name: ctidirectories; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctidirectories (id, name, uri, delimiter, match_direct, match_reverse, description, deletable) FROM stdin;
+1	xivodir	phonebook		["phonebook.firstname","phonebook.lastname","phonebook.displayname","phonebook.society","phonebooknumber.office.number"]	["phonebooknumber.office.number","phonebooknumber.mobile.number"]	Répertoire XiVO Externe	1
+2	internal	internal		["userfeatures.firstname","userfeatures.lastname"]		Répertoire XiVO Interne	1
+\.
+
+
+--
+-- Name: ctidirectories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctidirectories_id_seq', 2, true);
+
+
+--
+-- Data for Name: ctidirectoryfields; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctidirectoryfields (dir_id, fieldname, value) FROM stdin;
+1	phone	phonebooknumber.office.number
+1	firstname	phonebook.firstname
+1	lastname	phonebook.lastname
+1	fullname	phonebook.fullname
+1	company	phonebook.society
+1	mail	phonebook.email
+1	reverse	phonebook.fullname
+2	firstname	userfeatures.firstname
+2	lastname	userfeatures.lastname
+2	phone	extensions.exten
+\.
+
+
+--
+-- Data for Name: ctidisplays; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctidisplays (id, name, data, deletable, description) FROM stdin;
+1	Display	{"10": [ "Nom","","","{db-firstname} {db-lastname}" ],"20": [ "Numéro","phone","","{db-phone}" ],"30": [ "Entreprise","","Inconnue","{db-company}" ],"40": [ "E-mail","","","{db-mail}" ], "50": [ "Source","","","{xivo-directory}" ]}	1	Affichage par défaut
+2	switchboard	{ "10": [ "", "status", "", ""],"20": [ "Name", "name", "", "{db-firstname} {db-lastname}"],"30": [ "Number", "number_office", "", "{db-phone}"]}	1	
+\.
+
+
+--
+-- Name: ctidisplays_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctidisplays_id_seq', 2, true);
+
+
+--
+-- Data for Name: ctilog; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctilog (id, eventdate, loginclient, company, status, action, arguments, callduration) FROM stdin;
+\.
+
+
+--
+-- Name: ctilog_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctilog_id_seq', 1, false);
+
+
+--
+-- Data for Name: ctimain; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctimain (id, commandset, ami_ip, ami_port, ami_login, ami_password, cti_ip, cti_port, cti_active, ctis_ip, ctis_port, ctis_active, webi_ip, webi_port, webi_active, info_ip, info_port, info_active, tlscertfile, tlsprivkeyfile, socket_timeout, login_timeout, context_separation, live_reload_conf) FROM stdin;
+1	xivocti	127.0.0.1	5038	xivo_cti_user	phaickbebs9	0.0.0.0	5003	1	0.0.0.0	5013	1	127.0.0.1	5004	1	127.0.0.1	5005	1			10	5	1	1
+\.
+
+
+--
+-- Name: ctimain_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctimain_id_seq', 1, true);
+
+
+--
+-- Data for Name: ctiphonehints; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctiphonehints (id, idgroup, number, name, color) FROM stdin;
+1	1	-2	Inexistant	#030303
+2	1	-1	Désactivé	#000000
+3	1	0	Disponible	#0DFF25
+4	1	1	En ligne OU appelle	#FF032D
+5	1	2	Occupé	#FF0008
+6	1	4	Indisponible	#FFFFFF
+7	1	8	Sonne	#1B0AFF
+8	1	9	(En Ligne OU Appelle) ET Sonne	#FF0526
+9	1	16	En Attente	#F7FF05
+\.
+
+
+--
+-- Name: ctiphonehints_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctiphonehints_id_seq', 9, true);
+
+
+--
+-- Data for Name: ctiphonehintsgroup; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctiphonehintsgroup (id, name, description, deletable) FROM stdin;
+1	xivo	De base non supprimable	0
+\.
+
+
+--
+-- Name: ctiphonehintsgroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctiphonehintsgroup_id_seq', 1, true);
+
+
+--
+-- Data for Name: ctipresences; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctipresences (id, name, description, deletable) FROM stdin;
+1	xivo	De base non supprimable	0
+\.
+
+
+--
+-- Name: ctipresences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctipresences_id_seq', 1, true);
+
+
+--
+-- Data for Name: ctireversedirectories; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctireversedirectories (id, directories) FROM stdin;
+1	["xivodir"]
+\.
+
+
+--
+-- Name: ctireversedirectories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctireversedirectories_id_seq', 1, true);
+
+
+--
+-- Data for Name: ctisheetactions; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctisheetactions (id, name, description, whom, sheet_info, systray_info, sheet_qtui, action_info, focus, deletable, disable) FROM stdin;
+4	XiVO	Modèle de fiche de base.	dest	{"10": [ "Nom","title","","{xivo-calleridname}",0 ],"20": [ "Numéro","text","","{xivo-calleridnum}",0 ],"30": [ "Origine","text","","{xivo-origin}",0 ]}	{"10": [ "Nom","title","","{xivo-calledidname}" ],"20": [ "Numéro","body","","{xivo-calleridnum}" ],"30": [ "Origine","body","","{xivo-origin}" ]}		{}	0	1	1
+1	dial	sheet_action_dial	dest	{}	{}		{}	0	1	0
+3	custom1	sheet_action_custom1	all	{}	{}		{}	0	1	0
+2	queue	sheet_action_queue	dest	{}	{}	file:///etc/xivo/ctiservers/form.ui	{}	0	1	0
+\.
+
+
+--
+-- Name: ctisheetactions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctisheetactions_id_seq', 4, true);
+
+
+--
+-- Data for Name: ctisheetevents; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctisheetevents (id, incomingdid, dial, link, unlink, hangup) FROM stdin;
+1		dial			\N
+\.
+
+
+--
+-- Name: ctisheetevents_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctisheetevents_id_seq', 1, true);
+
+
+--
+-- Data for Name: ctistatus; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ctistatus (id, presence_id, name, display_name, actions, color, access_status, deletable) FROM stdin;
+1	1	available	Disponible	enablednd(false)	#08FD20	1,2,3,4,5	0
+4	1	donotdisturb	Ne pas déranger	enablednd(true)	#FF032D	1,2,3,4,5	1
+2	1	away	Sorti	enablednd(false)	#FDE50A	1,2,3,4,5	1
+3	1	outtolunch	Parti Manger	enablednd(false)	#001AFF	1,2,3,4,5	1
+5	1	berightback	Bientôt de retour	enablednd(false)	#FFB545	1,2,3,4,5	1
+6	1	disconnected	Déconnecté	agentlogoff()	#202020		0
+\.
+
+
+--
+-- Name: ctistatus_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ctistatus_id_seq', 6, true);
+
+
+--
+-- Data for Name: dhcp; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY dhcp (id, active, pool_start, pool_end, extra_ifaces) FROM stdin;
+1	0			
+\.
+
+
+--
+-- Name: dhcp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('dhcp_id_seq', 2, true);
+
+
+--
+-- Data for Name: dialaction; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY dialaction (category, categoryval, action, actionarg1, actionarg2, linked, event) FROM stdin;
+\.
+
+
+--
+-- Data for Name: dialpattern; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY dialpattern (id, type, typeid, externprefix, prefix, exten, stripnum, callerid) FROM stdin;
+\.
+
+
+--
+-- Name: dialpattern_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('dialpattern_id_seq', 1, false);
+
+
+--
+-- Data for Name: directories; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY directories (id, uri, dirtype, name, tablename, description) FROM stdin;
+1	internal	\N	internal		XiVO internal users
+2	phonebook	\N	phonebook		XiVO phonebook
+\.
+
+
+--
+-- Name: directories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('directories_id_seq', 3, true);
+
+
+--
+-- Data for Name: entity; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY entity (id, name, displayname, phonenumber, faxnumber, email, url, address1, address2, city, state, zipcode, country, disable, dcreate, description) FROM stdin;
+\.
+
+
+--
+-- Name: entity_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('entity_id_seq', 1, false);
+
+
+--
+-- Data for Name: extensions; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY extensions (id, commented, context, exten, type, typeval) FROM stdin;
+2	1	xivo-features	_*31.	extenfeatures	agentstaticlogin
+3	1	xivo-features	_*32.	extenfeatures	agentstaticlogoff
+4	1	xivo-features	_*30.	extenfeatures	agentstaticlogtoggle
+5	0	xivo-features	_*37.	extenfeatures	bsfilter
+6	0	xivo-features	_*664.	extenfeatures	callgroup
+7	1	xivo-features	*34	extenfeatures	calllistening
+8	0	xivo-features	_*667.	extenfeatures	callmeetme
+9	0	xivo-features	_*665.	extenfeatures	callqueue
+10	1	xivo-features	*26	extenfeatures	callrecord
+11	0	xivo-features	_*666.	extenfeatures	calluser
+12	0	xivo-features	*36	extenfeatures	directoryaccess
+13	0	xivo-features	*25	extenfeatures	enablednd
+14	0	xivo-features	*90	extenfeatures	enablevm
+17	0	xivo-features	_*90.	extenfeatures	enablevmslt
+18	0	xivo-features	_*23.	extenfeatures	fwdbusy
+19	0	xivo-features	_*22.	extenfeatures	fwdrna
+20	0	xivo-features	_*21.	extenfeatures	fwdunc
+21	0	xivo-features	*20	extenfeatures	fwdundoall
+25	0	xivo-features	*48378	extenfeatures	autoprov
+26	0	xivo-features	*27	extenfeatures	incallfilter
+27	0	xivo-features	*10	extenfeatures	phonestatus
+28	0	xivo-features	_*735.	extenfeatures	phoneprogfunckey
+29	0	xivo-features	_*8.	extenfeatures	pickup
+33	0	xivo-features	*9	extenfeatures	recsnd
+34	0	xivo-features	_*99.	extenfeatures	vmboxmsgslt
+35	1	xivo-features	_*93.	extenfeatures	vmboxpurgeslt
+37	0	xivo-features	*98	extenfeatures	vmusermsg
+36	0	xivo-features	_*97.	extenfeatures	vmboxslt
+38	1	xivo-features	*92	extenfeatures	vmuserpurge
+39	1	xivo-features	_*92.	extenfeatures	vmuserpurgeslt
+40	0	xivo-features	_*96.	extenfeatures	vmuserslt
+41	0	xivo-features	_*11.	extenfeatures	paging
+\.
+
+
+--
+-- Name: extensions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('extensions_id_seq', 43, true);
+
+
+--
+-- Data for Name: features; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY features (id, cat_metric, var_metric, commented, filename, category, var_name, var_val) FROM stdin;
+1	0	0	0	features.conf	general	parkext	700
+2	0	0	0	features.conf	general	parkpos	701-750
+3	0	0	0	features.conf	general	context	parkedcalls
+4	0	0	1	features.conf	general	parkinghints	no
+5	0	0	1	features.conf	general	parkingtime	45
+6	0	0	1	features.conf	general	comebacktoorigin	no
+7	0	0	1	features.conf	general	courtesytone	\N
+8	0	0	1	features.conf	general	parkedplay	caller
+9	0	0	1	features.conf	general	parkedcalltransfers	no
+10	0	0	1	features.conf	general	parkedcallreparking	no
+11	0	0	1	features.conf	general	parkedcallhangup	no
+12	0	0	1	features.conf	general	parkedcallrecording	no
+13	0	0	1	features.conf	general	parkeddynamic	no
+14	0	0	1	features.conf	general	adsipark	no
+15	0	0	1	features.conf	general	findslot	next
+16	0	0	1	features.conf	general	parkedmusicclass	default
+18	0	0	1	features.conf	general	xfersound	\N
+19	0	0	1	features.conf	general	xferfailsound	\N
+20	0	0	1	features.conf	general	pickupexten	*8
+21	0	0	1	features.conf	general	pickupsound	
+22	0	0	1	features.conf	general	pickupfailsound	
+24	0	0	1	features.conf	general	atxfernoanswertimeout	15
+25	0	0	1	features.conf	general	atxferdropcall	no
+26	0	0	1	features.conf	general	atxferloopdelay	10
+27	0	0	1	features.conf	general	atxfercallbackretries	2
+28	1	0	0	features.conf	featuremap	blindxfer	#1
+29	1	0	0	features.conf	featuremap	disconnect	*0
+30	1	0	0	features.conf	featuremap	automon	*1
+31	1	0	0	features.conf	featuremap	atxfer	*2
+32	1	0	0	features.conf	featuremap	parkcall	#72
+17	0	0	1	features.conf	general	transferdigittimeout	5
+23	0	0	1	features.conf	general	featuredigittimeout	1500
+\.
+
+
+--
+-- Name: features_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('features_id_seq', 33, true);
+
+
+--
+-- Data for Name: func_key; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY func_key (id, type_id, destination_type_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: func_key_dest_conference; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY func_key_dest_conference (func_key_id, destination_type_id, conference_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: func_key_dest_group; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY func_key_dest_group (func_key_id, destination_type_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: func_key_dest_queue; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY func_key_dest_queue (func_key_id, destination_type_id, queue_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: func_key_dest_user; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY func_key_dest_user (func_key_id, user_id, destination_type_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: func_key_destination_type; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY func_key_destination_type (id, name) FROM stdin;
+1	user
+2	group
+3	queue
+4	conference
+\.
+
+
+--
+-- Name: func_key_destination_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('func_key_destination_type_id_seq', 1, false);
+
+
+--
+-- Name: func_key_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('func_key_id_seq', 1, false);
+
+
+--
+-- Data for Name: func_key_mapping; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY func_key_mapping (template_id, func_key_id, destination_type_id, label, "position", blf) FROM stdin;
+\.
+
+
+--
+-- Data for Name: func_key_template; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY func_key_template (id, name, private) FROM stdin;
+\.
+
+
+--
+-- Name: func_key_template_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('func_key_template_id_seq', 1, false);
+
+
+--
+-- Data for Name: func_key_type; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY func_key_type (id, name) FROM stdin;
+1	speeddial
+\.
+
+
+--
+-- Name: func_key_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('func_key_type_id_seq', 1, true);
+
+
+--
+-- Data for Name: general; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY general (id, timezone, exchange_trunkid, exchange_exten, dundi) FROM stdin;
+1	Europe/Paris	\N	\N	0
+\.
+
+
+--
+-- Name: general_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('general_id_seq', 1, true);
+
+
+--
+-- Data for Name: groupfeatures; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY groupfeatures (id, name, number, context, transfer_user, transfer_call, write_caller, write_calling, timeout, preprocess_subroutine, deleted) FROM stdin;
+\.
+
+
+--
+-- Name: groupfeatures_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('groupfeatures_id_seq', 1, false);
+
+
+--
+-- Data for Name: iaxcallnumberlimits; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY iaxcallnumberlimits (id, destination, netmask, calllimits) FROM stdin;
+\.
+
+
+--
+-- Name: iaxcallnumberlimits_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('iaxcallnumberlimits_id_seq', 1, false);
+
+
+--
+-- Data for Name: incall; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY incall (id, exten, context, preprocess_subroutine, commented, description) FROM stdin;
+\.
+
+
+--
+-- Name: incall_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('incall_id_seq', 1, false);
+
+
+--
+-- Data for Name: ldapfilter; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ldapfilter (id, ldapserverid, name, "user", passwd, basedn, filter, attrdisplayname, attrphonenumber, additionaltype, additionaltext, commented, description) FROM stdin;
+\.
+
+
+--
+-- Name: ldapfilter_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ldapfilter_id_seq', 1, false);
+
+
+--
+-- Data for Name: ldapserver; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY ldapserver (id, name, host, port, securitylayer, protocolversion, disable, dcreate, description) FROM stdin;
+\.
+
+
+--
+-- Name: ldapserver_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('ldapserver_id_seq', 1, false);
+
+
+--
+-- Data for Name: linefeatures; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY linefeatures (id, protocolid, device, configregistrar, name, number, context, provisioningid, num, ipfrom, commented, description, protocol) FROM stdin;
+\.
+
+
+--
+-- Name: linefeatures_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('linefeatures_id_seq', 1, false);
+
+
+--
+-- Data for Name: mail; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY mail (id, mydomain, origin, relayhost, fallback_relayhost, canonical) FROM stdin;
+1		xivo-clients.proformatique.com			
+\.
+
+
+--
+-- Name: mail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('mail_id_seq', 2, true);
+
+
+--
+-- Data for Name: meetmefeatures; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY meetmefeatures (id, meetmeid, name, confno, context, admin_typefrom, admin_internalid, admin_externalid, admin_identification, admin_mode, admin_announceusercount, admin_announcejoinleave, admin_moderationmode, admin_initiallymuted, admin_musiconhold, admin_poundexit, admin_quiet, admin_starmenu, admin_closeconflastmarkedexit, admin_enableexitcontext, admin_exitcontext, user_mode, user_announceusercount, user_hiddencalls, user_announcejoinleave, user_initiallymuted, user_musiconhold, user_poundexit, user_quiet, user_starmenu, user_enableexitcontext, user_exitcontext, talkeroptimization, record, talkerdetection, noplaymsgfirstenter, durationm, closeconfdurationexceeded, nbuserstartdeductduration, timeannounceclose, maxusers, startdate, emailfrom, emailfromname, emailsubject, emailbody, preprocess_subroutine, description, commented) FROM stdin;
+\.
+
+
+--
+-- Name: meetmefeatures_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('meetmefeatures_id_seq', 1, false);
+
+
+--
+-- Data for Name: meetmeguest; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY meetmeguest (id, meetmefeaturesid, fullname, telephonenumber, email) FROM stdin;
+\.
+
+
+--
+-- Name: meetmeguest_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('meetmeguest_id_seq', 1, false);
+
+
+--
+-- Data for Name: monitoring; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY monitoring (id, maintenance, alert_emails, dahdi_monitor_ports, max_call_duration) FROM stdin;
+1	0	\N	\N	\N
+\.
+
+
+--
+-- Name: monitoring_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('monitoring_id_seq', 2, true);
+
+
+--
+-- Data for Name: musiconhold; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY musiconhold (id, cat_metric, var_metric, commented, filename, category, var_name, var_val) FROM stdin;
+1	0	0	0	musiconhold.conf	default	mode	files
+2	0	0	1	musiconhold.conf	default	application	
+3	0	0	0	musiconhold.conf	default	random	no
+4	0	0	0	musiconhold.conf	default	directory	/var/lib/xivo/moh/default
+\.
+
+
+--
+-- Name: musiconhold_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('musiconhold_id_seq', 4, true);
+
+
+--
+-- Data for Name: netiface; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY netiface (id, ifname, hwtypeid, networktype, type, family, address, netmask, broadcast, gateway, mtu, vlanrawdevice, vlanid, options, disable, dcreate, description, method) FROM stdin;
+\.
+
+
+--
+-- Name: netiface_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('netiface_id_seq', 1, false);
+
+
+--
+-- Data for Name: outcall; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY outcall (id, name, context, useenum, internal, preprocess_subroutine, hangupringtime, commented, description) FROM stdin;
+\.
+
+
+--
+-- Name: outcall_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('outcall_id_seq', 1, false);
+
+
+--
+-- Data for Name: outcalltrunk; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY outcalltrunk (outcallid, trunkfeaturesid, priority) FROM stdin;
+\.
+
+
+--
+-- Data for Name: paging; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY paging (id, number, duplex, ignore, record, quiet, timeout, announcement_file, announcement_play, announcement_caller, commented, description) FROM stdin;
+\.
+
+
+--
+-- Name: paging_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('paging_id_seq', 1, false);
+
+
+--
+-- Data for Name: paginguser; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY paginguser (pagingid, userfeaturesid, caller) FROM stdin;
+\.
+
+
+--
+-- Data for Name: phonebook; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY phonebook (id, title, firstname, lastname, displayname, society, email, url, image, description) FROM stdin;
+\.
+
+
+--
+-- Name: phonebook_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('phonebook_id_seq', 1, false);
+
+
+--
+-- Data for Name: phonebookaddress; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY phonebookaddress (id, phonebookid, address1, address2, city, state, zipcode, country, type) FROM stdin;
+\.
+
+
+--
+-- Name: phonebookaddress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('phonebookaddress_id_seq', 1, false);
+
+
+--
+-- Data for Name: phonebooknumber; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY phonebooknumber (id, phonebookid, number, type) FROM stdin;
+\.
+
+
+--
+-- Name: phonebooknumber_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('phonebooknumber_id_seq', 1, false);
+
+
+--
+-- Data for Name: phonefunckey; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY phonefunckey (iduserfeatures, fknum, exten, typeextenumbers, typevalextenumbers, typevalextenumbersright, label, supervision, progfunckey, typeextenumbersright) FROM stdin;
+\.
+
+
+--
+-- Data for Name: pickup; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY pickup (id, name, commented, description) FROM stdin;
+\.
+
+
+--
+-- Data for Name: pickupmember; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY pickupmember (pickupid, category, membertype, memberid) FROM stdin;
+\.
+
+
+--
+-- Data for Name: provisioning; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY provisioning (id, net4_ip, net4_ip_rest, username, password, dhcp_integration, rest_port, http_port, private, secure) FROM stdin;
+1		127.0.0.1	admin	admin	0	8666	8667	0	0
+\.
+
+
+--
+-- Name: provisioning_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('provisioning_id_seq', 2, true);
+
+
+--
+-- Data for Name: queue; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY queue (name, musicclass, announce, context, timeout, "monitor-type", "monitor-format", "queue-youarenext", "queue-thereare", "queue-callswaiting", "queue-holdtime", "queue-minutes", "queue-seconds", "queue-thankyou", "queue-reporthold", "periodic-announce", "announce-frequency", "periodic-announce-frequency", "announce-round-seconds", "announce-holdtime", retry, wrapuptime, maxlen, servicelevel, strategy, joinempty, leavewhenempty, eventmemberstatus, eventwhencalled, ringinuse, reportholdtime, memberdelay, weight, timeoutrestart, commented, category, timeoutpriority, autofill, autopause, setinterfacevar, setqueueentryvar, setqueuevar, membermacro, "min-announce-frequency", "random-periodic-announce", "announce-position", "announce-position-limit", defaultrule) FROM stdin;
+\.
+
+
+--
+-- Data for Name: queue_info; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY queue_info (id, call_time_t, queue_name, caller, caller_uniqueid, call_picker, hold_time, talk_time) FROM stdin;
+\.
+
+
+--
+-- Name: queue_info_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('queue_info_id_seq', 1, false);
+
+
+--
+-- Data for Name: queue_log; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY queue_log ("time", callid, queuename, agent, event, data1, data2, data3, data4, data5, id) FROM stdin;
+\.
+
+
+--
+-- Name: queue_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('queue_log_id_seq', 1, false);
+
+
+--
+-- Data for Name: queuefeatures; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY queuefeatures (id, name, displayname, number, context, data_quality, hitting_callee, hitting_caller, retries, ring, transfer_user, transfer_call, write_caller, write_calling, url, announceoverride, timeout, preprocess_subroutine, announce_holdtime, waittime, waitratio) FROM stdin;
+\.
+
+
+--
+-- Name: queuefeatures_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('queuefeatures_id_seq', 1, false);
+
+
+--
+-- Data for Name: queuemember; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY queuemember (queue_name, interface, penalty, commented, usertype, userid, channel, category, "position") FROM stdin;
+\.
+
+
+--
+-- Data for Name: queuepenalty; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY queuepenalty (id, name, commented, description) FROM stdin;
+\.
+
+
+--
+-- Name: queuepenalty_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('queuepenalty_id_seq', 1, false);
+
+
+--
+-- Data for Name: queuepenaltychange; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY queuepenaltychange (queuepenalty_id, seconds, maxp_sign, maxp_value, minp_sign, minp_value) FROM stdin;
+\.
+
+
+--
+-- Data for Name: queueskill; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY queueskill (id, catid, name, description, printscreen) FROM stdin;
+\.
+
+
+--
+-- Name: queueskill_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('queueskill_id_seq', 1, false);
+
+
+--
+-- Data for Name: queueskillcat; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY queueskillcat (id, name) FROM stdin;
+\.
+
+
+--
+-- Name: queueskillcat_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('queueskillcat_id_seq', 1, false);
+
+
+--
+-- Data for Name: queueskillrule; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY queueskillrule (id, name, rule) FROM stdin;
+\.
+
+
+--
+-- Name: queueskillrule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('queueskillrule_id_seq', 1, false);
+
+
+--
+-- Data for Name: record_campaign; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY record_campaign (id, campaign_name, activated, base_filename, queue_id, start_date, end_date) FROM stdin;
+\.
+
+
+--
+-- Name: record_campaign_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('record_campaign_id_seq', 1, false);
+
+
+--
+-- Data for Name: recording; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY recording (cid, start_time, end_time, caller, client_id, callee, filename, campaign_id, agent_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: resolvconf; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY resolvconf (id, hostname, domain, nameserver1, nameserver2, nameserver3, search, description) FROM stdin;
+1			\N	\N	\N	\N	
+\.
+
+
+--
+-- Name: resolvconf_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('resolvconf_id_seq', 2, true);
+
+
+--
+-- Data for Name: rightcall; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY rightcall (id, name, passwd, "authorization", commented, description) FROM stdin;
+\.
+
+
+--
+-- Name: rightcall_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('rightcall_id_seq', 1, false);
+
+
+--
+-- Data for Name: rightcallexten; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY rightcallexten (id, rightcallid, exten) FROM stdin;
+\.
+
+
+--
+-- Name: rightcallexten_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('rightcallexten_id_seq', 1, false);
+
+
+--
+-- Data for Name: rightcallmember; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY rightcallmember (id, rightcallid, type, typeval) FROM stdin;
+\.
+
+
+--
+-- Name: rightcallmember_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('rightcallmember_id_seq', 1, false);
+
+
+--
+-- Data for Name: sccpdevice; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY sccpdevice (id, name, device, line, voicemail) FROM stdin;
+\.
+
+
+--
+-- Name: sccpdevice_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('sccpdevice_id_seq', 1, false);
+
+
+--
+-- Data for Name: sccpgeneralsettings; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY sccpgeneralsettings (id, option_name, option_value) FROM stdin;
+1	directmedia	no
+2	dialtimeout	5
+3	language	en_US
+4	allow	
+5	keepalive	10
+\.
+
+
+--
+-- Name: sccpgeneralsettings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('sccpgeneralsettings_id_seq', 5, true);
+
+
+--
+-- Data for Name: sccpline; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY sccpline (id, name, cid_name, cid_num, context, commented, protocol, disallow, allow) FROM stdin;
+\.
+
+
+--
+-- Name: sccpline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('sccpline_id_seq', 1, false);
+
+
+--
+-- Data for Name: schedule; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY schedule (id, name, timezone, fallback_action, fallback_actionid, fallback_actionargs, description, commented) FROM stdin;
+\.
+
+
+--
+-- Name: schedule_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('schedule_id_seq', 1, false);
+
+
+--
+-- Data for Name: schedule_path; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY schedule_path (schedule_id, path, pathid, "order") FROM stdin;
+\.
+
+
+--
+-- Data for Name: schedule_time; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY schedule_time (id, schedule_id, mode, hours, weekdays, monthdays, months, action, actionid, actionargs, commented) FROM stdin;
+\.
+
+
+--
+-- Name: schedule_time_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('schedule_time_id_seq', 1, false);
+
+
+--
+-- Data for Name: serverfeatures; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY serverfeatures (id, serverid, type, commented, feature) FROM stdin;
+\.
+
+
+--
+-- Name: serverfeatures_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('serverfeatures_id_seq', 1, false);
+
+
+--
+-- Data for Name: session; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY session (sessid, start, expire, identifier, data) FROM stdin;
+\.
+
+
+--
+-- Data for Name: sipauthentication; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY sipauthentication (id, usersip_id, "user", secretmode, secret, realm) FROM stdin;
+\.
+
+
+--
+-- Name: sipauthentication_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('sipauthentication_id_seq', 1, false);
+
+
+--
+-- Data for Name: stat_agent; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stat_agent (id, name) FROM stdin;
+\.
+
+
+--
+-- Name: stat_agent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('stat_agent_id_seq', 1, false);
+
+
+--
+-- Data for Name: stat_agent_periodic; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stat_agent_periodic (id, "time", login_time, agent_id, pause_time, wrapup_time) FROM stdin;
+\.
+
+
+--
+-- Name: stat_agent_periodic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('stat_agent_periodic_id_seq', 1, false);
+
+
+--
+-- Data for Name: stat_call_on_queue; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stat_call_on_queue (id, callid, "time", ringtime, talktime, waittime, queue_id, agent_id, status) FROM stdin;
+\.
+
+
+--
+-- Name: stat_call_on_queue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('stat_call_on_queue_id_seq', 1, false);
+
+
+--
+-- Data for Name: stat_queue; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stat_queue (id, name) FROM stdin;
+\.
+
+
+--
+-- Name: stat_queue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('stat_queue_id_seq', 1, false);
+
+
+--
+-- Data for Name: stat_queue_periodic; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stat_queue_periodic (id, "time", answered, abandoned, total, "full", closed, joinempty, leaveempty, timeout, queue_id, divert_ca_ratio, divert_waittime) FROM stdin;
+\.
+
+
+--
+-- Name: stat_queue_periodic_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('stat_queue_periodic_id_seq', 1, false);
+
+
+--
+-- Data for Name: staticiax; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY staticiax (id, cat_metric, var_metric, commented, filename, category, var_name, var_val) FROM stdin;
+1	0	0	0	iax.conf	general	bindport	4569
+2	0	0	0	iax.conf	general	bindaddr	0.0.0.0
+3	0	0	0	iax.conf	general	iaxthreadcount	10
+4	0	0	0	iax.conf	general	iaxmaxthreadcount	100
+5	0	0	0	iax.conf	general	iaxcompat	no
+6	0	0	0	iax.conf	general	authdebug	yes
+7	0	0	0	iax.conf	general	delayreject	no
+8	0	0	0	iax.conf	general	trunkfreq	20
+9	0	0	0	iax.conf	general	trunktimestamps	yes
+10	0	0	1	iax.conf	general	regcontext	\N
+11	0	0	0	iax.conf	general	minregexpire	60
+12	0	0	0	iax.conf	general	maxregexpire	60
+13	0	0	0	iax.conf	general	bandwidth	high
+14	0	0	1	iax.conf	general	tos	\N
+15	0	0	0	iax.conf	general	jitterbuffer	no
+16	0	0	0	iax.conf	general	forcejitterbuffer	no
+17	0	0	0	iax.conf	general	maxjitterbuffer	1000
+18	0	0	0	iax.conf	general	maxjitterinterps	10
+19	0	0	0	iax.conf	general	resyncthreshold	1000
+20	0	0	1	iax.conf	general	accountcode	\N
+21	0	0	0	iax.conf	general	amaflags	default
+22	0	0	0	iax.conf	general	adsi	no
+23	0	0	0	iax.conf	general	transfer	yes
+24	0	0	0	iax.conf	general	language	fr_FR
+25	0	0	0	iax.conf	general	mohinterpret	default
+26	0	0	1	iax.conf	general	mohsuggest	\N
+27	0	0	0	iax.conf	general	encryption	no
+28	0	0	0	iax.conf	general	maxauthreq	3
+29	0	0	0	iax.conf	general	codecpriority	host
+30	0	0	1	iax.conf	general	disallow	\N
+31	0	0	1	iax.conf	general	allow	\N
+32	0	0	0	iax.conf	general	rtcachefriends	yes
+33	0	0	0	iax.conf	general	rtupdate	yes
+34	0	0	0	iax.conf	general	rtignoreregexpire	yes
+35	0	0	0	iax.conf	general	rtautoclear	no
+36	0	0	0	iax.conf	general	pingtime	20
+37	0	0	0	iax.conf	general	lagrqtime	10
+38	0	0	0	iax.conf	general	nochecksums	no
+39	0	0	0	iax.conf	general	autokill	yes
+40	0	0	0	iax.conf	general	calltokenoptional	0.0.0.0
+41	0	0	0	iax.conf	general	srvlookup	\N
+42	0	0	0	iax.conf	general	jittertargetextra	\N
+43	0	0	0	iax.conf	general	forceencryption	\N
+44	0	0	0	iax.conf	general	trunkmaxsize	\N
+45	0	0	0	iax.conf	general	trunkmtu	\N
+46	0	0	0	iax.conf	general	cos	\N
+47	0	0	0	iax.conf	general	allowfwdownload	\N
+48	0	0	0	iax.conf	general	parkinglot	\N
+49	0	0	0	iax.conf	general	maxcallnumbers	\N
+50	0	0	0	iax.conf	general	maxcallnumbers_nonvalidated	\N
+51	0	0	0	iax.conf	general	shrinkcallerid	\N
+\.
+
+
+--
+-- Name: staticiax_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('staticiax_id_seq', 51, true);
+
+
+--
+-- Data for Name: staticmeetme; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY staticmeetme (id, cat_metric, var_metric, commented, filename, category, var_name, var_val) FROM stdin;
+1	0	0	0	meetme.conf	general	audiobuffers	32
+2	0	0	0	meetme.conf	general	schedule	yes
+3	0	0	0	meetme.conf	general	logmembercount	yes
+4	0	0	0	meetme.conf	general	fuzzystart	300
+5	0	0	0	meetme.conf	general	earlyalert	3600
+6	0	0	0	meetme.conf	general	endalert	120
+\.
+
+
+--
+-- Name: staticmeetme_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('staticmeetme_id_seq', 6, true);
+
+
+--
+-- Data for Name: staticqueue; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY staticqueue (id, cat_metric, var_metric, commented, filename, category, var_name, var_val) FROM stdin;
+1	0	0	0	queues.conf	general	persistentmembers	yes
+2	0	0	0	queues.conf	general	autofill	no
+3	0	0	0	queues.conf	general	monitor-type	no
+4	0	0	0	queues.conf	general	updatecdr	no
+5	0	0	0	queues.conf	general	shared_lastcall	no
+\.
+
+
+--
+-- Name: staticqueue_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('staticqueue_id_seq', 5, true);
+
+
+--
+-- Data for Name: staticsip; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY staticsip (id, cat_metric, var_metric, commented, filename, category, var_name, var_val) FROM stdin;
+1	0	0	0	sip.conf	general	bindport	5060
+3	0	0	0	sip.conf	general	autocreate_context	xivo-initconfig
+8	0	0	0	sip.conf	general	autocreate_type	friend
+10	0	0	0	sip.conf	general	allowsubscribe	yes
+11	0	0	0	sip.conf	general	allowoverlap	yes
+12	0	0	0	sip.conf	general	promiscredir	no
+13	0	0	0	sip.conf	general	autodomain	no
+14	0	0	1	sip.conf	general	domain	\N
+15	0	0	0	sip.conf	general	allowexternaldomains	yes
+16	0	0	0	sip.conf	general	usereqphone	no
+17	0	0	0	sip.conf	general	realm	xivo
+18	0	0	0	sip.conf	general	alwaysauthreject	no
+19	0	0	0	sip.conf	general	useragent	XiVO PBX
+20	0	0	0	sip.conf	general	buggymwi	no
+21	0	0	1	sip.conf	general	regcontext	\N
+22	0	0	0	sip.conf	general	callerid	xivo
+23	0	0	1	sip.conf	general	fromdomain	\N
+24	0	0	0	sip.conf	general	sipdebug	no
+25	0	0	0	sip.conf	general	dumphistory	no
+26	0	0	0	sip.conf	general	recordhistory	no
+27	0	0	0	sip.conf	general	callevents	yes
+28	0	0	1	sip.conf	general	tos_sip	\N
+29	0	0	1	sip.conf	general	tos_audio	\N
+30	0	0	1	sip.conf	general	tos_video	\N
+31	0	0	0	sip.conf	general	t38pt_udptl	no
+32	0	0	0	sip.conf	general	t38pt_usertpsource	no
+33	0	0	1	sip.conf	general	localnet	\N
+34	0	0	1	sip.conf	general	externip	\N
+35	0	0	1	sip.conf	general	externhost	\N
+36	0	0	0	sip.conf	general	externrefresh	10
+37	0	0	0	sip.conf	general	matchexterniplocally	no
+38	0	0	1	sip.conf	general	outboundproxy	\N
+39	0	0	0	sip.conf	general	g726nonstandard	no
+40	0	0	1	sip.conf	general	disallow	\N
+41	0	0	1	sip.conf	general	allow	\N
+42	0	0	0	sip.conf	general	t1min	100
+43	0	0	0	sip.conf	general	relaxdtmf	no
+44	0	0	0	sip.conf	general	rfc2833compensate	no
+45	0	0	0	sip.conf	general	compactheaders	no
+46	0	0	0	sip.conf	general	rtptimeout	0
+47	0	0	0	sip.conf	general	rtpholdtimeout	0
+48	0	0	0	sip.conf	general	rtpkeepalive	0
+49	0	0	0	sip.conf	general	directrtpsetup	no
+50	0	0	0	sip.conf	general	notifymimetype	application/simple-message-summary
+51	0	0	0	sip.conf	general	srvlookup	no
+52	0	0	0	sip.conf	general	pedantic	no
+53	0	0	0	sip.conf	general	minexpiry	60
+54	0	0	0	sip.conf	general	maxexpiry	3600
+55	0	0	0	sip.conf	general	defaultexpiry	120
+56	0	0	0	sip.conf	general	registertimeout	20
+57	0	0	0	sip.conf	general	registerattempts	0
+58	0	0	0	sip.conf	general	notifyringing	yes
+59	0	0	0	sip.conf	general	notifyhold	no
+60	0	0	0	sip.conf	general	allowtransfer	yes
+61	0	0	0	sip.conf	general	maxcallbitrate	384
+62	0	0	0	sip.conf	general	autoframing	yes
+63	0	0	0	sip.conf	general	jbenable	no
+64	0	0	0	sip.conf	general	jbforce	no
+65	0	0	0	sip.conf	general	jbmaxsize	200
+66	0	0	0	sip.conf	general	jbresyncthreshold	1000
+67	0	0	0	sip.conf	general	jbimpl	fixed
+68	0	0	0	sip.conf	general	jblog	no
+69	0	0	1	sip.conf	general	context	\N
+70	0	0	0	sip.conf	general	nat	no
+71	0	0	0	sip.conf	general	dtmfmode	info
+72	0	0	0	sip.conf	general	qualify	no
+73	0	0	0	sip.conf	general	useclientcode	no
+74	0	0	0	sip.conf	general	progressinband	never
+75	0	0	0	sip.conf	general	language	fr_FR
+76	0	0	0	sip.conf	general	mohinterpret	default
+77	0	0	1	sip.conf	general	mohsuggest	\N
+78	0	0	0	sip.conf	general	vmexten	*98
+79	0	0	0	sip.conf	general	trustrpid	no
+80	0	0	0	sip.conf	general	sendrpid	no
+81	0	0	0	sip.conf	general	insecure	no
+82	0	0	0	sip.conf	general	rtcachefriends	no
+83	0	0	0	sip.conf	general	rtupdate	no
+84	0	0	0	sip.conf	general	ignoreregexpire	no
+85	0	0	0	sip.conf	general	rtsavesysname	no
+86	0	0	0	sip.conf	general	rtautoclear	no
+87	0	0	1	sip.conf	general	subscribecontext	\N
+88	0	0	0	sip.conf	general	match_auth_username	no
+89	0	0	0	sip.conf	general	udpbindaddr	0.0.0.0
+90	0	0	0	sip.conf	general	tcpenable	no
+91	0	0	0	sip.conf	general	tcpbindaddr	\N
+92	0	0	0	sip.conf	general	tlsenable	no
+93	0	0	0	sip.conf	general	tlsbindaddr	\N
+94	0	0	0	sip.conf	general	tlscertfile	\N
+95	0	0	0	sip.conf	general	tlscafile	\N
+96	0	0	0	sip.conf	general	tlscadir	/var/lib/asterisk/certs/cadir
+97	0	0	0	sip.conf	general	tlsdontverifyserver	no
+98	0	0	0	sip.conf	general	tlscipher	\N
+99	0	0	0	sip.conf	general	tos_text	\N
+100	0	0	0	sip.conf	general	cos_sip	\N
+101	0	0	0	sip.conf	general	cos_audio	\N
+2	0	0	0	sip.conf	general	autocreatepeer	persist
+102	0	0	0	sip.conf	general	cos_video	\N
+103	0	0	0	sip.conf	general	cos_text	\N
+104	0	0	0	sip.conf	general	mwiexpiry	3600
+105	0	0	0	sip.conf	general	qualifyfreq	60
+106	0	0	0	sip.conf	general	qualifygap	100
+107	0	0	0	sip.conf	general	qualifypeers	1
+108	0	0	0	sip.conf	general	parkinglot	\N
+109	0	0	0	sip.conf	general	permaturemedia	\N
+110	0	0	0	sip.conf	general	sdpsession	\N
+111	0	0	0	sip.conf	general	sdpowner	\N
+112	0	0	0	sip.conf	general	authfailureevents	no
+113	0	0	0	sip.conf	general	dynamic_exclude_static	no
+114	0	0	0	sip.conf	general	contactdeny	\N
+115	0	0	0	sip.conf	general	contactpermit	\N
+116	0	0	0	sip.conf	general	shrinkcallerid	yes
+117	0	0	0	sip.conf	general	regextenonqualify	no
+118	0	0	0	sip.conf	general	timer1	500
+119	0	0	0	sip.conf	general	timerb	32000
+120	0	0	0	sip.conf	general	session-timers	\N
+121	0	0	0	sip.conf	general	session-expires	600
+122	0	0	0	sip.conf	general	session-minse	90
+123	0	0	0	sip.conf	general	session-refresher	uas
+124	0	0	0	sip.conf	general	hash_users	\N
+125	0	0	0	sip.conf	general	hash_peers	\N
+126	0	0	0	sip.conf	general	hash_dialogs	\N
+127	0	0	0	sip.conf	general	notifycid	no
+128	0	0	0	sip.conf	general	callcounter	no
+130	0	0	0	sip.conf	general	stunaddr	\N
+131	0	0	0	sip.conf	general	directmedia	yes
+132	0	0	0	sip.conf	general	ignoresdpversion	no
+133	0	0	0	sip.conf	general	jbtargetextra	\N
+135	0	0	0	sip.conf	general	externtcpport	\N
+136	0	0	0	sip.conf	general	externtlsport	\N
+137	0	0	0	sip.conf	general	media_address	\N
+138	0	0	0	sip.conf	general	use_q850_reason	no
+139	0	0	0	sip.conf	general	snom_aoc_enabled	no
+140	0	0	0	sip.conf	general	subscribe_network_change_event	yes
+141	0	0	0	sip.conf	general	maxforwards	\N
+142	0	0	0	sip.conf	general	disallowed_methods	\N
+143	0	0	0	sip.conf	general	domainsasrealm	\N
+144	0	0	0	sip.conf	general	textsupport	\N
+145	0	0	0	sip.conf	general	videosupport	\N
+146	0	0	0	sip.conf	general	auth_options_requests	no
+147	0	0	0	sip.conf	general	transport	udp
+148	0	0	0	sip.conf	general	allowguest	no
+134	0	0	0	sip.conf	general	encryption	no
+\.
+
+
+--
+-- Name: staticsip_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('staticsip_id_seq', 148, true);
+
+
+--
+-- Data for Name: staticvoicemail; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY staticvoicemail (id, cat_metric, var_metric, commented, filename, category, var_name, var_val) FROM stdin;
+1	0	0	0	voicemail.conf	general	maxmsg	100
+2	0	0	0	voicemail.conf	general	silencethreshold	256
+3	0	0	0	voicemail.conf	general	minsecs	0
+4	0	0	0	voicemail.conf	general	maxsecs	0
+5	0	0	0	voicemail.conf	general	maxsilence	15
+6	0	0	0	voicemail.conf	general	review	yes
+7	0	0	0	voicemail.conf	general	operator	yes
+8	0	0	0	voicemail.conf	general	format	wav
+9	0	0	0	voicemail.conf	general	maxlogins	3
+10	0	0	0	voicemail.conf	general	envelope	yes
+11	0	0	0	voicemail.conf	general	saycid	no
+12	0	0	1	voicemail.conf	general	cidinternalcontexts	\N
+13	0	0	0	voicemail.conf	general	sayduration	yes
+14	0	0	0	voicemail.conf	general	saydurationm	2
+15	0	0	0	voicemail.conf	general	forcename	no
+16	0	0	0	voicemail.conf	general	forcegreetings	no
+17	0	0	0	voicemail.conf	general	tempgreetwarn	yes
+18	0	0	0	voicemail.conf	general	maxgreet	0
+19	0	0	0	voicemail.conf	general	skipms	3000
+20	0	0	0	voicemail.conf	general	sendvoicemail	no
+21	0	0	0	voicemail.conf	general	usedirectory	yes
+22	0	0	0	voicemail.conf	general	nextaftercmd	yes
+23	0	0	1	voicemail.conf	general	dialout	\N
+24	0	0	1	voicemail.conf	general	callback	\N
+25	0	0	1	voicemail.conf	general	exitcontext	\N
+26	0	0	0	voicemail.conf	general	attach	yes
+27	0	0	0	voicemail.conf	general	volgain	0
+28	0	0	0	voicemail.conf	general	mailcmd	/usr/sbin/sendmail -t
+29	0	0	0	voicemail.conf	general	serveremail	xivo
+30	0	0	0	voicemail.conf	general	charset	UTF-8
+31	0	0	0	voicemail.conf	general	fromstring	XiVO PBX
+33	0	0	0	voicemail.conf	general	pbxskip	no
+34	0	0	0	voicemail.conf	general	emailsubject	Messagerie XiVO
+35	0	0	0	voicemail.conf	general	emailbody	Bonjour ${VM_NAME},\n\nVous avez reçu un message d'une durée de ${VM_DUR} minute(s), il vous reste actuellement ${VM_MSGNUM} message(s) non lu(s) sur votre messagerie vocale : ${VM_MAILBOX}.\n\nLe dernier a été envoyé par ${VM_CALLERID}, le ${VM_DATE}. Si vous le souhaitez vous pouvez l'écouter ou le consulter en tapant le *98 sur votre téléphone.\n\nMerci.\n\n-- Messagerie XiVO --
+36	0	0	0	voicemail.conf	general	pagerfromstring	XiVO PBX
+37	0	0	1	voicemail.conf	general	pagersubject	\N
+38	0	0	1	voicemail.conf	general	pagerbody	\N
+39	0	0	0	voicemail.conf	general	adsifdn	0000000F
+40	0	0	0	voicemail.conf	general	adsisec	9BDBF7AC
+41	0	0	0	voicemail.conf	general	adsiver	1
+42	0	0	0	voicemail.conf	general	searchcontexts	no
+43	0	0	0	voicemail.conf	general	externpass	/usr/share/asterisk/bin/change-pass-vm
+44	0	0	1	voicemail.conf	general	externnotify	\N
+45	0	0	1	voicemail.conf	general	smdiport	\N
+46	0	0	1	voicemail.conf	general	odbcstorage	\N
+47	0	0	1	voicemail.conf	general	odbctable	\N
+48	1	0	0	voicemail.conf	zonemessages	eu-fr	Europe/Paris|'vm-received' q 'digits/at' kM
+49	0	0	1	voicemail.conf	general	moveheard	\N
+50	0	0	1	voicemail.conf	general	forward_urgent_auto	\N
+51	0	0	1	voicemail.conf	general	userscontext	\N
+52	0	0	1	voicemail.conf	general	smdienable	\N
+53	0	0	1	voicemail.conf	general	externpassnotify	\N
+54	0	0	1	voicemail.conf	general	externpasscheck	\N
+55	0	0	1	voicemail.conf	general	directoryinfo	\N
+56	0	0	1	voicemail.conf	general	pollmailboxes	\N
+57	0	0	1	voicemail.conf	general	pollfreq	\N
+58	0	0	1	voicemail.conf	general	imapgreetings	\N
+59	0	0	1	voicemail.conf	general	greetingsfolder	\N
+60	0	0	1	voicemail.conf	general	imapparentfolder	\N
+61	0	0	1	voicemail.conf	general	tz	\N
+62	0	0	1	voicemail.conf	general	hidefromdir	\N
+63	0	0	1	voicemail.conf	general	messagewrap	\N
+64	0	0	1	voicemail.conf	general	minpassword	\N
+65	0	0	1	voicemail.conf	general	vm-password	\N
+66	0	0	1	voicemail.conf	general	vm-newpassword	\N
+67	0	0	1	voicemail.conf	general	vm-passchanged	\N
+68	0	0	1	voicemail.conf	general	vm-reenterpassword	\N
+69	0	0	1	voicemail.conf	general	vm-mismatch	\N
+70	0	0	1	voicemail.conf	general	vm-invalid-password	\N
+71	0	0	1	voicemail.conf	general	vm-pls-try-again	\N
+72	0	0	1	voicemail.conf	general	listen-control-forward-key	\N
+73	0	0	1	voicemail.conf	general	listen-control-reverse-key	\N
+74	0	0	1	voicemail.conf	general	listen-control-pause-key	\N
+75	0	0	1	voicemail.conf	general	listen-control-restart-key	\N
+76	0	0	1	voicemail.conf	general	listen-control-stop-key	\N
+77	0	0	1	voicemail.conf	general	backupdeleted	\N
+32	0	0	0	voicemail.conf	general	emaildateformat	%Y-%m-%d à %H:%M:%S
+\.
+
+
+--
+-- Name: staticvoicemail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('staticvoicemail_id_seq', 77, true);
+
+
+--
+-- Data for Name: stats_conf; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stats_conf (id, name, hour_start, hour_end, homepage, timezone, default_delta, monday, tuesday, wednesday, thursday, friday, saturday, sunday, period1, period2, period3, period4, period5, dbegcache, dendcache, dgenercache, dcreate, dupdate, disable, description) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stats_conf_agent; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stats_conf_agent (stats_conf_id, agentfeatures_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stats_conf_group; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stats_conf_group (stats_conf_id, groupfeatures_id) FROM stdin;
+\.
+
+
+--
+-- Name: stats_conf_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('stats_conf_id_seq', 1, false);
+
+
+--
+-- Data for Name: stats_conf_incall; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stats_conf_incall (stats_conf_id, incall_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stats_conf_queue; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stats_conf_queue (stats_conf_id, queuefeatures_id, qos) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stats_conf_user; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stats_conf_user (stats_conf_id, userfeatures_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: stats_conf_xivouser; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY stats_conf_xivouser (stats_conf_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: trunkfeatures; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY trunkfeatures (id, protocolid, registerid, registercommented, description, protocol) FROM stdin;
+\.
+
+
+--
+-- Name: trunkfeatures_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('trunkfeatures_id_seq', 1, false);
+
+
+--
+-- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY "user" (id, login, passwd, meta, valid, "time", dcreate, dupdate, obj, entity_id) FROM stdin;
+1	root	proformatique	root	1	0	1409084546	0		\N
+\.
+
+
+--
+-- Name: user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('user_id_seq', 2, true);
+
+
+--
+-- Data for Name: user_line; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY user_line (id, user_id, line_id, extension_id, main_user, main_line) FROM stdin;
+\.
+
+
+--
+-- Name: user_line_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('user_line_id_seq', 1, false);
+
+
+--
+-- Data for Name: usercustom; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY usercustom (id, name, context, interface, intfsuffix, commented, category, protocol) FROM stdin;
+\.
+
+
+--
+-- Name: usercustom_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('usercustom_id_seq', 1, false);
+
+
+--
+-- Data for Name: userfeatures; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY userfeatures (id, firstname, lastname, voicemailtype, voicemailid, agentid, pictureid, entityid, callerid, ringseconds, simultcalls, enableclient, loginclient, passwdclient, enablehint, enablevoicemail, enablexfer, enableautomon, callrecord, incallfilter, enablednd, enableunc, destunc, enablerna, destrna, enablebusy, destbusy, musiconhold, outcallerid, mobilephonenumber, userfield, bsfilter, preprocess_subroutine, timezone, language, ringintern, ringextern, ringgroup, ringforward, rightcallcode, commented, description, cti_profile_id, func_key_template_id, func_key_private_template_id) FROM stdin;
+\.
+
+
+--
+-- Name: userfeatures_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('userfeatures_id_seq', 1, false);
+
+
+--
+-- Data for Name: useriax; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY useriax (id, name, username, secret, dbsecret, context, language, accountcode, amaflags, mailbox, callerid, fullname, cid_number, trunk, auth, encryption, forceencryption, maxauthreq, inkeys, outkey, adsi, transfer, codecpriority, jitterbuffer, forcejitterbuffer, sendani, qualify, qualifysmoothing, qualifyfreqok, qualifyfreqnotok, timezone, disallow, allow, mohinterpret, mohsuggest, deny, permit, defaultip, sourceaddress, setvar, host, port, mask, regexten, peercontext, ipaddr, regseconds, immediate, parkinglot, category, commented, requirecalltoken, type, keyrotate, protocol) FROM stdin;
+\.
+
+
+--
+-- Name: useriax_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('useriax_id_seq', 1, false);
+
+
+--
+-- Data for Name: usersip; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY usersip (id, name, username, secret, md5secret, context, language, accountcode, amaflags, allowtransfer, fromuser, fromdomain, mailbox, subscribemwi, buggymwi, "call-limit", callerid, fullname, cid_number, maxcallbitrate, insecure, promiscredir, usereqphone, videosupport, trustrpid, allowsubscribe, allowoverlap, dtmfmode, rfc2833compensate, qualify, g726nonstandard, disallow, allow, autoframing, mohinterpret, mohsuggest, useclientcode, progressinband, t38pt_udptl, t38pt_usertpsource, rtptimeout, rtpholdtimeout, rtpkeepalive, deny, permit, defaultip, setvar, host, port, regexten, subscribecontext, fullcontact, vmexten, callingpres, ipaddr, regseconds, regserver, lastms, parkinglot, category, outboundproxy, transport, remotesecret, directmedia, callcounter, busylevel, ignoresdpversion, "session-timers", "session-expires", "session-minse", "session-refresher", callbackextension, registertrying, timert1, timerb, qualifyfreq, contactpermit, contactdeny, unsolicited_mailbox, use_q850_reason, encryption, snom_aoc_enabled, maxforwards, disallowed_methods, textsupport, commented, type, protocol, sendrpid, nat) FROM stdin;
+\.
+
+
+--
+-- Name: usersip_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('usersip_id_seq', 1, false);
+
+
+--
+-- Data for Name: voicemail; Type: TABLE DATA; Schema: public; Owner: asterisk
+--
+
+COPY voicemail (uniqueid, context, mailbox, password, fullname, email, pager, dialout, callback, exitcontext, language, tz, attach, saycid, review, operator, envelope, sayduration, saydurationm, sendvoicemail, deletevoicemail, forcename, forcegreetings, hidefromdir, maxmsg, emailsubject, emailbody, imapuser, imappassword, imapfolder, imapvmsharedid, attachfmt, serveremail, locale, tempgreetwarn, messagewrap, moveheard, minsecs, maxsecs, nextaftercmd, backupdeleted, volgain, passwordlocation, commented, skipcheckpass) FROM stdin;
+\.
+
+
+--
+-- Name: voicemail_uniqueid_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
+--
+
+SELECT pg_catalog.setval('voicemail_uniqueid_seq', 1, false);
+
+
+--
 -- Name: accessfeatures_host_feature_key; Type: CONSTRAINT; Schema: public; Owner: asterisk; Tablespace: 
 --
 
