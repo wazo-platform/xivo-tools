@@ -11,7 +11,7 @@ FARM_HOST = "root@wheezy-farm.xivo.io"
 MIRROR_HOST = "root@mirror.xivo.io"
 
 
-def freeze(previous, release):
+def freeze():
     execute(check_server_started)
     execute(check_slave_started)
     execute(backup_server)
@@ -65,9 +65,4 @@ def upgrade_xivo_test():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('previous_version', help='previous XiVO version')
-    parser.add_argument('rc_version', help='Version to freeze')
-
-    args = parser.parse_args()
-    freeze(args.previous_version, args.rc_version)
+    freeze()
