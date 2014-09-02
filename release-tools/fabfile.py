@@ -347,4 +347,5 @@ def _active_distribution(codename, path):
 
 
 def update_wiki_link(version):
+    """Update download link on wiki.xivo.io"""
     wiki.update_link(config, version)
