@@ -13,6 +13,7 @@ GIT_DIRECTORIES="\
     xivo-backup \
     xivo-bus \
     xivo-call-logs \
+    xivo-confd \
     xivo-confgen \
     xivo-config \
     xivo-ctid \
@@ -25,7 +26,6 @@ GIT_DIRECTORIES="\
     xivo-manage-db \
     xivo-monitoring \
     xivo-provisioning \
-    xivo-restapi \
     xivo-stat \
     xivo-sysconfd \
     xivo-upgrade \

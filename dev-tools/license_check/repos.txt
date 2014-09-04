@@ -6,6 +6,7 @@ xivo-backup
 xivo-bus
 xivo-callgen
 xivo-client-qt
+xivo-confd
 xivo-confgen
 xivo-config
 xivo-ctid
@@ -23,7 +24,6 @@ xivo-presentations
 xivo-provd-plugins
 xivo-provd-plugins-addons
 xivo-provisioning
-xivo-restapi
 xivo-skaro
 xivo-stat
 xivo-tools
