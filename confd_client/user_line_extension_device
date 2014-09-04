@@ -4,7 +4,7 @@ HOST="$1"
 COUNT="$2"
 START_EXTENSION="$3"
 CONTEXT="$4"
-RESTAPI_CLIENT="./confd_client --host $HOST"
+CONFD_CLIENT="./confd_client --host $HOST"
 
 if [ -z "$HOST" -o -z "$COUNT" -o -z "$START_EXTENSION" -o -z "$CONTEXT" ]; then
 	echo "usage: $0 <host> <count> <start_extension> <context>"
@@ -26,13 +26,13 @@ main() {
 	local context="$CONTEXT"
 	
 	for i in `seq $COUNT` ; do
-		local device_id=$($RESTAPI_CLIENT create device $(generate_mac))
-		local user_id=$($RESTAPI_CLIENT create user User $extension)
-		local line_id=$($RESTAPI_CLIENT create line --context $context)
-		local extension_id=$($RESTAPI_CLIENT create extension --context $context $extension)
+		local device_id=$($CONFD_CLIENT create device $(generate_mac))
+		local user_id=$($CONFD_CLIENT create user User $extension)
+		local line_id=$($CONFD_CLIENT create line --context $context)
+		local extension_id=$($CONFD_CLIENT create extension --context $context $extension)
 		
-		$RESTAPI_CLIENT associate line-extension $line_id $extension_id
-		$RESTAPI_CLIENT associate user-line $user_id $line_id
+		$CONFD_CLIENT associate line-extension $line_id $extension_id
+		$CONFD_CLIENT associate user-line $user_id $line_id
 		
 		associate_device_to_line $device_id $line_id
 		

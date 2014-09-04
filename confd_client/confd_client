@@ -43,7 +43,7 @@ class KeyValueParamType(c.ParamType):
         return (key, value)
 
 
-class RestApi(object):
+class Confd(object):
 
     @classmethod
     def from_options(cls, host, port, username, password):
@@ -108,7 +108,7 @@ def cli(debug, host, port, username, password):
     logging.debug("host: %s, port: %d, username: %s, password: %s", host, port,
                   username, password)
     global confd
-    confd = RestApi.from_options(host, port, username, password)
+    confd = Confd.from_options(host, port, username, password)
 
 
 def setup_logging(debug=False):
