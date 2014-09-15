@@ -216,7 +216,7 @@ def _merge_doc_to_production():
     with lcd(repo):
         local('git checkout production')
         local('git pull')
-        local('git merge master')
+        local('git merge --no-edit master')
         local('git push')
 
 
