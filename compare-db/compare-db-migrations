@@ -102,7 +102,6 @@ def create_tables():
 
     engine = sa.create_engine(sqlalchemy_url())
     db_manager.Base.metadata.create_all(bind=engine)
-    db_manager.close()
     engine.dispose()
 
 
