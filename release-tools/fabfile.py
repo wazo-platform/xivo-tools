@@ -236,11 +236,6 @@ def tag_repos(version):
     local(cmd.format(repos=repos, version=version))
 
 
-def build_xivo_fai():
-    """build xivo-fai"""
-    jenkins.launch('fai')
-
-
 @hosts(MIRROR_HOST)
 def backport_squeeze():
     """generate upgrade packages for squeeze"""
