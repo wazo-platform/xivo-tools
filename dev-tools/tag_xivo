@@ -130,6 +130,7 @@ directories="$git_directory/asterisk11 \
              $git_directory/xivo-ctid \
              $git_directory/xivo-dao \
              $git_directory/xivo-dird \
+             $git_directory/xivo-dist \
              $git_directory/xivo-doc \
              $git_directory/xivo-fetchfw \
              $git_directory/xivo-lib-js \
