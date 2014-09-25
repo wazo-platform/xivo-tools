@@ -28,6 +28,7 @@ xivo_repositories = [
     'xivo-ctid',
     'xivo-dao',
     'xivo-dird',
+    'xivo-dist',
     'xivo-doc',
     'xivo-fetchfw',
     'xivo-install-cd',
