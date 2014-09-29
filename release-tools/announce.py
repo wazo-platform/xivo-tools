@@ -1,3 +1,4 @@
+import getpass
 import os
 import requests
 import jinja2
@@ -108,6 +109,13 @@ def issues_for_version(version_id):
     return response.json()['issues']
 
 
+def get_email_password():
+    if config.has_option('email', 'password'):
+        return config.get('email', 'password')
+
+    return getpass.getpass('Email password: ')
+
+
 def publish_email(version, announce):
     subject = config.get('email', 'subject').format(version=version)
 
@@ -115,7 +123,7 @@ def publish_email(version, announce):
                      'transport': {'use': 'smtp',
                                    'host': config.get('email', 'host'),
                                    'username': config.get('email', 'username'),
-                                   'password': config.get('email', 'password'),
+                                   'password': get_email_password(),
                                    'tls': 'optional'}
                      })
 
