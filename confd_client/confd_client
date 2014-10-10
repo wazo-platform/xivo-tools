@@ -99,7 +99,7 @@ voicemail_type = KeyValueParamType(max_messages=c.INT,
 @c.group()
 @c.option('--debug', '-d', default=False, is_flag=True)
 @c.option('--host', '-H', default='xivo-test', envvar='HOST')
-@c.option('--port', '-p', default=50051, envvar='PORT', type=c.INT)
+@c.option('--port', '-p', default=9486, envvar='PORT', type=c.INT)
 @c.option('--username', '-u', default='admin', envvar='USERNAME')
 @c.option('--password', '-P', default='proformatique', envvar='PASSWORD')
 def cli(debug, host, port, username, password):
