@@ -30,20 +30,6 @@ update_repository() {
     done
 }
 
-get_answer() {
-    if [ $assume_yes -eq 0 ]; then
-        echo "Is it ok ? yes/no"
-        read answer
-        while [ $answer != 'yes' ] && [ $answer != 'no' ]; do
-            echo 'must be "yes" or "no"'
-            read answer
-        done
-        if [ $answer != 'yes' ]; then
-            exit
-        fi
-    fi
-}
-
 create_build_cmd() {
     local version=$1
     local cmd="$git tag -s xivo-$version -m xivo-$version origin/master"
@@ -85,14 +71,12 @@ do
     d) git_directory=${OPTARG};;
     v) version=${OPTARG};;
     x) debug=1;;
-    y) assume_yes=1;;
     '?')  echo "${0} : option ${OPTARG} is not valid" >&2
           exit -1
     ;;
   esac
 done
 
-assume_yes="${assume_yes:-"0"}"
 debug="${debug:-"0"}"
 
 if [ -z $version ]; then
@@ -146,9 +130,6 @@ directories="$git_directory/asterisk11 \
              $git_directory/xivo-web-interface \
             "
 
-echo "We need to use an up-to-date repository to avoid conflict"
-echo "'git pull' will be executed in each repository branch"
 check_if_directories_exist
-get_answer
 update_repository $directories
 create_tag $directories
