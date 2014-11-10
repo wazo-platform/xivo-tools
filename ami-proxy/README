@@ -1,6 +1,11 @@
 A proxy that buffers indefinitely the connection between xivo-ctid and
 asterisk.
 
+Starting from XiVO *14.21*, the ami-proxy is directly integrated in XiVO, so
+this code should not be used on 14.21 or later version. On these versions, you
+can find how to activate it in the Troubleshooting section of the official
+documentation.
+
 
 Installation
 ============
