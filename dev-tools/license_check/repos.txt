@@ -7,6 +7,7 @@ xivo-bus
 xivo-callgen
 xivo-client-qt
 xivo-confd
+xivo-confd-client
 xivo-confgen
 xivo-config
 xivo-ctid
@@ -17,6 +18,7 @@ xivo-experimental
 xivo-fetchfw
 xivo-lib-js
 xivo-lib-python
+xivo-lib-rest-client
 xivo-libsccp
 xivo-loadtest
 xivo-manage-db

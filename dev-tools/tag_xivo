@@ -109,6 +109,7 @@ directories="$git_directory/asterisk11 \
              $git_directory/xivo-bus \
              $git_directory/xivo-call-logs \
              $git_directory/xivo-confd \
+             $git_directory/xivo-confd-client \
              $git_directory/xivo-confgen \
              $git_directory/xivo-config \
              $git_directory/xivo-ctid \
@@ -119,6 +120,7 @@ directories="$git_directory/asterisk11 \
              $git_directory/xivo-fetchfw \
              $git_directory/xivo-lib-js \
              $git_directory/xivo-lib-python \
+             $git_directory/xivo-lib-rest-client \
              $git_directory/xivo-libsccp \
              $git_directory/xivo-manage-db \
              $git_directory/xivo-monitoring \

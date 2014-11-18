@@ -14,6 +14,7 @@ GIT_DIRECTORIES="\
     xivo-bus \
     xivo-call-logs \
     xivo-confd \
+    xivo-confd-client \
     xivo-confgen \
     xivo-config \
     xivo-ctid \
@@ -23,6 +24,7 @@ GIT_DIRECTORIES="\
     xivo-fetchfw \
     xivo-lib-js \
     xivo-lib-python \
+    xivo-lib-rest-client \
     xivo-libsccp \
     xivo-manage-db \
     xivo-monitoring \
