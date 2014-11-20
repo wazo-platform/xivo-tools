@@ -8,7 +8,7 @@ from ConfigParser import ConfigParser
 
 TRANSIFEX_STATS_URL = "http://www.transifex.com/api/2/project/xivo/resource/xivo-client/stats/fr"
 
-JENKINS_JOB_URL = 'http://jenkins.xivo.io/job/build-xivoclient-meta/build'
+JENKINS_JOB_URL = 'http://jenkins.xivo.io/job/xivoclient-build_meta/build'
 
 
 def main():
