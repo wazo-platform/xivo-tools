@@ -1,6 +1,5 @@
 import requests
 import os
-import wiki
 
 from contextlib import contextmanager as _contextmanager
 from fabric.api import abort, cd, execute, hosts, local, lcd, puts, run
@@ -339,8 +338,3 @@ def _active_distribution(codename, path):
     run(uncomment_cmd.format(codename=codename, path=path))
     yield
     run(comment_cmd.format(codename=codename, path=path))
-
-
-def update_wiki_link(version):
-    """Update download link on wiki.xivo.io"""
-    wiki.update_link(config, version)
