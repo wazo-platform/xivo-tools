@@ -17,23 +17,27 @@
 
 from xivo_client.client.step import StepRunner, LoginStep, \
     PasswordStep, LogoutStep, CapasStep, TimerStep, ConnectStep, \
-    InitializationStep, IPBXListStep, SubscribeToQueuesStatsStep, SubscribeStep
+    InitializationStep, IPBXListStep, SubscribeToQueuesStatsStep, \
+    SubscribeStep, PeopleHeaderStep
 
 
 class StandardScenario(object):
 
-    _PRE_STEPS = [TimerStep('pre_connect'),
-                  ConnectStep(),
-                  TimerStep('post_connect'),
-                  LoginStep(),
-                  PasswordStep(),
-                  TimerStep('post_password'),
-                  CapasStep(),
-                  IPBXListStep(),
-                  SubscribeToQueuesStatsStep(),
-                  SubscribeStep('meetme_update'),
-                  InitializationStep(),
-                  TimerStep('post_initialization')]
+    _PRE_STEPS = [
+        TimerStep('pre_connect'),
+        ConnectStep(),
+        TimerStep('post_connect'),
+        LoginStep(),
+        PasswordStep(),
+        TimerStep('post_password'),
+        CapasStep(),
+        IPBXListStep(),
+        SubscribeToQueuesStatsStep(),
+        SubscribeStep('meetme_update'),
+        InitializationStep(),
+        TimerStep('post_initialization'),
+        PeopleHeaderStep(),
+    ]
     _POST_STEPS = [LogoutStep()]
 
     def __init__(self, client, username, password, steps=None, stats=None):

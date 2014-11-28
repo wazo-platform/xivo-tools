@@ -18,6 +18,8 @@
 import itertools
 import logging
 import time
+import string
+import random
 from hashlib import sha1
 from gevent import sleep, Timeout
 
@@ -215,6 +217,37 @@ class SubscribeToQueuesStatsStep(object):
         return {
             'class': 'subscribetoqueuesstats',
             'commandid': runner.command_id.next(),
+        }
+
+
+class PeopleHeaderStep(object):
+
+    def run(self, runner):
+        self._send_people_header_msg(runner)
+
+    def _send_people_header_msg(self, runner):
+        msg = self._new_people_header_msg()
+        runner.client.send_msg(msg)
+
+    def _new_people_header_msg(self):
+        return {
+            'class': 'people_headers',
+        }
+
+
+class PeopleSearchStep(object):
+
+    def run(self, runner):
+        self._send_people_search_msg(runner)
+
+    def _send_people_search_msg(self, runner):
+        msg = self._new_people_search_msg()
+        runner.client.send_msg(msg)
+
+    def _new_people_search_msg(self):
+        return {
+            'class': 'people_search',
+            'pattern': ''.join(random.choice(string.lowercase) for _ in range(5))
         }
 
 
