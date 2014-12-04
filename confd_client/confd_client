@@ -16,11 +16,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-import click as c
-import logging
-import requests
 import json
+import logging
 import sys
+
+import click as c
+import requests
+
 
 confd = None
 
@@ -98,10 +100,10 @@ voicemail_type = KeyValueParamType(max_messages=c.INT,
 
 @c.group()
 @c.option('--debug', '-d', default=False, is_flag=True)
-@c.option('--host', '-H', default='xivo-test', envvar='HOST')
-@c.option('--port', '-p', default=9486, envvar='PORT', type=c.INT)
-@c.option('--username', '-u', default='admin', envvar='USERNAME')
-@c.option('--password', '-P', default='proformatique', envvar='PASSWORD')
+@c.option('--host', '-H', default='xivo-test', envvar='XIVO_HOST')
+@c.option('--port', '-p', default=9486, envvar='XIVO_CONFD_PORT', type=c.INT)
+@c.option('--username', '-u', default='admin', envvar='XIVO_CONFD_USERNAME')
+@c.option('--password', '-P', default='proformatique', envvar='XIVO_CONFD_PASSWORD')
 def cli(debug, host, port, username, password):
     setup_logging(debug)
 
