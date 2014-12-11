@@ -107,7 +107,7 @@ def create_tables():
 
 def populate_db():
     path = "{}/populate/populate.sql".format(config.get('repos', 'manage_db'))
-    run_script(path)
+    run_script_superuser(path)
 
 
 def run_alembic_migrations():
@@ -142,9 +142,16 @@ def db_superuser():
 
 
 def run_script(filepath):
+    _run_script(filepath, username=config.get('database', 'username'))
+
+
+def run_script_superuser(filepath):
+    _run_script(filepath, username=config.get('database', 'superuser'))
+
+
+def _run_script(filepath, username):
     logging.info("running script %s", filepath)
 
-    username = config.get('database', 'username')
     database = config.get('database', 'dbname')
     error_buffer = StringIO.StringIO()
 
