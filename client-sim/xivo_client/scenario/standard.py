@@ -15,10 +15,35 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+import logging
 from xivo_client.client.step import StepRunner, LoginStep, \
     PasswordStep, LogoutStep, CapasStep, TimerStep, ConnectStep, \
     InitializationStep, IPBXListStep, SubscribeToQueuesStatsStep, \
-    SubscribeStep, PeopleHeaderStep
+    SubscribeStep, PeopleHeaderStep, ForeverIdleStep
+from xivo_client.exception import RemoteConnectionClosedError
+
+logger = logging.getLogger(__name__)
+
+
+class CTIPerfScenario(object):
+
+    _STEPS = [
+        ConnectStep(),
+        LoginStep(),
+        PasswordStep(),
+        CapasStep(),
+        SubscribeStep('meetme_update'),
+        ForeverIdleStep(),
+    ]
+
+    def __init__(self, client, username, password):
+        self._runner = StepRunner(client, self._STEPS, {'username': username, 'password': password})
+
+    def run(self):
+        try:
+            self._runner.run()
+        except RemoteConnectionClosedError:
+            logger.info('Connection has been closed')
 
 
 class StandardScenario(object):
@@ -42,7 +67,7 @@ class StandardScenario(object):
 
     def __init__(self, client, username, password, steps=None, stats=None):
         complete_steps = list(self._PRE_STEPS)
-        if complete_steps:
+        if steps:
             complete_steps.extend(steps)
         complete_steps.extend(self._POST_STEPS)
         if stats is None:

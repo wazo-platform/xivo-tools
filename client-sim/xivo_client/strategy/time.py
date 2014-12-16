@@ -27,6 +27,18 @@ class ConstantTimeStrategy(object):
         return self._wait_time
 
 
+class IncreasingTimeStrategy(object):
+
+    def __init__(self, wait_time, delta):
+        self._wait_time = wait_time
+        self._delta = delta
+
+    def get_time(self):
+        wait_time = self._wait_time
+        self._wait_time += self._delta
+        return wait_time
+
+
 class RandomTimeStrategy(object):
 
     def __init__(self, min_, max_):

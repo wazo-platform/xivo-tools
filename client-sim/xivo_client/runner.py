@@ -32,4 +32,5 @@ class ScenarioRunner(object):
             self._pre_spawn_strategy.pre_spawn()
             logger.info('Spawning scenario %s...', scenario)
             self._spawn_strategy.spawn(scenario)
+        logger.info('All scenario have been spawned')
         self._spawn_strategy.post_run()

@@ -183,6 +183,13 @@ class IdleStep(object):
                 runner.client.recv()
 
 
+class ForeverIdleStep(object):
+
+    def run(self, runner):
+        while True:
+            runner.client.recv()
+
+
 class IPBXListStep(object):
 
     def run(self, runner):

@@ -16,8 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 import logging
-from xivo_client import json
 from gevent import socket
+from xivo_client import json
 from xivo_client.exception import AlreadyConnectedError, \
     RemoteConnectionClosedError
 
