@@ -4,7 +4,9 @@ Setup
 Prerequisites
 -------------
 
-apt-get install postgresql postgresql-contrib
+apt-get install postgresql postgresql-contrib apgdiff
+
+notes: apgdiff must be >= 2.4
 
 sudo
 ----
@@ -21,6 +23,7 @@ Database user password
 
 sudo -u postgres psql
 alter user asterisk with password 'proformatique';
+alter role asterisk with superuser;
 
 
 Postgres authentification
@@ -33,3 +36,12 @@ local   all             all                                     peer
 for:
 
 local   all             all                                     trust
+
+
+Getting started
+---------------
+
+To start, copy defaults.ini to defaults.ini.local and use this command line:
+
+
+python compare-db-migrations --config=defaults.ini.local
