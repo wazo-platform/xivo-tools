@@ -111,6 +111,10 @@ def commit_and_push(repo):
     sh.cd(repo)
     sh.git('add', '-u')
 
+    if not has_changes_to_be_committed():
+        print 'Not committing; nothing has changed'
+        return
+
     print "WARNING: the following files are about to be committed and pushed:"
     print sh.git('status', '--short', '--untracked-files=no')
 
@@ -120,6 +124,15 @@ def commit_and_push(repo):
 
     sh.git('commit', '-m', 'Update translations')
     sh.git('push')
+
+
+def has_changes_to_be_committed():
+    try:
+        sh.git('diff-index', '--cached', '--quiet', 'HEAD')
+    except sh.ErrorReturnCode_1:
+        return True
+    else:
+        return False
 
 
 def ask_for_confirmation(message):
