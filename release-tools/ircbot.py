@@ -4,13 +4,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class Stop(Exception):
+    pass
+
+
 class IRCStatusUpdater(SimpleIRCClient):
 
     def __init__(self, channel, message):
         SimpleIRCClient.__init__(self)
         self._channel = channel
         self._message = message
-        self.finished = False
 
     def on_welcome(self, connection, event):
         logger.info('joining channel %s', self._channel)
@@ -35,11 +38,7 @@ class IRCStatusUpdater(SimpleIRCClient):
     def on_topic(self, connection, event):
         logger.info('quitting')
         connection.disconnect()
-        self.finished = True
-
-    def run(self):
-        while not self.finished:
-            self.manifold.process_once()
+        raise Stop()
 
 
 def publish_irc_topic(config, version):
@@ -52,4 +51,7 @@ def publish_irc_topic(config, version):
                    6667,
                    config.get('irc', 'nickname'),
                    config.get('irc', 'password'))
-    client.run()
+    try:
+        client.start()
+    except Stop:
+        pass
