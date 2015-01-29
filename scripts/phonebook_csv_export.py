@@ -20,7 +20,7 @@ __version__ = "$Revision$ $Date$"
 __author__  = "Guillaume Bour <gbour@proformatique.com>"
 
 import sys, httplib, urllib, base64, csv, ssl
-import cjson as json
+import json
 from optparse import OptionParser
 
 URI    = '/service/ipbx/json.php/restricted/pbx_services/phonebook/?act=list'
@@ -106,8 +106,8 @@ def phonebook_export(csvfilename, options):
 		return False
 
 	try:
-		phonebook = json.decode(data)
-	except json.DecodeError, e:
+		phonebook = json.loads(data)
+	except ValueError as e:
 		print "Unable to decode datastream returned by server: %s" % e
 		return False
 #	import pprint; pprint.pprint(phonebook)
