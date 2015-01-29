@@ -15,9 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+import json
 import logging
 from gevent import socket
-from xivo_client import json
 from xivo_client.exception import AlreadyConnectedError, \
     RemoteConnectionClosedError
 
@@ -70,7 +70,7 @@ class CTIClient(object):
             head, sep, tail = buf.partition('\n')
             if sep:
                 self._buf = tail
-                return json.decode(head)
+                return json.loads(head)
             else:
                 buf += self.recv()
 
@@ -88,5 +88,5 @@ class CTIClient(object):
         self._sock.sendall(data)
 
     def send_msg(self, msg):
-        data = json.encode(msg)
+        data = json.dumps(msg)
         self._sock.sendall(data + '\n')

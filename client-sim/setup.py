@@ -10,7 +10,6 @@ setup(
     packages=['xivo_client',
               'xivo_client.bin',
               'xivo_client.client',
-              'xivo_client.json',
               'xivo_client.scenario',
               'xivo_client.strategy'],
     scripts=['bin/xivo-client-sim'],
