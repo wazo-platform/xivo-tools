@@ -4,4 +4,6 @@ irc
 jinja2
 marrow.mailer
 requests
+sh
+transifex-client
 twitter
