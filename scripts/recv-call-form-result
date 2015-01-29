@@ -3,7 +3,7 @@
 
 import pika
 
-EXCHANGE = 'xivo-cti'
+EXCHANGE = 'xivo'
 ROUTING_KEY = 'call_form_result'
 
 
