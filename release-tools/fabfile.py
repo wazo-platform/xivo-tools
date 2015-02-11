@@ -201,23 +201,14 @@ def bump_doc(prod, dev):
     doc_path = config.get('doc', 'repo')
 
     _git_pull_master(doc_path)
-    _update_doc_symlinks(prod, dev)
-    _merge_doc_to_production()
+    _merge_doc_to_stable()
     _update_doc_version(prod, dev)
 
 
-def _update_doc_symlinks(prod, dev):
-    repo = config.get('doc', 'repo')
-    path = "{repo}/source/_templates".format(repo=repo)
-    with lcd(path):
-        local('./update-symlink {prod} {dev}'.format(prod=prod, dev=dev))
-    _commit_and_push(repo, "update symlinks for {prod}".format(prod=prod))
-
-
-def _merge_doc_to_production():
+def _merge_doc_to_stable():
     repo = config.get('doc', 'repo')
     with lcd(repo):
-        local('git checkout production')
+        local('git checkout stable')
         local('git pull')
         local('git merge --no-edit master')
         local('git push')
