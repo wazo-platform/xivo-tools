@@ -29,6 +29,7 @@ xivo_repositories = [
     'xivo-ctid',
     'xivo-dao',
     'xivo-dird',
+    'xivo-dird-client',
     'xivo-dist',
     'xivo-doc',
     'xivo-fetchfw',
