@@ -15,7 +15,8 @@ GIT_DIRECTORIES="\
     xivo-call-logs \
     xivo-confd \
     xivo-confd-client \
-    xivo-confgen \
+    xivo-confgend \
+    xivo-confgend-client \
     xivo-config \
     xivo-ctid \
     xivo-dao \

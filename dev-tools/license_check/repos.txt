@@ -8,7 +8,8 @@ xivo-callgen
 xivo-client-qt
 xivo-confd
 xivo-confd-client
-xivo-confgen
+xivo-confgend
+xivo-confgend-client
 xivo-config
 xivo-ctid
 xivo-dao
