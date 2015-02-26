@@ -21,6 +21,7 @@ GIT_DIRECTORIES="\
     xivo-ctid \
     xivo-dao \
     xivo-dird \
+    xivo-dird-client \
     xivo-dist \
     xivo-fetchfw \
     xivo-lib-js \
