@@ -5,10 +5,10 @@ Configure
 * Edit defaults.ini.local to:
 
   * Change the repos paths
-  * Add Jenkins token ; you can get the value from Jenkins job configuration of e.g. xivo-doc):
+  * Add tokens ; you can get the values from the wiki.avencall.com
 
-[jenkins]
-token = a_long_incomprehensible_string
+* Install requirements.txt
+* Install qt5
 
 Run
 ===
