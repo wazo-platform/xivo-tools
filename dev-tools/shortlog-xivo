@@ -1,42 +1,12 @@
 #!/bin/bash -e
 
-GIT_DIRECTORIES="\
-    asterisk11 \
-    bntools \
-    dahdi-linux \
-    dahdi-tools \
-    libpri \
-    xivo \
-    xivo-agent \
-    xivo-agid \
-    xivo-amid \
-    xivo-backup \
-    xivo-bus \
-    xivo-call-logs \
-    xivo-confd \
-    xivo-confd-client \
-    xivo-confgend \
-    xivo-confgend-client \
-    xivo-config \
-    xivo-ctid \
-    xivo-dao \
-    xivo-dird \
-    xivo-dird-client \
-    xivo-dist \
-    xivo-fetchfw \
-    xivo-lib-js \
-    xivo-lib-python \
-    xivo-lib-rest-client \
-    xivo-libsccp \
-    xivo-manage-db \
-    xivo-monitoring \
-    xivo-provisioning \
-    xivo-stat \
-    xivo-sysconfd \
-    xivo-upgrade \
-    xivo-utils \
-    xivo-web-interface \
-"
+URL_REPOS_LIST="http://mirror.xivo.io/repos/shortlog"
+GIT_DIRECTORIES=$(wget -qO - "$URL_REPOS_LIST")
+if [ $? -ne 0 ]; then
+    echo "Unable to fetch repositories list from $URL_REPOS_LIST."
+    exit 1
+fi
+
 XIVO_CLIENT_DIRECTORY="xivo-client-qt"
 
 version="$1"

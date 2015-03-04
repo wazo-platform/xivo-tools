@@ -7,10 +7,10 @@ usage() {
     cat << EOF 
 You have to provide some informations to allow tagging:
 
-    $(basename $0) -v xivo_version [-d git_directory]
+    $(basename $0) -v xivo_version [-d git_root_directory]
 
     -v: xivo_version
-    -d: git_directory (default ~/xivo_src)
+    -d: git_root_directory (default ~/xivo_src)
 
     example : $(basename $0) -v 12.14
 
@@ -68,7 +68,7 @@ check_if_directories_exist() {
 while getopts :d:v:xy opt
 do
   case ${opt} in
-    d) git_directory=${OPTARG};;
+    d) git_root_directory=${OPTARG};;
     v) version=${OPTARG};;
     x) debug=1;;
     '?')  echo "${0} : option ${OPTARG} is not valid" >&2
@@ -90,51 +90,20 @@ else
     git="git"
 fi
 
-if [ -z $git_directory ]; then
-    git_directory="$HOME/xivo_src"
+if [ -z $git_root_directory ]; then
+    git_root_directory="$HOME/xivo_src"
 else
-    git_directory="$git_directory"
+    git_root_directory="$git_root_directory"
 fi
 
-directories="$git_directory/asterisk11 \
-             $git_directory/bntools \
-             $git_directory/dahdi-linux \
-             $git_directory/dahdi-tools \
-             $git_directory/libpri \
-             $git_directory/xivo \
-             $git_directory/xivo-agent \
-             $git_directory/xivo-agid \
-             $git_directory/xivo-amid \
-             $git_directory/xivo-backup \
-             $git_directory/xivo-bus \
-             $git_directory/xivo-call-logs \
-             $git_directory/xivo-confd \
-             $git_directory/xivo-confd-client \
-             $git_directory/xivo-confgend \
-             $git_directory/xivo-confgend-client \
-             $git_directory/xivo-config \
-             $git_directory/xivo-ctid \
-             $git_directory/xivo-dao \
-             $git_directory/xivo-dird \
-             $git_directory/xivo-dird-client \
-             $git_directory/xivo-dist \
-             $git_directory/xivo-doc \
-             $git_directory/xivo-dxtora \
-             $git_directory/xivo-dxtorc \
-             $git_directory/xivo-fetchfw \
-             $git_directory/xivo-lib-js \
-             $git_directory/xivo-lib-python \
-             $git_directory/xivo-lib-rest-client \
-             $git_directory/xivo-libsccp \
-             $git_directory/xivo-manage-db \
-             $git_directory/xivo-monitoring \
-             $git_directory/xivo-provisioning \
-             $git_directory/xivo-stat \
-             $git_directory/xivo-sysconfd \
-             $git_directory/xivo-upgrade \
-             $git_directory/xivo-utils \
-             $git_directory/xivo-web-interface \
-            "
+URL_REPOS_LIST="http://mirror.xivo.io/repos/python-tag"
+GIT_DIRECTORIES=$(wget -qO - "$URL_REPOS_LIST")
+if [ $? -ne 0 ]; then
+    echo "Unable to fetch repositories list from $URL_REPOS_LIST."
+    exit 1
+fi
+
+directories=$(sed "s|^|$git_root_directory/|g" <<< "$GIT_DIRECTORIES")
 
 check_if_directories_exist
 update_repository $directories

@@ -22,6 +22,7 @@ import os
 import re
 import tempfile
 import datetime
+import requests
 
 from StringIO import StringIO
 
@@ -199,6 +200,13 @@ def has_copyright(lines):
 
 
 def read_filelist(path):
+    try:
+        response = requests.get(path)
+        if response.status_code == 200:
+            return response.text.splitlines()
+    except requests.exceptions.RequestException:
+        pass
+
     with open(path) as reader:
         elements = [l.strip() for l in reader]
     return elements
@@ -211,10 +219,10 @@ if __name__ == "__main__":
             default=True, help='do not copy license file')
     parser.add_argument('-H', '--no-header', action='store_false', dest='header',
             default=True, help='do not insert license in header')
-    parser.add_argument('-r', '--repos', default='repos.txt',
-            help='text file with a list of repositories to scan (default: repos.txt)')
+    parser.add_argument('-r', '--repos', default='http://mirror.xivo.io/repos/python-license',
+            help='text file (local or remote) with a list of repositories to scan (default: %(default)s)')
     parser.add_argument('-e', '--exclude', default='exclude.txt',
-            help='text file with a list of python files to exlude  (default: exclude.txt)')
+            help='text file with a list of python files to exlude  (default: %(default)s)')
 
     args = parser.parse_args()
 

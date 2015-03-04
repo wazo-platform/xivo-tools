@@ -1,56 +1,13 @@
 # -*- coding: UTF-8 -*-
 
+import requests
 
-xivo_repositories = [
-    'asterisk11',
-    'bntools',
-    'create_archive_file',
-    'dahdi-linux',
-    'dahdi-tools',
-    'debian-installer',
-    'libpri',
-    'pylinphonelib',
-    'xivo',
-    'xivo-acceptance',
-    'xivo-agent',
-    'xivo-agid',
-    'xivo-amid',
-    'xivo-backup',
-    'xivo-build-tools',
-    'xivo-bus',
-    'xivo-call-logs',
-    'xivo-ci',
-    'xivo-client-qt',
-    'xivo-confd',
-    'xivo-confd-client',
-    'xivo-confd-tests',
-    'xivo-confgend',
-    'xivo-confgend-client',
-    'xivo-config',
-    'xivo-ctid',
-    'xivo-dao',
-    'xivo-dird',
-    'xivo-dird-client',
-    'xivo-dist',
-    'xivo-doc',
-    'xivo-fetchfw',
-    'xivo-install-cd',
-    'xivo-lib-js',
-    'xivo-lib-python',
-    'xivo-lib-rest-client',
-    'xivo-libsccp',
-    'xivo-loadtest',
-    'xivo-manage-db',
-    'xivo-migration-scripts',
-    'xivo-monitoring',
-    'xivo-provd-plugins',
-    'xivo-provisioning',
-    'xivo-sounds',
-    'xivo-stat',
-    'xivo-sysconfd',
-    'xivo-tools',
-    'xivo-upgrade',
-    'xivo-utils',
-    'xivo-web-interface',
-    'xivo-ws',
-]
+def  _xivo_repositories():
+    response = requests.get("http://mirror.xivo.io/repos/all")
+    if response.status_code == 200:
+        return response.text.splitlines()
+    else:
+        raise RuntimeError("Unable to fetch repositories list. Reponse code: %s." %response.status_code)
+
+xivo_repositories = _xivo_repositories()
+
