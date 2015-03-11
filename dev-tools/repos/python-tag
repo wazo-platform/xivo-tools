@@ -5,6 +5,8 @@ dahdi-tools
 libpri
 xivo
 xivo-agent
+xivo-agentd-client
+xivo-agentdctl
 xivo-agid
 xivo-amid
 xivo-backup
@@ -16,6 +18,7 @@ xivo-confgend
 xivo-confgend-client
 xivo-config
 xivo-ctid
+xivo-ctid-client
 xivo-dao
 xivo-dird
 xivo-dird-client
