@@ -15,7 +15,6 @@ def freeze():
     execute(check_server_started)
     execute(check_slave_started)
     execute(backup_server)
-    execute(build_packages)
     execute(synchronize_mirrors)
     execute(clear_confgen_cache)
     execute(upgrade_xivo_test)
@@ -41,11 +40,6 @@ def backup_server():
     run('xivo-backup data /var/backups/xivo/data')
     run('xivo-backup db /var/backups/xivo/db')
     run('xivo-service start')
-
-
-@hosts(FARM_HOST)
-def build_packages():
-    run('packaging-farm --cd skaro rebuild')
 
 
 @hosts(XIVO_TEST_HOST)
