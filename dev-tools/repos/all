@@ -8,7 +8,7 @@ libpri
 pylinphonelib
 xivo
 xivo-acceptance
-xivo-agent
+xivo-agentd
 xivo-agentd-client
 xivo-agentdctl
 xivo-agid
