@@ -4,7 +4,7 @@ dahdi-linux
 dahdi-tools
 libpri
 xivo
-xivo-agentd
+xivo-agent
 xivo-agentd-client
 xivo-agentdctl
 xivo-agid
