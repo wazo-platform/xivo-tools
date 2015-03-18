@@ -78,7 +78,7 @@ echo "------" >> ${DST_FILE}
 echo "" >> ${DST_FILE}
 # US4.6.
 echo "+ agent status" >> ${DST_FILE}
-xivo-agentctl -c 'status' >> ${DST_FILE}
+xivo-agentd-cli -c 'status' >> ${DST_FILE}
 echo "" >> ${DST_FILE}
 
 println info "Debug info were printed in ${DST_FILE}"
