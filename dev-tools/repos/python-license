@@ -32,6 +32,8 @@ xivo-loadtest
 xivo-manage-db
 xivo-monitoring
 xivo-presentations
+xivo-provd-cli
+xivo-provd-client
 xivo-provd-plugins
 xivo-provd-plugins-addons
 xivo-provisioning
