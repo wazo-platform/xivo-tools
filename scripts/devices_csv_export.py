@@ -4,7 +4,7 @@
 import argparse
 import csv
 import sys
-from provd.rest.client.client import new_provisioning_client
+from xivo_provd_client import new_provisioning_client
 
 FIELDS = [u'id', u'mac', u'ip', u'vendor', u'model', u'version', u'config', u'plugin', u'configured']
 

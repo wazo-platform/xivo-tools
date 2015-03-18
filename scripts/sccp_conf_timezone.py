@@ -14,7 +14,7 @@ import argparse
 import itertools
 import shutil
 import sys
-from provd.rest.client.client import new_provisioning_client
+from xivo_provd_client import new_provisioning_client
 
 MODELS = [u'7912G', u'7920', u'7940G', u'7960G']
 
