@@ -1,5 +1,6 @@
 alembic
 psycopg2
+pyaml
 sh
 git+https://github.com/xivo-pbx/xivo-dao
 git+https://github.com/xivo-pbx/xivo-lib-python
