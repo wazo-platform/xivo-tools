@@ -4,9 +4,13 @@
 import argparse
 import sys
 from itertools import chain
-from provd.rest.client.client import new_provisioning_client
-from provd.operation import parse_oip, OIP_SUCCESS, OIP_FAIL
 from time import sleep
+try:
+    from xivo_provd_client import new_provisioning_client
+    from xivo_provd_client.operation import parse_oip, OIP_SUCCESS, OIP_FAIL
+except ImportError:
+    from provd.rest.client.client import new_provisioning_client
+    from provd.operation import parse_oip, OIP_SUCCESS, OIP_FAIL
 
 
 def main():

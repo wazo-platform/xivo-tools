@@ -44,6 +44,8 @@ xivo-loadtest
 xivo-manage-db
 xivo-migration-scripts
 xivo-monitoring
+xivo-provd-cli
+xivo-provd-client
 xivo-provd-plugins
 xivo-provisioning
 xivo-sounds
