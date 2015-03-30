@@ -22,9 +22,10 @@ session.headers.update({'X-Redmine-API-Key': config.get('redmine', 'token')})
 
 
 @click.command()
+@click.argument('old_version')
 @click.argument('version')
 @click.option('--path', default='announces', help='create and place generated files in this directory (default: announces)')
-def prepare_announces(version, path):
+def prepare_announces(old_version, version, path):
     if not os.path.exists(path):
         os.mkdir(path)
 
@@ -34,7 +35,7 @@ def prepare_announces(version, path):
 
         click.echo("generating '{}'".format(filepath))
         with open(filepath, 'w') as f:
-            text = generate_announce(version, media)
+            text = generate_announce(old_version, version, media)
             f.write(text)
 
 
@@ -54,13 +55,13 @@ def publish_announces(version, path):
     publish_irc(version)
 
 
-def generate_announce(version, media):
+def generate_announce(old_version, version, media):
     env = setup_jinja()
     tpl_name = '{}.jinja'.format(media)
 
     template = env.get_template(tpl_name)
     metadata = fetch_metadata(version)
-    return template.render(**metadata)
+    return template.render(old_version=old_version, **metadata)
 
 
 def setup_jinja():
@@ -86,9 +87,11 @@ def fetch_metadata(version):
 
     bugs = len([i for i in issues if i['tracker']['name'] == 'Bug'])
     features = len([i for i in issues if i['tracker']['name'] == 'Feature'])
+    technicals = len([i for i in issues if i['tracker']['name'] == 'Technical'])
 
     return {'bugs': bugs,
             'features': features,
+            'technicals': technicals,
             'version': version,
             'version_id': version_id}
 
