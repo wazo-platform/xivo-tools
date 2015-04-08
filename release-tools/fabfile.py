@@ -162,6 +162,8 @@ def publish_binaries():
                 run(command)
                 command = 'ln -sfn "archives/{candidate}"/xivoclient-*-x86.exe xivoclient-latest-x86.exe'.format(candidate=visible_name)
                 run(command)
+                command = 'ln -sfn "archives/{candidate}"/xivoclient-*.dmg xivoclient-latest.dmg'.format(candidate=visible_name)
+                run(command)
                 command = 'ln -sfn "archives/{candidate}"/xivo-*.iso xivo-latest.iso'.format(candidate=visible_name)
                 run(command)
                 puts('{candidate} is now the current version'.format(candidate=visible_name))
