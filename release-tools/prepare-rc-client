@@ -71,17 +71,8 @@ def synchronize_transifex(repo):
     sh.cd(repo)
     sh.qmake()
 
-    script = '%s/utils/translations.sh' % repo
-    translations = sh.Command(script)
-
-    print "translations pull"
-    translations('pull')
-
-    print "translations commit"
-    translations('commit')
-
-    print "translations push"
-    translations('push')
+    print 'Pushing translations to Transifex ...'
+    sh.make('pushtr')
 
 
 def check_for_missing_translations():
@@ -97,7 +88,7 @@ def check_for_missing_translations():
 def get_transifex_infos():
     config_path = os.path.expanduser('~/.transifexrc')
     if not os.path.exists(config_path):
-        raise Exception("Transifex config file doesn't exist. Run utils/translations.sh at least once")
+        raise Exception("Transifex config file doesn't exist. Run `make pulltr` at least once")
 
     config = ConfigParser()
     config.read(config_path)
