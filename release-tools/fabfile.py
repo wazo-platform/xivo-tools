@@ -117,7 +117,7 @@ def _copy_binaries_from_current_version(version, new_file_names):
     transferred"""
 
     new_directory = '/data/iso/archives/.xivo-{version}'.format(version=version)
-    run('cp -rp /data/iso/xivo-current/ {}'.format(new_directory))
+    run('rsync -a /data/iso/xivo-current/ {}'.format(new_directory))
     old_file_names = _list_files(new_directory)
     for old, new in zip(old_file_names, new_file_names):
         if old == new:
