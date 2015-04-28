@@ -26,6 +26,7 @@ xivo-confgend
 xivo-confgend-client
 xivo-config
 xivo-consul-packaging
+xivo-consul-template-packaging
 xivo-ctid
 xivo-ctid-client
 xivo-dao
