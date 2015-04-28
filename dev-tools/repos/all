@@ -25,6 +25,7 @@ xivo-confd-tests
 xivo-confgend
 xivo-confgend-client
 xivo-config
+xivo-consul-packaging
 xivo-ctid
 xivo-ctid-client
 xivo-dao
