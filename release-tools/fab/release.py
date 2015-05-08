@@ -92,7 +92,7 @@ def tag(version):
 
 @task
 @hosts(MIRROR_HOST)
-def debian():
+def deb_dist():
     """publish RC debian packages on official mirror"""
     if not confirm("Are you sure you want to publish packages on official mirror ?"):
         abort("publish cancelled")
