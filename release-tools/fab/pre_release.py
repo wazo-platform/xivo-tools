@@ -1,18 +1,18 @@
 import requests
 
-from fabric.api import execute, hosts, puts, run, task, env, settings
+from fabric.api import execute, hosts, puts, run, task, settings
 
-from config import config
-from config import jenkins
-from config import MASTER_HOST
-from config import SLAVE_HOST
-from config import LOAD_HOST
-from config import BUILDER_HOST
-from config import MIRROR_HOST
-from config import TRAFGEN_HOST
-
+from .config import config
+from .config import jenkins
+from .config import MASTER_HOST
+from .config import SLAVE_HOST
+from .config import LOAD_HOST
+from .config import BUILDER_HOST
+from .config import MIRROR_HOST
+from .config import TRAFGEN_HOST
 
 LOAD_ANSWER_TMUX_SESSION = 'load-answer'
+
 
 @task
 def report_auto():

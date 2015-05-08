@@ -2,10 +2,10 @@ from contextlib import contextmanager
 from fabric.api import abort, cd, execute, hosts, local, lcd, puts, run, task
 from fabric.contrib.console import confirm
 
-from config import config
-from config import jenkins
-from config import MIRROR_HOST
-from config import GATEWAY_HOST
+from .config import config
+from .config import jenkins
+from .config import MIRROR_HOST
+from .config import GATEWAY_HOST
 
 
 @task

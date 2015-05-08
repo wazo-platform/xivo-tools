@@ -5,8 +5,8 @@ from ConfigParser import ConfigParser
 from jenkins import _Jenkins
 
 SCRIPT_PATH = os.path.abspath(os.path.dirname(__file__))
-DEFAULT_CONFIG_PATH = os.path.join(SCRIPT_PATH, 'defaults.ini')
-CUSTOM_CONFIG_PATH = os.path.join(SCRIPT_PATH, 'defaults.ini.local')
+DEFAULT_CONFIG_PATH = os.path.join(SCRIPT_PATH, '..', 'defaults.ini')
+CUSTOM_CONFIG_PATH = os.path.join(SCRIPT_PATH, '..', 'defaults.ini.local')
 
 config = ConfigParser()
 config.read([DEFAULT_CONFIG_PATH, CUSTOM_CONFIG_PATH])

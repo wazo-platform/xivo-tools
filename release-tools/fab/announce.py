@@ -8,7 +8,8 @@ import ircbot
 from ConfigParser import ConfigParser
 from fabric.api import puts, task
 from marrow.mailer import Mailer, Message
-from config import config, CUSTOM_CONFIG_PATH, SCRIPT_PATH
+
+from .config import config, CUSTOM_CONFIG_PATH, SCRIPT_PATH
 
 TEMPLATE_FOLDER = os.path.join(SCRIPT_PATH, 'templates')
 TEMPLATE_FILE = "announce.jinja"
