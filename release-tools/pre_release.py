@@ -103,13 +103,26 @@ def _copy_binaries_delta(version):
 def xivo_load():
     """run xivo-upgrade on xivo-load and restart load tests"""
     stop_load_tests()
+    execute(stop_load_answer)
     execute(upgrade_xivo_load)
+    execute(start_load_answer)
     start_load_tests()
 
 
 @hosts(LOAD_HOST)
 def upgrade_xivo_load():
     run('xivo-upgrade -f')
+
+
+@hosts(TRAFGEN_HOST)
+def stop_load_answer():
+    with settings(warn_only=True):
+        run('tmux kill-session -t {session}'.format(session=LOAD_ANSWER_TMUX_SESSION))
+
+
+@hosts(TRAFGEN_HOST)
+def start_load_answer():
+    run('tmux new-session -d -s {session} "cd xivo-load-tester ; ./load-tester scenarios/answer-then-wait/"'.format(session=LOAD_ANSWER_TMUX_SESSION))
 
 
 def stop_load_tests():
