@@ -3,6 +3,7 @@ fabric
 irc
 jinja2
 marrow.mailer
+jenkins-webapi
 requests
 sh
 transifex-client

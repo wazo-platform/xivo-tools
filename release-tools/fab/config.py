@@ -2,7 +2,7 @@ import os
 
 from ConfigParser import ConfigParser
 
-from jenkins import _Jenkins
+from jenkins import Jenkins
 
 SCRIPT_PATH = os.path.abspath(os.path.dirname(__file__))
 DEFAULT_CONFIG_PATH = os.path.join(SCRIPT_PATH, '..', 'defaults.ini')
@@ -19,5 +19,5 @@ MIRROR_HOST = "root@mirror.xivo.io"
 GATEWAY_HOST = "root@xivo-dev-gateway"
 TRAFGEN_HOST = "trafgen@trafgen"
 
-jenkins = _Jenkins(config.get('jenkins', 'url'),
-                   config.get('jenkins', 'token'))
+jenkins = Jenkins(config.get('jenkins', 'url'))
+jenkins_token = config.get('jenkins', 'token')

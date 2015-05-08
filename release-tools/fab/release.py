@@ -3,7 +3,7 @@ from fabric.api import abort, cd, execute, hosts, local, lcd, puts, run, task
 from fabric.contrib.console import confirm
 
 from .config import config
-from .config import jenkins
+from .config import jenkins, jenkins_token
 from .config import MIRROR_HOST
 from .config import GATEWAY_HOST
 
@@ -158,7 +158,7 @@ def _update_archive_on_mirror(version):
 @task
 def version(prod, dev):
     """(current, next) update xivo version numbers on mirror and debian package"""
-    jenkins.launch('version', XIVO_VERSION_DEV=dev, XIVO_VERSION_PROD=prod)
+    jenkins.job_build('version', {'XIVO_VERSION_DEV': dev, 'XIVO_VERSION_PROD': prod}, jenkins_token)
 
     repo = config.get('version', 'repo')
 

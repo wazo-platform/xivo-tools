@@ -3,7 +3,7 @@ import requests
 from fabric.api import execute, hosts, puts, run, task, settings
 
 from .config import config
-from .config import jenkins
+from .config import jenkins, jenkins_token
 from .config import MASTER_HOST
 from .config import SLAVE_HOST
 from .config import LOAD_HOST
@@ -17,13 +17,13 @@ LOAD_ANSWER_TMUX_SESSION = 'load-answer'
 @task
 def report_auto():
     """() build HTML report on tests executed automatically"""
-    jenkins.launch('report_auto')
+    jenkins.job_build('report_auto', jenkins_token)
 
 
 @task
 def report_manual():
     """() build HTML report on tests executed manually"""
-    jenkins.launch('report_manual')
+    jenkins.job_build('report_manual', jenkins_token)
 
 
 @task
