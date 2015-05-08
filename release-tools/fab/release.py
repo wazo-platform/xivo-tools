@@ -11,7 +11,7 @@ from .config import GATEWAY_HOST
 @task
 @hosts(MIRROR_HOST)
 def binaries():
-    """make ISO and debs public"""
+    """() make ISO and debs public"""
 
     with cd('/data/iso'):
         binaries_path = 'archives'
@@ -50,13 +50,13 @@ def _list_files(path, pattern='*'):
 @task
 @hosts(GATEWAY_HOST)
 def upgrade_dev_gateway():
-    """run xivo-upgrade on xivo-dev-gateway"""
+    """() run xivo-upgrade on xivo-dev-gateway"""
     run('xivo-upgrade -f')
 
 
 @task
 def doc(prod, dev):
-    """update documentation to next version number"""
+    """(current, next) update documentation to next version number"""
     doc_path = config.get('doc', 'repo')
 
     _git_pull_master(doc_path)
@@ -84,7 +84,7 @@ def _update_doc_version(prod, dev):
 
 @task
 def tag(version):
-    """tag xivo repos with version number"""
+    """(current) tag xivo repos with version number"""
     repos = config.get('general', 'repos')
     cmd = "{repos}/xivo-tools/dev-tools/tag_xivo -v {version} -d {repos}"
     local(cmd.format(repos=repos, version=version))
@@ -93,7 +93,7 @@ def tag(version):
 @task
 @hosts(MIRROR_HOST)
 def deb_dist():
-    """publish RC debian packages on official mirror"""
+    """() publish RC debian packages on official mirror"""
     if not confirm("Are you sure you want to publish packages on official mirror ?"):
         abort("publish cancelled")
 
@@ -118,7 +118,7 @@ def _active_distribution(codename, path):
 
 @task
 def archive(version):
-    """create an archived version of xivo on mirror and PXE"""
+    """(current) create an archived version of xivo on mirror and PXE"""
     _add_pxe_archive(version)
     execute(_update_archive_on_mirror, version)
 
@@ -157,7 +157,7 @@ def _update_archive_on_mirror(version):
 
 @task
 def version(prod, dev):
-    """update xivo version numbers on mirror and debian package"""
+    """(current, next) update xivo version numbers on mirror and debian package"""
     jenkins.launch('version', XIVO_VERSION_DEV=dev, XIVO_VERSION_PROD=prod)
 
     repo = config.get('version', 'repo')

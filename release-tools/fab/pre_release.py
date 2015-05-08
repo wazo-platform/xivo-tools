@@ -16,19 +16,19 @@ LOAD_ANSWER_TMUX_SESSION = 'load-answer'
 
 @task
 def report_auto():
-    """build HTML report on tests executed automatically"""
+    """() build HTML report on tests executed automatically"""
     jenkins.launch('report_auto')
 
 
 @task
 def report_manual():
-    """build HTML report on tests executed manually"""
+    """() build HTML report on tests executed manually"""
     jenkins.launch('report_manual')
 
 
 @task
 def stop_xivo_test():
-    """shutdown xivo-test and xivo-test-slave (once all tests are finished)"""
+    """() shutdown xivo-test and xivo-test-slave (once all tests are finished)"""
     execute(_stop_xivo_test_master)
     execute(_stop_xivo_test_slave)
 
@@ -45,7 +45,7 @@ def _stop_xivo_test_slave():
 
 @task
 def binaries(version):
-    """copy ISO and xivo client debs onto mirror (but not publicly visible)"""
+    """(current) copy ISO and xivo client debs onto mirror (but not publicly visible)"""
 
     file_names = execute(_get_binaries_file_names, version).get(BUILDER_HOST)
     execute(_copy_binaries_from_current_version, version, file_names)
@@ -101,7 +101,7 @@ def _copy_binaries_delta(version):
 
 @task
 def xivo_load():
-    """run xivo-upgrade on xivo-load and restart load tests"""
+    """() run xivo-upgrade on xivo-load and restart load tests"""
     stop_load_tests()
     execute(stop_load_answer)
     execute(upgrade_xivo_load)

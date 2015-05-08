@@ -21,7 +21,7 @@ session.headers.update({'X-Redmine-API-Key': config.get('redmine', 'token')})
 
 @task
 def prepare(old_version, version, path='announces'):
-    '''(previous_release, current_release) create announce files for review'''
+    '''(previous, current) create announce files for review'''
     if not os.path.exists(path):
         os.mkdir(path)
 
@@ -37,7 +37,7 @@ def prepare(old_version, version, path='announces'):
 
 @task
 def publish(version, path='announces'):
-    '''(current_release) publish reviewed announce files'''
+    '''(current) publish reviewed announce files'''
     emailpath = os.path.join(path, 'email.txt')
     with open(emailpath) as f:
         email = f.read().decode('utf8')
