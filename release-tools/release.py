@@ -184,4 +184,3 @@ def _commit_and_push(path, message):
     with lcd(path):
         local('git commit -a -m "{message}"'.format(message=message))
         local('git push')
-
