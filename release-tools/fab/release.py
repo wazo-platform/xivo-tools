@@ -158,7 +158,7 @@ def _update_archive_on_mirror(version):
 @task
 def version(prod, dev):
     """(current, next) update xivo version numbers on mirror and debian package"""
-    jenkins.job_build('version', {'XIVO_VERSION_DEV': dev, 'XIVO_VERSION_PROD': prod}, jenkins_token)
+    jenkins.job_build('prepare_xivo_version', {'XIVO_VERSION_DEV': dev, 'XIVO_VERSION_PROD': prod}, jenkins_token)
 
     repo = config.get('version', 'repo')
 

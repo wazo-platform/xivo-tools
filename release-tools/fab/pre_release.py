@@ -17,13 +17,13 @@ LOAD_ANSWER_TMUX_SESSION = 'load-answer'
 @task
 def report_auto():
     """() build HTML report on tests executed automatically"""
-    jenkins.job_build('report_auto', jenkins_token)
+    jenkins.job_build('build-tests_report_auto', token=jenkins_token)
 
 
 @task
 def report_manual():
     """() build HTML report on tests executed manually"""
-    jenkins.job_build('report_manual', jenkins_token)
+    jenkins.job_build('build-tests_report_manual', token=jenkins_token)
 
 
 @task
