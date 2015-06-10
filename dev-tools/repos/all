@@ -50,6 +50,7 @@ xivo-provd-cli
 xivo-provd-client
 xivo-provd-plugins
 xivo-provisioning
+xivo-purge-db
 xivo-sounds
 xivo-stat
 xivo-sysconfd
