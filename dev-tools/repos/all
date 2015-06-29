@@ -55,6 +55,7 @@ xivo-provisioning
 xivo-purge-db
 xivo-sounds
 xivo-stat
+xivo-sync
 xivo-sysconfd
 xivo-tools
 xivo-upgrade

@@ -39,6 +39,7 @@ xivo-provd-client
 xivo-provisioning
 xivo-purge-db
 xivo-stat
+xivo-sync
 xivo-sysconfd
 xivo-upgrade
 xivo-utils
