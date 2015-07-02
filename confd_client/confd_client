@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2014 Avencall
+# Copyright (C) 2014-2015 Avencall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -118,6 +118,7 @@ def setup_logging(debug=False):
     requests_level = logging.DEBUG if debug else logging.WARN
     logging.basicConfig(level=client_level)
     logging.getLogger('requests').setLevel(requests_level)
+    requests.packages.urllib3.disable_warnings()
 
 
 @c.command('extension')
