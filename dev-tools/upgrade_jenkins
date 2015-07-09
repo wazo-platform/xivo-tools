@@ -1,0 +1,29 @@
+#!/bin/bash -e
+
+current_jenkins_version=$(ssh jenkins dpkg-query -W -f='\${Version}' jenkins)
+[[ $current_jenkins_version =~ ^[0-9]+\.[0-9]+$ ]]
+echo "Current Jenkins version is $current_jenkins_version"
+
+echo "Snapshotting jenkins..."
+ssh kvm-2-dev virsh shutdown jenkins.xivo.io
+while [ "$(ssh kvm-2-dev virsh dominfo jenkins.xivo.io | grep State | awk '{print $2}' = 'running')" ] ; do
+	sleep 5
+done
+ssh kvm-2-dev virsh snapshot-create-as jenkins.xivo.io "$current_jenkins_version"
+ssh kvm-2-dev virsh start jenkins.xivo.io
+
+echo "Waiting for jenkins to come back up..."
+while ! ssh jenkins echo
+do
+	sleep 10
+done
+
+echo "Upgrading jenkins..."
+ssh jenkins sudo apt-get update
+ssh jenkins sudo apt-get -y upgrade
+ssh jenkins sudo apt-get -y dist-upgrade
+ssh jenkins sudo apt-get autoremove
+
+echo "You may want to reboot jenkins:"
+echo
+echo ssh jenkins sudo reboot
