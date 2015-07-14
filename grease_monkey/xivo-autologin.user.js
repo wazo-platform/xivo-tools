@@ -14,14 +14,13 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 // ==UserScript==
-// @name      XiVO Autologin
-// @namespace http://xivo.io
-// @description
-// @include   https*
-// @grant     none
+// @name        XiVO Autologin
+// @namespace   http://xivo.io
+// @description Automatically login on XiVO web interface.
+// @include     https*
+// @grant       none
 // ==/UserScript==
 
-// Automatically login on XiVO web interface.
 // You should change the login and password below before using this script.
 
 var login = 'root';
