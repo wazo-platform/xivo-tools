@@ -98,6 +98,19 @@ voicemail_type = KeyValueParamType(max_messages=c.INT,
                                    ask_password=c.BOOL)
 
 
+destination_type = KeyValueParamType(user_id=c.INT,
+                                     queue_id=c.INT,
+                                     group_id=c.INT,
+                                     conference_id=c.INT,
+                                     agent_id=c.INT,
+                                     paging_id=c.INT,
+                                     filter_member_id=c.INT,
+                                     position=c.INT,
+                                     forward=c.Choice(['busy', 'noanswer', 'unconditional']),
+                                     transfer=c.Choice(['blind', 'attended']),
+                                     action=c.Choice(['login', 'logout', 'toggle']))
+
+
 @c.group()
 @c.option('--debug', '-d', default=False, is_flag=True)
 @c.option('--host', '-H', default='xivo-test', envvar='XIVO_HOST')
@@ -277,6 +290,29 @@ def autoprov_device(device_id):
     confd('GET', '/devices/%s/autoprov'.format(device_id))
 
 
+@c.command('funckey', help="Create a funckey")
+@c.argument('position', type=c.INT)
+@c.argument('destination')
+@c.argument('parameters', nargs=-1, type=destination_type)
+@c.option('--user-id', '-u', type=c.INT)
+@c.option('--template-id', '-t', type=c.INT)
+def add_funckey(position, destination, parameters, user_id, template_id):
+    parameters = dict(parameters)
+    parameters['type'] = destination
+    if user_id:
+        url = "/users/{user_id}/funckeys/{position}".format(user_id=user_id,
+                                                            position=position)
+    elif template_id:
+        url = "/funckeys/templates/{template_id}/{position}".format(template_id=template_id,
+                                                                    position=position)
+    else:
+        print "ERROR: must specify either user_id or template_id"
+        sys.exit(1)
+
+    logging.info("updating funckey %s", url)
+    confd('PUT', url, destination=parameters)
+
+
 def build_parser():
     create = c.Group('create')
     create.add_command(create_extension)
@@ -284,6 +320,7 @@ def build_parser():
     create.add_command(create_user)
     create.add_command(create_voicemail)
     create.add_command(create_device)
+    create.add_command(add_funckey)
 
     update = c.Group('update')
     update.add_command(update_voicemail)
