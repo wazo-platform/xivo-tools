@@ -1,6 +1,6 @@
 import requests
 
-from fabric.api import execute, hosts, puts, run, task, settings
+from fabric.api import execute, hosts, lcd, local, puts, run, task, settings
 
 from .config import config
 from .config import jenkins, jenkins_token
@@ -10,6 +10,7 @@ from .config import LOAD_HOST
 from .config import BUILDER_HOST
 from .config import MIRROR_HOST
 from .config import TRAFGEN_HOST
+from .email import send_email
 
 LOAD_ANSWER_TMUX_SESSION = 'load-answer'
 
@@ -141,3 +142,15 @@ def start_load_tests():
 def _monitoring_url():
     return "{}/api/{}".format(config.get('load_tests', 'monitor_url'),
                               config.get('load_tests', 'server_name'))
+
+@task
+def shortlog(version):
+    """(previous) send git shortlog to dev@avencall.com"""
+    repos = config.get('general', 'repos')
+
+    with lcd(repos):
+        cmd = "{repos}/xivo-tools/dev-tools/shortlog-xivo {version}"
+        body = local(cmd.format(repos=repos, version=version), capture=True)
+
+    subject = 'Shortlog entre {version} et origin/master'.format(version=version)
+    send_email('dev@@avencall.com', subject, body)

@@ -1,4 +1,3 @@
-import getpass
 import os
 import requests
 import jinja2
@@ -7,9 +6,9 @@ import ircbot
 
 from ConfigParser import ConfigParser
 from fabric.api import puts, task
-from marrow.mailer import Mailer, Message
 
 from .config import config, CUSTOM_CONFIG_PATH, SCRIPT_PATH
+from .email import send_email
 
 TEMPLATE_FOLDER = os.path.join(SCRIPT_PATH, 'templates')
 TEMPLATE_FILE = "announce.jinja"
@@ -107,34 +106,11 @@ def _issues_for_version(version_id):
     return response.json()['issues']
 
 
-def _get_email_password(username):
-    if config.has_option('email', 'password'):
-        return config.get('email', 'password')
-
-    return getpass.getpass('Email password for {}: '.format(username))
-
-
 def _publish_email(version, announce):
+    to = config.get('email', 'to')
     subject = config.get('email', 'subject').format(version=version)
-    username = config.get('email', 'username')
 
-    mailer = Mailer({'manager': {'use': 'immediate'},
-                     'transport': {'use': 'smtp',
-                                   'host': config.get('email', 'host'),
-                                   'username': username,
-                                   'password': _get_email_password(username),
-                                   'tls': 'optional'}
-                     })
-
-    message = Message(author=config.get('email', 'from'),
-                      to=config.get('email', 'to'),
-                      subject=subject,
-                      plain=announce)
-
-    puts("Sending email to {}".format(config.get('email', 'to')))
-    mailer.start()
-    mailer.send(message)
-    mailer.stop()
+    send_email(to, subject, announce)
 
 
 def _publish_twitter(version):

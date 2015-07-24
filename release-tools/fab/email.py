@@ -1,0 +1,34 @@
+import getpass
+
+from fabric.api import puts
+from marrow.mailer import Mailer, Message
+from .config import config, CUSTOM_CONFIG_PATH, SCRIPT_PATH
+
+
+def send_email(to, subject, body):
+    host = config.get('email', 'host')
+    author = config.get('email', 'from')
+    username = config.get('email', 'username')
+    password = _get_email_password(username)
+
+    mailer = Mailer({'manager': {'use': 'immediate'},
+                     'transport': {'use': 'smtp',
+                                   'host': host,
+                                   'username': username,
+                                   'password': password,
+                                   'tls': 'optional'}
+                     })
+
+    message = Message(author=author, to=to, subject=subject, plain=body)
+
+    puts("Sending email to {}".format(to))
+    mailer.start()
+    mailer.send(message)
+    mailer.stop()
+
+
+def _get_email_password(username):
+    if config.has_option('email', 'password'):
+        return config.get('email', 'password')
+
+    return getpass.getpass('Email password for {}: '.format(username))
