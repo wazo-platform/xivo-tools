@@ -23,7 +23,6 @@ xivo-ci
 xivo-client-qt
 xivo-confd
 xivo-confd-client
-xivo-confd-tests
 xivo-confgend
 xivo-confgend-client
 xivo-config
