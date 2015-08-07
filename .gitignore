@@ -1,2 +1,3 @@
 release-tools/defaults.ini.local
 *.pyc
+.tox
