@@ -55,6 +55,7 @@ xivo-purge-db
 xivo-sounds
 xivo-stat
 xivo-sync
+xivo-swagger-doc
 xivo-sysconfd
 xivo-tools
 xivo-upgrade
