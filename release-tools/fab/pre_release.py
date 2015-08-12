@@ -153,4 +153,4 @@ def shortlog(version):
         body = local(cmd.format(repos=repos, version=version), capture=True)
 
     subject = 'Shortlog entre {version} et origin/master'.format(version=version)
-    send_email('dev@@avencall.com', subject, body)
+    send_email('dev@avencall.com', subject, body)
