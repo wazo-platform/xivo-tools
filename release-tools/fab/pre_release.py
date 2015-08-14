@@ -51,6 +51,7 @@ def binaries(version):
     file_names = execute(_get_binaries_file_names, version).get(BUILDER_HOST)
     execute(_copy_binaries_from_current_version, version, file_names)
     execute(_copy_binaries_delta, version)
+    execute(_chown_binaries, version)
 
 
 @hosts(BUILDER_HOST)
@@ -90,14 +91,23 @@ def _copy_binaries_from_current_version(version, new_file_names):
 
 @hosts(BUILDER_HOST)
 def _copy_binaries_delta(version):
-    options = "-v -rlpt --delete --progress --include '/*{version}*' --exclude '/*'".format(version=version)
+    options = "-v -rl --delete --progress --include '/*{version}*' --exclude '/*'".format(version=version)
     src = '/var/www/builder/'
-    dest = 'www-data@mirror.xivo.io:/data/iso/archives/.xivo-{version}'.format(version=version)
+    dest = 'builder@mirror.xivo.io:/data/iso/archives/.xivo-{version}'.format(version=version)
 
     command = 'rsync {options} "{src}" "{dest}"'.format(options=options, src=src, dest=dest)
     run(command)
 
     puts('Created dot-directory "{dest}"'.format(dest=dest))
+
+
+@hosts(MIRROR_HOST)
+def _chown_binaries(version):
+    command = 'chown -R www-data:www-data /data/iso/archives/.xivo-{version}'.format(version=version)
+    run(command)
+
+    command = 'chmod -R ug+rw /data/iso/archives/.xivo-{version}'.format(version=version)
+    run(command)
 
 
 @task
