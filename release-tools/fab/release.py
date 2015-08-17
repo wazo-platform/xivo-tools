@@ -105,7 +105,8 @@ def deb_dist():
     with _active_distribution(codename, path):
         run("reprepro -vb /data/reprepro/xivo update xivo-five")
 
-    run('/root/backport-squeeze')
+    run('reprepro -vb /data/reprepro/xivo copy squeeze-xivo-skaro-rc xivo-rc xivo-dist xivo-upgrade')
+    run('reprepro -vb /data/reprepro/xivo copy squeeze-xivo-skaro xivo-five xivo-dist xivo-upgrade')
 
 
 @contextmanager
