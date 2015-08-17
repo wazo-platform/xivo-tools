@@ -6,6 +6,7 @@ import os
 import sh
 import sys
 import sqlalchemy as sa
+import xivo_dao.alchemy.all
 
 from ConfigParser import ConfigParser
 from contextlib import contextmanager
@@ -13,7 +14,6 @@ from contextlib import contextmanager
 from alembic.config import Config as AlembicConfig
 from alembic import command as alembic_command
 
-from xivo_dao import alchemy
 from xivo_dao.helpers import db_manager
 
 logging.basicConfig(level=logging.DEBUG)
