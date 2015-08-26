@@ -33,6 +33,7 @@ xivo-ctid-client
 xivo-dao
 xivo-dird
 xivo-dird-client
+xivo-dird-phoned
 xivo-dist
 xivo-doc
 xivo-dxtora
