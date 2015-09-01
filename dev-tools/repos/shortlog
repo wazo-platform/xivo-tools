@@ -9,6 +9,7 @@ xivo-agentd-cli
 xivo-agentd-client
 xivo-agid
 xivo-amid
+xivo-amid-client
 xivo-auth
 xivo-auth-client
 xivo-backup
