@@ -49,8 +49,7 @@ def clear_confgen_cache():
 
 @hosts(MIRROR_HOST)
 def synchronize_mirrors():
-    run('./update_xivo-dev')
-    run('./update_xivo-rc')
+    run('reprepro -vb /data/reprepro/xivo update xivo-rc')
 
 
 @hosts(XIVO_TEST_HOST)
