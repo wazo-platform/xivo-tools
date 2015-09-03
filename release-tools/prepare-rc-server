@@ -31,6 +31,7 @@ def freeze():
     execute(synchronize_mirrors)
     execute(clear_confgen_cache)
     execute(upgrade_xivo_test)
+    execute(upgrade_xivo_test_slave)
 
     print
     print "RC is ready !"
@@ -68,6 +69,11 @@ def synchronize_mirrors():
 
 @hosts(XIVO_TEST_HOST)
 def upgrade_xivo_test():
+    run('xivo-upgrade -f')
+
+
+@hosts(XIVO_TEST_SLAVE_HOST)
+def upgrade_xivo_test_slave():
     run('xivo-upgrade -f')
 
 
