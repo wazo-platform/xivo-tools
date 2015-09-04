@@ -153,6 +153,7 @@ def _monitoring_url():
     return "{}/api/{}".format(config.get('load_tests', 'monitor_url'),
                               config.get('load_tests', 'server_name'))
 
+
 @task
 def shortlog(version):
     """(previous) send git shortlog to dev@avencall.com"""
@@ -164,3 +165,11 @@ def shortlog(version):
 
     subject = 'Shortlog entre {version} et origin/master'.format(version=version)
     send_email('dev@avencall.com', subject, body)
+
+
+@task
+@hosts(MIRROR_HOST)
+def update_xivo_rc():
+    """() reprepro update xivo-rc"""
+
+    run('reprepro -vb /data/reprepro/xivo update xivo-rc')
