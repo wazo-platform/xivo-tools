@@ -32,7 +32,7 @@ def binaries():
                 run(command)
                 command = 'ln -sfn "archives/{candidate}"/xivoclient-*.dmg xivoclient-latest.dmg'.format(candidate=visible_name)
                 run(command)
-                command = 'ln -sfn "archives/{candidate}"/xivo-*amd64.iso xivo-latest-beta-amd64.iso'.format(candidate=visible_name)
+                command = 'ln -sfn "archives/{candidate}"/xivo-*amd64.iso xivo-latest-amd64.iso'.format(candidate=visible_name)
                 run(command)
                 command = 'ln -sfn "archives/{candidate}"/xivo-*i386.iso xivo-latest.iso'.format(candidate=visible_name)
                 run(command)
