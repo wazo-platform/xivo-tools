@@ -187,3 +187,9 @@ def _commit_and_push(path, message):
     with lcd(path):
         local('git commit -a -m "{message}"'.format(message=message))
         local('git push')
+
+
+@task
+def api():
+    """() update http://api.xivo.io (swagger)"""
+    jenkins.job_build('deploy-swagger-doc', token=jenkins_token)
