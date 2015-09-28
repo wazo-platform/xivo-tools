@@ -1,8 +1,8 @@
 asterisk
 bntools
-create_archive_file
 dahdi-linux
 dahdi-tools
+debian-add-archive
 debian-installer
 libpri
 pylinphonelib
