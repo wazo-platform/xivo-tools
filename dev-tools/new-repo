@@ -22,7 +22,7 @@ if not (user and password):
 github = login(user, password)
 xivo_pbx = github.organization('xivo-pbx')
 
-repo = xivo_pbx.create_repository(repo_name)
+repo = xivo_pbx.create_repo(repo_name)
 
 if repo:
     print(repo.ssh_url)
