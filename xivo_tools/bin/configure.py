@@ -23,7 +23,8 @@ import socket
 import os
 import urllib2
 
-from xivo_dao.helpers.db_manager import daosession
+from xivo_dao.helpers.db_utils import session_scope
+from xivo_dao import init_db_from_config
 from xivo_tools.helpers.http import provd_http_request
 from xivo_tools.helpers.action import sysconfd, build_update_query, \
     build_insert_query, exec_sql, start_xivo_services, enable_xivo_services, \
@@ -116,17 +117,13 @@ class XivoConfigure(object):
             'description': 'wizard configuration'
         }
 
-        @daosession
-        def sql_cmd(session, data):
-            session.begin()
+        with session_scope() as session:
             result = session.execute('SELECT id FROM "resolvconf" WHERE id=1')
             if result:
                 qry = build_update_query('resolvconf', data, {'id': 1})
             else:
                 qry = build_insert_query('resolvconf', data)
             session.execute(qry, data)
-            session.commit()
-        sql_cmd(data)
 
     def entity(self):
         logging.info('Configuring entity')
@@ -348,6 +345,7 @@ def main():
     parsed_args = _new_argument_parser()
     level = logging.DEBUG if parsed_args.debug else logging.INFO
     init_logging(DEFAULT_LOG_FORMAT, level=level)
+    init_db_from_config()
 
     try:
         xivo_configure = XivoConfigure(parsed_args)

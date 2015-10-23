@@ -19,7 +19,7 @@
 import logging
 import urllib2
 
-from xivo_dao.helpers.db_manager import daosession
+from xivo_dao.helpers.db_utils import session_scope
 from xivo_tools.helpers.http import sysconfd_http_request
 
 
@@ -62,11 +62,9 @@ def init_logging(log_format, level):
     logging.basicConfig(format=log_format, level=level)
 
 
-@daosession
-def exec_sql(session, qry, data={}):
-    session.begin()
-    session.execute(qry, data)
-    session.commit()
+def exec_sql(qry, data={}):
+    with session_scope() as session:
+        session.execute(qry, data)
 
 
 def sysconfd(action, data=None, qry=None):
