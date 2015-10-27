@@ -262,17 +262,13 @@ class XivoConfigure(object):
             'description': 'wizard configuration'
         }
 
-        @daosession
-        def sql_cmd(session, data):
-            session.begin()
+        with session_scope() as session:
             row = session.execute('SELECT id FROM "netiface" WHERE ifname=:ifname', data).fetchone()
             if row:
                 qry = build_update_query('netiface', data, {'id': row['id']})
             else:
                 qry = build_insert_query('netiface', data)
             session.execute(qry, data)
-            session.commit()
-        sql_cmd(data)
 
         """
         data = {
@@ -285,52 +281,50 @@ class XivoConfigure(object):
         """
 
 
-@daosession
-def commonconf(session, data_obj):
+def commonconf(data_obj):
     logging.info('Applying configuration')
-    session.begin()
-    conf = {}
-    row = session.execute('SELECT * FROM "dhcp" WHERE id=1').fetchone()
-    if row:
-        conf['dhcp_pool'] = '%s %s' % (row['pool_start'], row['pool_end'])
-        conf['dhcp_extra_ifaces'] = row['extra_ifaces']
-        conf['dhcp_active'] = int(row['active'])
+    with session_scope() as session:
+        conf = {}
+        row = session.execute('SELECT * FROM "dhcp" WHERE id=1').fetchone()
+        if row:
+            conf['dhcp_pool'] = '%s %s' % (row['pool_start'], row['pool_end'])
+            conf['dhcp_extra_ifaces'] = row['extra_ifaces']
+            conf['dhcp_active'] = int(row['active'])
 
-    row = session.execute('SELECT * FROM "mail" WHERE id=1').fetchone()
-    if row:
-        conf['smtp_mydomain'] = row['mydomain']
-        conf['smtp_origin'] = row['origin']
-        conf['smtp_relayhost'] = row['relayhost']
-        conf['smtp_fallback_relayhost'] = row['fallback_relayhost']
-        conf['smtp_canonical'] = row['canonical']
+        row = session.execute('SELECT * FROM "mail" WHERE id=1').fetchone()
+        if row:
+            conf['smtp_mydomain'] = row['mydomain']
+            conf['smtp_origin'] = row['origin']
+            conf['smtp_relayhost'] = row['relayhost']
+            conf['smtp_fallback_relayhost'] = row['fallback_relayhost']
+            conf['smtp_canonical'] = row['canonical']
 
-    row = session.execute('SELECT * FROM "provisioning" WHERE id=1').fetchone()
-    if row:
-        conf['provd_net4_ip'] = row['net4_ip']
-        conf['provd_http_port'] = row['http_port']
-        conf['provd_username'] = row['username']
-        conf['provd_password'] = row['password']
-        conf['provd_rest_port'] = row['rest_port']
-        conf['provd_rest_net4_ip'] = row['net4_ip_rest']
-        conf['provd_rest_authentication'] = int(row['private'])
-        conf['provd_rest_ssl'] = int(row['secure'])
-        conf['provd_dhcp_integration'] = int(row['dhcp_integration'])
+        row = session.execute('SELECT * FROM "provisioning" WHERE id=1').fetchone()
+        if row:
+            conf['provd_net4_ip'] = row['net4_ip']
+            conf['provd_http_port'] = row['http_port']
+            conf['provd_username'] = row['username']
+            conf['provd_password'] = row['password']
+            conf['provd_rest_port'] = row['rest_port']
+            conf['provd_rest_net4_ip'] = row['net4_ip_rest']
+            conf['provd_rest_authentication'] = int(row['private'])
+            conf['provd_rest_ssl'] = int(row['secure'])
+            conf['provd_dhcp_integration'] = int(row['dhcp_integration'])
 
-    row = session.execute('SELECT * FROM "monitoring" WHERE id=1').fetchone()
-    if row:
-        conf['maintenance'] = row['maintenance']
-        if row['alert_emails']:
-            conf['alert_emails'] = row['alert_emails'].replace('\r\n', ' ')
-        conf['dahdi_monitor_ports'] = row['dahdi_monitor_ports']
-        conf['max_call_duration'] = row['max_call_duration']
+        row = session.execute('SELECT * FROM "monitoring" WHERE id=1').fetchone()
+        if row:
+            conf['maintenance'] = row['maintenance']
+            if row['alert_emails']:
+                conf['alert_emails'] = row['alert_emails'].replace('\r\n', ' ')
+            conf['dahdi_monitor_ports'] = row['dahdi_monitor_ports']
+            conf['max_call_duration'] = row['max_call_duration']
 
-    row = session.execute('SELECT * FROM "resolvconf" WHERE id=1').fetchone()
-    if row:
-        conf['hostname'] = row['hostname']
-        conf['domain'] = row['domain']
-        conf['extra_dns_search'] = ''
-        conf['nameservers'] = ' '.join(data_obj.nameservers)
-    session.commit()
+        row = session.execute('SELECT * FROM "resolvconf" WHERE id=1').fetchone()
+        if row:
+            conf['hostname'] = row['hostname']
+            conf['domain'] = row['domain']
+            conf['extra_dns_search'] = ''
+            conf['nameservers'] = ' '.join(data_obj.nameservers)
 
     conf['voip_ifaces'] = data_obj.iface
     conf['net4_ip'] = data_obj.address
