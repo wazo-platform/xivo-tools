@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 #
-# Copyright (C) 2014 Avencall
+# Copyright (C) 2015 Avencall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -218,12 +218,12 @@ class XivoConfigure(object):
                 },
                 'sip_lines': {
                     '1': {
-                          'display_name': 'Autoprov',
-                          'number': 'autoprov',
-                          'password': 'autoprov',
-                          'proxy_ip': self.address,
-                          'registrar_ip': self.address,
-                          'username': autocreate_prefix
+                        'display_name': 'Autoprov',
+                        'number': 'autoprov',
+                        'password': 'autoprov',
+                        'proxy_ip': self.address,
+                        'registrar_ip': self.address,
+                        'username': autocreate_prefix
                     }
                 }
             },
@@ -364,9 +364,9 @@ def _new_argument_parser():
                         dest='debug',
                         help='increase verbosity')
     parser.add_argument('-c',
-                       dest='conffile',
-                       default=DEFAULT_CONFFILE,
-                       help='Use configuration file <conffile> instead of %default')
+                        dest='conffile',
+                        default=DEFAULT_CONFFILE,
+                        help='Use configuration file <conffile> instead of %default')
     return parser.parse_args()
 
 
