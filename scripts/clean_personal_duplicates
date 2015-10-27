@@ -59,7 +59,7 @@ def list_users_uuid(personal_data):
             continue
         uuids.add(uuid)
         yield uuid
-    
+
 
 def list_personal_contacts(personal_data, uuid):
     global total
@@ -91,6 +91,9 @@ def main():
         logger.debug('Cleaning %s personal contacts', uuid)
         users_contacts = set()
         for key, contact in list_personal_contacts(personal_data, uuid):
+            if 'id' not in contact:
+                remove_kv(client, key)
+                continue
             del contact['id']
             hashable_contact = frozenset(contact.items())
             if hashable_contact not in users_contacts:
