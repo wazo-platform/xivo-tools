@@ -63,7 +63,7 @@ def list_users_uuid(personal_data):
 
 def list_personal_contacts(personal_data, uuid):
     global total
-    for contact_id, contact in personal_data[uuid]['contacts']['personal'].iteritems():
+    for contact_id, contact in personal_data.get(uuid, {}).get('contacts', {}).get('personal', {}).iteritems():
         total += 1
         key = PERSONAL_CONTACT_KEY.format(user_uuid=uuid, contact_uuid=contact_id)
         yield key, contact
