@@ -1,0 +1,171 @@
+#!/bin/env python
+
+from os.path import join as path_join
+from collections import OrderedDict
+
+import yaml
+import pyaml
+import click
+import os
+import sys
+import fnmatch
+
+
+PROJECT_ROOT = "/home/gregory/p"
+
+
+PREFIXES = {'site': '/usr/local/lib/python2.7/site-packages',
+            'dist': '/usr/local/lib/python2.7/dist-packages'}
+
+
+def dict_constructor(loader, node):
+    mapping = OrderedDict()
+    for key_node, value_node in node.value:
+        key = loader.construct_object(key_node, deep=False)
+        value = loader.construct_object(value_node, deep=False)
+        mapping[key] = value
+    return mapping
+
+yaml.add_constructor(u'tag:yaml.org,2002:map', dict_constructor)
+
+
+@click.command(help="Mount a project for a docker image in docker-compose.yml")
+@click.argument('image')
+@click.argument('project')
+@click.option('--root',
+              default=PROJECT_ROOT,
+              help="where to search for projects. Default: {}".format(PROJECT_ROOT))
+@click.option('--remote',
+              default='site',
+              help="where to mount python package inside container")
+@click.option('--package',
+              help="python package to mount. Default: guess package based on name of project")
+@click.option('--yml',
+              type=click.Path(exists=True),
+              help="path to docker-compose.yml. default: find all docker-compose.yml files")
+def mount(image, project, root, remote, package, yml):
+    files = find_yml_files(yml)
+    local_path, remote_path = resolve_paths(root, project, remote, package)
+    for filepath in files:
+        add_mount(filepath, image, local_path, remote_path)
+
+
+@click.command(help="Remove project mount from docker-compose.yml")
+@click.argument('project')
+@click.option('--root',
+              default=PROJECT_ROOT,
+              help="where to search for projects. Default: {}".format(PROJECT_ROOT))
+@click.option('--image',
+              help="Docker image to unmount. Default: unmount from all images")
+@click.option('--yml',
+              type=click.Path(exists=True),
+              help="where to search for projects")
+def umount(project, root, image, yml):
+    files = find_yml_files(yml)
+    for filepath in files:
+        local_path = resolve_project(root, project)
+        remove_mount(filepath, local_path, image)
+
+
+@click.command(help="List all images available from docker-compose.yml files")
+def scan():
+    images = set()
+    files = find_yml_files()
+    for filepath in files:
+        with open(filepath) as f:
+            data = yaml.load(f)
+            images.update(set(data.keys()))
+    print "\n".join(images)
+
+
+def find_yml_files(filepath=None):
+    if filepath:
+        return [filepath]
+
+    matches = []
+    for root, dirnames, filenames in os.walk(os.getcwd()):
+        for filename in fnmatch.filter(filenames, 'docker-compose.yml'):
+            matches.append(os.path.join(root, filename))
+
+    return matches
+
+
+def resolve_paths(root, project, remote_path, package=None):
+    remote_path = PREFIXES.get(remote_path, remote_path)
+    project_path = resolve_project(root, project)
+    package = package or resolve_package(project_path, project)
+    return path_join(project_path, package), path_join(remote_path, package)
+
+
+def resolve_project(root, project):
+    projects = [p for p in os.listdir(root)
+                if os.path.isdir(path_join(root, p))]
+    if project not in projects:
+        project = fuzzy_match(projects, project)
+    return path_join(root, project)
+
+
+def fuzzy_match(candidates, term):
+    similar = [word for word in candidates if term in word]
+
+    if len(similar) > 1:
+        print "ERROR: More than one match for '{}':".format(term)
+        print "\n".join(similar)
+        sys.exit(1)
+    elif len(similar) == 0:
+        print "ERROR: '{}' not found. Candidates:".format(term)
+        print "\n".join(candidates)
+        sys.exit(1)
+
+    return similar[0]
+
+
+def resolve_package(path, project):
+    packages = [p for p in os.listdir(path)
+                if os.path.isdir(path_join(path, p))]
+    package = project.replace("-", "_")
+    if package not in packages:
+        return fuzzy_match(packages, project)
+    return package
+
+
+def add_mount(filepath, image, local_path, remote_path):
+    mount = "{}:{}".format(local_path, remote_path)
+
+    print filepath
+    with open(filepath) as f:
+        data = yaml.load(f)
+
+    print data
+    data[image].setdefault('volumes', []).append(mount)
+
+    print "{} -> {}".format(filepath, mount)
+    with open(filepath, 'w') as f:
+        pyaml.dump(data, f, string_val_style='"')
+
+
+def remove_mount(filepath, local_path, image=None):
+    with open(filepath) as f:
+        data = yaml.load(f)
+
+    if image:
+        images = [image]
+    else:
+        images = data.keys()
+
+    for image in images:
+        if 'volumes' in data[image]:
+            volumes = [v for v in data[image]['volumes']
+                       if local_path not in v]
+            data[image]['volumes'] = volumes
+
+    with open(filepath, 'w') as f:
+        pyaml.dump(data, f, string_val_style='"')
+
+
+if __name__ == "__main__":
+    group = click.Group()
+    group.add_command(mount, 'mount')
+    group.add_command(umount, 'umount')
+    group.add_command(scan, 'scan')
+    group()
