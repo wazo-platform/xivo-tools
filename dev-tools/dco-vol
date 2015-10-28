@@ -132,11 +132,9 @@ def resolve_package(path, project):
 def add_mount(filepath, image, local_path, remote_path):
     mount = "{}:{}".format(local_path, remote_path)
 
-    print filepath
     with open(filepath) as f:
         data = yaml.load(f)
 
-    print data
     data[image].setdefault('volumes', []).append(mount)
 
     print "{} -> {}".format(filepath, mount)
