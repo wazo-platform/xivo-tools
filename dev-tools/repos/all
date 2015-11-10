@@ -47,6 +47,7 @@ xivo-lib-rest-client
 xivo-libsccp
 xivo-loadtest
 xivo-manage-db
+xivo-manage-tokens
 xivo-migration-scripts
 xivo-monitoring
 xivo-provd-cli
