@@ -74,7 +74,12 @@ def upgrade_xivo_test():
 
 @hosts(XIVO_TEST_SLAVE_HOST)
 def upgrade_xivo_test_slave():
+    slave_cron_file = '/etc/cron.d/xivo-ha-slave'
+    disable_cron_command = '[ -f {slave_cron_file} ] && mv {slave_cron_file} {slave_cron_file}.disabled'
+    enable_cron_command = '[ -f {slave_cron_file}.disabled ] && mv {slave_cron_file}.disabled {slave_cron_file}'
+    run(disable_cron_command.format(slave_cron_file=slave_cron_file))
     run('xivo-upgrade -f')
+    run(enable_cron_command.format(slave_cron_file=slave_cron_file))
 
 
 if __name__ == "__main__":
