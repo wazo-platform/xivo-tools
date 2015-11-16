@@ -16,6 +16,12 @@ LOAD_ANSWER_TMUX_SESSION = 'load-answer'
 
 
 @task
+def translations():
+    """() update xivo-dird translations"""
+    jenkins.job_build('xivo-dird-translations', token=jenkins_token)
+
+
+@task
 def report_auto():
     """() build HTML report on tests executed automatically"""
     jenkins.job_build('build-tests_report_auto', token=jenkins_token)
