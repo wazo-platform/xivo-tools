@@ -1,3 +1,4 @@
 release-tools/defaults.ini.local
 *.pyc
 .tox
+release-tools/announces/*
