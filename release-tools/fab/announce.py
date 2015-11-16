@@ -5,7 +5,7 @@ import twitter
 import ircbot
 
 from ConfigParser import ConfigParser
-from fabric.api import puts, task
+from fabric.api import puts, task, abort
 
 from .config import config, CUSTOM_CONFIG_PATH, SCRIPT_PATH
 from .email import send_email
@@ -40,6 +40,9 @@ def publish(version, path='announces'):
     emailpath = os.path.join(path, 'email.txt')
     with open(emailpath) as f:
         email = f.read().decode('utf8')
+
+    if '################## Put the sprint review here ###################' in email:
+        abort('The sprint review has not been added to email.txt')
 
     puts("Publishing email")
     _publish_email(version, email)
