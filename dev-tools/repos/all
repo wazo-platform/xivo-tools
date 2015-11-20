@@ -16,6 +16,7 @@ xivo-amid
 xivo-amid-client
 xivo-auth
 xivo-auth-client
+xivo-auth-keys
 xivo-backup
 xivo-build-tools
 xivo-bus

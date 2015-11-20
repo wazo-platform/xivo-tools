@@ -12,6 +12,7 @@ xivo-amid
 xivo-amid-client
 xivo-auth
 xivo-auth-client
+xivo-auth-keys
 xivo-backup
 xivo-bus
 xivo-call-logs
