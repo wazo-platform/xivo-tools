@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2013-2014 Avencall
+# Copyright (C) 2013-2015 Avencall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ from xivo_ws import XivoServer, User, UserLine, UserVoicemail
 
 COLUMNS = ['entity', 'firstname', 'lastname', 'language',
            'phonenumber', 'context', 'protocol',
-           'voicemailname', 'voicemailmailbox', 'voicemailpassword',
+           'voicemailname', 'voicemailmailbox', 'voicemailcontext', 'voicemailpassword',
            'mac']
 
 
@@ -74,6 +74,7 @@ def import_users(xivo_ws, filename):
             user.voicemail = UserVoicemail()
             user.voicemail.name = row_dict['voicemailname']
             user.voicemail.number = row_dict['voicemailmailbox']
+            user.voicemail.context = row_dict['voicemailcontext']
             user.voicemail.password = row_dict['voicemailpassword']
 
             users.append(user)
