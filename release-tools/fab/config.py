@@ -14,7 +14,7 @@ config.read([DEFAULT_CONFIG_PATH, CUSTOM_CONFIG_PATH])
 MASTER_HOST = "root@xivo-test"
 SLAVE_HOST = "root@xivo-test-slave"
 LOAD_HOST = "root@xivo-load"
-BUILDER_HOST = "builder@builder-wheezy"
+BUILDER_HOST = "builder@builder-32"
 MIRROR_HOST = "root@mirror.xivo.io"
 GATEWAY_HOST = "root@xivo-dev-gateway"
 TRAFGEN_HOST = "trafgen@trafgen"

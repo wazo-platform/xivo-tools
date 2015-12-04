@@ -7,7 +7,7 @@ obsolete with the arrival of the xivo-dist script.
 Jenkins job
 -----------
 
-To be run on builder@builder-wheezy:
+To be run on builder@builder-32:
 
 ```
 cd /home/builder/packages/xivo-fai
