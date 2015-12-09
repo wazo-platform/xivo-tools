@@ -1,4 +1,4 @@
 git+https://github.com/xivo-pbx/xivo-dao.git
 git+https://github.com/xivo-pbx/xivo-lib-python.git
-sqlalchemy==0.9.4  # from xivo-dao
-psycopg2==2.4.5  # from xivo-dao
+sqlalchemy==0.9.8  # from xivo-dao
+psycopg2==2.5.4  # from xivo-dao
