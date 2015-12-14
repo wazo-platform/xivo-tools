@@ -31,7 +31,6 @@ xivo-dist
 xivo-dxtora
 xivo-dxtorc
 xivo-fetchfw
-xivo-lib-js
 xivo-lib-python
 xivo-lib-rest-client
 xivo-libsccp
