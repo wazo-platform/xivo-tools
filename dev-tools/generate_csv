@@ -68,6 +68,7 @@ def generate_rows():
 def name(words):
     word = random.choice(words)
     return (word
+            .decode('utf-8')
             .replace("a", "à")
             .replace("e", "é")
             .replace("o", "ô")
