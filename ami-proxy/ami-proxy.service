@@ -1,0 +1,9 @@
+[Unit]
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/sbin/amiproxy
+
+[Install]
+WantedBy=multi-user.target
