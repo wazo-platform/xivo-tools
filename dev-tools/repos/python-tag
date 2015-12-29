@@ -42,6 +42,7 @@ xivo-provd-cli
 xivo-provd-client
 xivo-provisioning
 xivo-purge-db
+xivo-service
 xivo-stat
 xivo-sync
 xivo-sysconfd
