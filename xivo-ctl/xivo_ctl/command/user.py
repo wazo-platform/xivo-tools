@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2013-2014 Avencall
+# Copyright (C) 2013-2016 Avencall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -137,8 +137,9 @@ def user_generator():
 
     def execute(self, users):
         nb_users = len(users)
-        print('Importing {0} users...'.format(nb_users))
-        self._xivo_server.users.import_(users)
+        for user_no, user in enumerate(users, start=1):
+            print('Adding user {0} of {1}'.format(user_no, nb_users))
+            self._xivo_server.users.add(user)
 
 
 class UsersMassDeleteCommand(BaseXivoServerCommand):
