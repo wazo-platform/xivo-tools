@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (C) 2015 Avencall
+# Copyright (C) 2015-2016 Avencall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -76,9 +76,9 @@ def upgrade_xivo_test_slave():
     slave_cron_file = '/etc/cron.d/xivo-ha-slave'
     disable_cron_command = '[ -f {slave_cron_file} ] && mv {slave_cron_file} {slave_cron_file}.disabled'
     enable_cron_command = '[ -f {slave_cron_file}.disabled ] && mv {slave_cron_file}.disabled {slave_cron_file}'
-    run(disable_cron_command.format(slave_cron_file=slave_cron_file))
+    run(disable_cron_command.format(slave_cron_file=slave_cron_file), warn_only=True)
     run('xivo-upgrade -f')
-    run(enable_cron_command.format(slave_cron_file=slave_cron_file))
+    run(enable_cron_command.format(slave_cron_file=slave_cron_file), warn_only=True)
 
 
 if __name__ == "__main__":
