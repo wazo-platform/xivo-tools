@@ -67,8 +67,7 @@ class LoginStep(object):
             'company': 'default',
             'ident': '-',
             'userlogin': username,
-            'version': '9999',
-            'xivoversion': '1.2',
+            'xivoversion': '2.0',
             'commandid': runner.command_id.next(),
         }
 
