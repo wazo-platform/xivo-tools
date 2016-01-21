@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2012-2014 Avencall
+# Copyright (C) 2012-2016 Avencall
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@ import logging
 import time
 import string
 import random
-from hashlib import sha1
 from gevent import sleep, Timeout
 
 logger = logging.getLogger(__name__)
@@ -90,11 +89,9 @@ class PasswordStep(object):
 
     def _new_login_pass_msg(self, runner):
         password = runner.infos['password']
-        session_id = runner.infos['session_id']
-        hashed_password = sha1(session_id + ':' + password).hexdigest()
         return {
             'class': 'login_pass',
-            'hashedpassword': hashed_password,
+            'password': password,
             'commandid': runner.command_id.next(),
         }
 
