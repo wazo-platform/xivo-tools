@@ -78,6 +78,7 @@ def generate_migration_schema():
 def reset_database():
     drop_database()
     create_database()
+    enable_extensions()
 
 
 def drop_database():
@@ -95,6 +96,13 @@ def create_database():
     db_user = config.get('database', 'username')
     with db_superuser():
         sh.createdb('-E', 'utf8', '-O', db_user, db_name)
+
+
+def enable_extensions():
+    logging.info("enabling DB extensions")
+
+    with db_superuser():
+        sh.psql('-c', 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";')
 
 
 def create_tables():
