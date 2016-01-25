@@ -17,6 +17,8 @@ from alembic import command as alembic_command
 from xivo_dao.helpers import db_manager
 
 logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger('sh.stream_bufferer')
+logger.setLevel(logging.CRITICAL)
 
 CWD_PATH = os.path.abspath(os.path.dirname(__file__))
 DB_URI = "postgres://{username}:{password}@{host}/{dbname}"
