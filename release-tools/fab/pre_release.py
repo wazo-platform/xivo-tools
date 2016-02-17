@@ -162,7 +162,7 @@ def _monitoring_url():
 
 @task
 def shortlog(version):
-    """(previous) send git shortlog to dev@avencall.com"""
+    """(previous) send git shortlog to dev@proformatique.com"""
     repos = config.get('general', 'repos')
 
     with lcd(repos):
@@ -170,7 +170,7 @@ def shortlog(version):
         body = local(cmd.format(repos=repos, version=version), capture=True)
 
     subject = 'Shortlog entre {version} et origin/master'.format(version=version)
-    send_email('dev@avencall.com', subject, body)
+    send_email('dev@proformatique.com', subject, body)
 
 
 @task
