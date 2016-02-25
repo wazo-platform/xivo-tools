@@ -23,6 +23,7 @@ xivo-confgend-client
 xivo-config
 xivo-ctid
 xivo-ctid-client
+xivo-ctid-ng
 xivo-dao
 xivo-dird
 xivo-dird-client
