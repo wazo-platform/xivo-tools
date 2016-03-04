@@ -2,6 +2,7 @@ alembic
 psycopg2
 pyyaml==3.10
 sh
+six==1.8.0
 git+https://github.com/xivo-pbx/xivo-dao
 git+https://github.com/xivo-pbx/xivo-lib-python
 unidecode
