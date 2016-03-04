@@ -1,8 +1,8 @@
-alembic
-psycopg2
-pyyaml==3.10
+alembic==0.6.5
+psycopg2==2.5.4
+pyyaml==3.11
 sh
 six==1.8.0
 git+https://github.com/xivo-pbx/xivo-dao
 git+https://github.com/xivo-pbx/xivo-lib-python
-unidecode
+unidecode==0.04.16
