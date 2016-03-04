@@ -49,7 +49,7 @@ def main():
 
     if differences:
         print
-        print "Differences detected between installed and migrated schema: "
+        print "Differences detected from installed to migrated schema: "
         print
         print differences
         sys.exit(1)
