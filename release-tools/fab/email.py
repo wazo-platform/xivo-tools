@@ -17,6 +17,7 @@ def send_email(to, subject, body):
     mailer = Mailer({'manager': {'use': 'immediate'},
                      'transport': {'use': 'smtp',
                                    'host': host,
+                                   'local_hostname': '[192.168.32.254]',
                                    'username': username,
                                    'password': password,
                                    'tls': 'optional'}
