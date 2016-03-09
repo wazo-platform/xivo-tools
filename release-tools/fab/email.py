@@ -1,8 +1,11 @@
+import logging
 import getpass
 
 from fabric.api import puts
 from marrow.mailer import Mailer, Message
-from .config import config, CUSTOM_CONFIG_PATH, SCRIPT_PATH
+from .config import config
+
+logging.basicConfig()
 
 
 def send_email(to, subject, body):
