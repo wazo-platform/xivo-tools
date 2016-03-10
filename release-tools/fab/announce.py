@@ -5,13 +5,11 @@ import twitter
 import ircbot
 
 from ConfigParser import ConfigParser
-from fabric.api import puts, task, abort
+from fabric.api import puts, task
 
 from .config import config, CUSTOM_CONFIG_PATH, SCRIPT_PATH
-from .email import send_email
 
 TEMPLATE_FOLDER = os.path.join(SCRIPT_PATH, 'templates')
-TEMPLATE_FILE = "announce.jinja"
 
 session = requests.Session()
 session.verify = False
@@ -24,7 +22,7 @@ def prepare(old_version, version, path='announces'):
     if not os.path.exists(path):
         os.mkdir(path)
 
-    for media in ('redmine', 'email'):
+    for media in ('redmine'):
         filename = '{}.txt'.format(media)
         filepath = os.path.join(path, filename)
 
@@ -35,17 +33,9 @@ def prepare(old_version, version, path='announces'):
 
 
 @task
-def publish(version, path='announces'):
+def publish(version):
     '''(current) publish reviewed announce files'''
-    emailpath = os.path.join(path, 'email.txt')
-    with open(emailpath) as f:
-        email = f.read().decode('utf8')
 
-    if '################## Put the sprint review here ###################' in email:
-        abort('The sprint review has not been added to email.txt')
-
-    puts("Publishing email")
-    _publish_email(version, email)
     puts("Publishing twitter")
     _publish_twitter(version)
     puts("Publishing irc")
@@ -109,13 +99,6 @@ def _issues_for_version(version_id):
     return response.json()['issues']
 
 
-def _publish_email(version, announce):
-    to = config.get('email', 'to')
-    subject = config.get('email', 'subject').format(version=version)
-
-    send_email(to, subject, announce)
-
-
 def _publish_twitter(version):
     oauth_token, oauth_secret = _check_twitter_oauth()
     version_id = _find_version_id(version)
@@ -129,8 +112,8 @@ def _publish_twitter(version):
 
 
 def _check_twitter_oauth():
-    if not (config.has_option('twitter', 'oauth_token')
-            and config.has_option('twitter', 'oauth_secret')):
+    if not (config.has_option('twitter', 'oauth_token') and
+            config.has_option('twitter', 'oauth_secret')):
         oauth_token, oauth_secret = twitter.oauth_dance('releasetool',
                                                         config.get('twitter', 'api_key'),
                                                         config.get('twitter', 'api_secret'))
