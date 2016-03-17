@@ -11,6 +11,29 @@ import sys
 import fnmatch
 
 
+README = '''
+mount {image} {project} [--root {root}] [--remote {remote}] [--package {package}]
+  Inserts a "volume" option in the {image} section of docker-compose.yml as:
+  - "{root}/{project}/{package}:/usr/local/lib/python2.7/{remote}-packages/{package}"
+
+  For example, calling with:
+  image=ctid
+  project=lib-python
+  --root /home/user/git
+  --package xivo
+
+  will insert a volume in:
+
+  ctid:
+    volumes:
+      ...
+->    - "/home/user/git/lib-python/xivo:/usr/local/lib/python2.7/site-packages/xivo"
+
+umount {project} [--root {root}] [--package {package}]
+  Removes a "volume" option in docker-compose.yml containing:
+  - "{root}/{project}/{package}:..."
+'''
+
 PROJECT_ROOT = "/home/gregory/p"
 
 
@@ -27,6 +50,11 @@ def dict_constructor(loader, node):
     return mapping
 
 yaml.add_constructor(u'tag:yaml.org,2002:map', dict_constructor)
+
+
+@click.command(help="Show detailed instructions")
+def help():
+    print README
 
 
 @click.command(help="Mount a project for a docker image in docker-compose.yml")
@@ -165,6 +193,7 @@ def remove_mount(filepath, local_path, image=None):
 
 if __name__ == "__main__":
     group = click.Group()
+    group.add_command(help, 'help')
     group.add_command(mount, 'mount')
     group.add_command(umount, 'umount')
     group.add_command(scan, 'scan')
