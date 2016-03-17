@@ -87,7 +87,7 @@ def mount(image, project, root, remote, package, yml):
               help="Docker image to unmount. Default: unmount from all images")
 @click.option('--yml',
               type=click.Path(exists=True),
-              help="where to search for projects")
+              help="path to docker-compose.yml. default: find all docker-compose.yml files")
 def umount(project, root, image, yml):
     files = find_yml_files(yml)
     for filepath in files:
