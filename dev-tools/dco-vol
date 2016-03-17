@@ -135,6 +135,8 @@ def add_mount(filepath, image, local_path, remote_path):
     with open(filepath) as f:
         data = yaml.load(f)
 
+    if image not in data:
+        return
     data[image].setdefault('volumes', []).append(mount)
 
     print "{} -> {}".format(filepath, mount)
@@ -146,7 +148,7 @@ def remove_mount(filepath, local_path, image=None):
     with open(filepath) as f:
         data = yaml.load(f)
 
-    if image:
+    if image and image in data:
         images = [image]
     else:
         images = data.keys()
