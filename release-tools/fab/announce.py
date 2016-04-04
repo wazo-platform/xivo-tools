@@ -22,7 +22,7 @@ def prepare(old_version, version, path='announces'):
     if not os.path.exists(path):
         os.mkdir(path)
 
-    for media in ('redmine'):
+    for media in ('redmine',):
         filename = '{}.txt'.format(media)
         filepath = os.path.join(path, filename)
 
