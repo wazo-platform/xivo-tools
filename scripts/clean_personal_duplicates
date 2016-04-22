@@ -83,7 +83,7 @@ def main():
     scheme = 'https'
 
     logger.debug('Using the following consul config %s %s %s', host, port, token)
-    client = Consul(host, port, token, https, scheme=scheme, verify=False)
+    client = Consul(host, port, token, scheme=scheme, verify=False)
 
     _, raw_private = client.kv.get(PRIVATE_KEY, recurse=True)
     personal_data = tree_from_consul(PRIVATE_KEY, raw_private)
