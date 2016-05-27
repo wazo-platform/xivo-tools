@@ -53,7 +53,6 @@ def backup_server():
     run('xivo-backup data /var/backups/xivo/data')
     run('xivo-backup db /var/backups/xivo/db')
     run('xivo-service start')
-    run('xivo-backup-consul-kv -o /var/backups/xivo/consul-kv.json')
 
 
 @hosts(XIVO_TEST_HOST)
