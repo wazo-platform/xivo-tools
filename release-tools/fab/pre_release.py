@@ -239,12 +239,17 @@ def test_iso(host):
     print('Checking Debian installation')
     execute(_test_debian_mirrors, host=ssh_host)
 
+    print('Checking XiVO version')
+    xivo_version = execute(_get_xivo_version, host=ssh_host)[ssh_host]
+
     print('Creating WS user')
     execute(_create_ws_user, login='test-iso', password=password, host=ssh_host)
 
     auth = AuthClient(host, username='test-iso', password=password, verify_certificate=False)
     token = auth.token.new('xivo_service', expiration=60)['token']
     confd.set_token(token)
+
+    print ('Installed version of XiVO is: {}'.format(xivo_version))
 
     print('Creating user1')
     user1 = _create_user(confd=confd, firstname='user1', exten='1001', host=host)
@@ -269,6 +274,10 @@ def _test_debian_mirrors():
 
     install = run('apt-get install')
     assert_that(install, contains_string('0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.'))
+
+
+def _get_xivo_version():
+    return run('cat /usr/share/xivo/XIVO-VERSION')
 
 
 def _create_ws_user(login, password):
