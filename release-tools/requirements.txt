@@ -1,5 +1,9 @@
+https://github.com/xivo-pbx/xivo-confd-client/archive/master.zip
+https://github.com/xivo-pbx/xivo-auth-client/archive/master.zip
+
 click
 fabric
+pyhamcrest
 irc
 jinja2
 marrow.mailer

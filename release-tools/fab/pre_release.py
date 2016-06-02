@@ -1,6 +1,10 @@
+import getpass
 import requests
 
 from fabric.api import execute, hosts, lcd, local, puts, run, task, settings
+from hamcrest import assert_that, contains_string
+from xivo_auth_client.client import AuthClient
+from xivo_confd_client.client import ConfdClient
 
 from .config import config
 from .config import jenkins, jenkins_token
@@ -179,3 +183,123 @@ def update_xivo_rc():
     """() reprepro update xivo-rc"""
 
     run('reprepro -vb /data/reprepro/xivo update xivo-rc')
+
+
+@task
+def test_iso(host):
+    """(iso_host) automatically create conditions for testing an ISO install"""
+
+    ssh_host = 'root@{}'.format(host)
+
+    print('Please make sure you can SSH into {}: /etc/ssh/sshd_config OR xivo-dev-ssh-pubkeys'.format(host))
+    raw_input('Press a key to continue...')
+    execute(_check_ssh_connection, host=ssh_host)
+
+    password = getpass.getpass('Future webi password: ')
+    confd = ConfdClient(host,
+                        port=9486,
+                        verify_certificate=False)
+
+    print('Discovering wizard parameters...')
+    discover = confd.wizard.discover()
+
+    print('Configuring wizard...')
+    wizard = {
+        "admin_password": password,
+        "license": True,
+        "timezone": "America/Montreal",
+        "language": "en_US",
+        "entity_name": "Proformatique",
+        "network": {
+            "hostname": "xivo-iso",
+            "domain": "lan.proformatique.com",
+            "interface": discover['interfaces'][0]['interface'],
+            "ip_address": discover['interfaces'][0]['ip_address'],
+            "netmask": discover['interfaces'][0]['netmask'],
+            "gateway": discover['gateways'][0]['gateway'],
+            "nameservers": discover['nameservers'],
+        },
+        "context_incall": {
+            "display_name": "Incalls",
+            "number_start": "1000",
+            "number_end": "4999",
+            "did_length": 4
+        },
+        "context_internal": {
+            "display_name": "Default",
+            "number_start": "1000",
+            "number_end": "1999"
+        },
+        "context_outcall": {
+            "display_name": "Outcalls"
+        }
+    }
+    confd.wizard.create(wizard)
+
+    print('Checking Debian installation')
+    execute(_test_debian_mirrors, host=ssh_host)
+
+    print('Creating WS user')
+    execute(_create_ws_user, login='test-iso', password=password, host=ssh_host)
+
+    auth = AuthClient(host, username='test-iso', password=password, verify_certificate=False)
+    token = auth.token.new('xivo_service', expiration=60)['token']
+    confd.set_token(token)
+
+    print('Creating user1')
+    user1 = _create_user(confd=confd, firstname='user1', exten='1001', host=host)
+    print('SIP registrar: {}'.format(host))
+    print('SIP username: {}'.format(user1['endpoint']['username']))
+    print('SIP password: {}'.format(user1['endpoint']['secret']))
+
+    print('Creating user2')
+    user2 = _create_user(confd=confd, firstname='user2', exten='1002', host=host)
+    print('SIP registrar: {}'.format(host))
+    print('SIP username: {}'.format(user2['endpoint']['username']))
+    print('SIP password: {}'.format(user2['endpoint']['secret']))
+
+
+def _check_ssh_connection():
+    run('ls')
+
+
+def _test_debian_mirrors():
+    policy = run('apt-cache policy')
+    assert_that(policy, contains_string('mirror.xivo.io'))
+
+    install = run('apt-get install')
+    assert_that(install, contains_string('0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.'))
+
+
+def _create_ws_user(login, password):
+    sql = "DELETE FROM accesswebservice ; INSERT INTO accesswebservice (name, login, passwd, acl) VALUES ('{login}', '{login}', '{password}', '{{confd.#}}');".format(login=login, password=password)
+    run('sudo -u postgres psql asterisk -c "{sql}" ; xivo-update-keys'.format(sql=sql))
+
+
+def _create_user(confd, firstname, exten, host):
+    body = {
+        'firstname': firstname,
+    }
+    user = confd.users.create(body)
+
+    endpoint = confd.endpoints_sip.create({})
+
+    body = {
+        'exten': exten,
+        'context': 'default',
+    }
+    extension = confd.extensions.create(body)
+
+    body = {
+        'context': 'default',
+    }
+    line = confd.lines.create(body)
+
+    confd.lines.relations(line['id']).add_endpoint_sip(endpoint['id'])
+    confd.lines.relations(line['id']).add_extension(extension['id'])
+    confd.lines.relations(line['id']).add_user(user['id'])
+
+    return {'user': user,
+            'line': line,
+            'endpoint': endpoint,
+            'extension': extension}
