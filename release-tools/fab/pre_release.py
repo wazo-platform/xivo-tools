@@ -40,18 +40,19 @@ def report_manual():
 @task
 def stop_xivo_test():
     """() shutdown xivo-test and xivo-test-slave (once all tests are finished)"""
-    execute(_stop_xivo_test_master)
-    execute(_stop_xivo_test_slave)
+    with settings(warn_only=True):
+        execute(_stop_xivo_test_master)
+        execute(_stop_xivo_test_slave)
 
 
 @hosts(MASTER_HOST)
 def _stop_xivo_test_master():
-    run('/sbin/poweroff')
+    run('systemctl poweroff')
 
 
 @hosts(SLAVE_HOST)
 def _stop_xivo_test_slave():
-    run('/sbin/poweroff')
+    run('systemctl poweroff')
 
 
 @task
