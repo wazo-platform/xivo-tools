@@ -25,6 +25,7 @@ xivo-ctid
 xivo-ctid-client
 xivo-ctid-ng
 xivo-dao
+xivo-dbms
 xivo-dird
 xivo-dird-client
 xivo-dird-phoned
