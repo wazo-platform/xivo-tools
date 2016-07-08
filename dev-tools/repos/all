@@ -55,6 +55,7 @@ xivo-provd-client
 xivo-provd-plugins
 xivo-provisioning
 xivo-purge-db
+xivo-res-freeze-check
 xivo-service
 xivo-sounds
 xivo-stat
