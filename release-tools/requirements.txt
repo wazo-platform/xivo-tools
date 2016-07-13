@@ -1,5 +1,7 @@
 https://github.com/xivo-pbx/xivo-confd-client/archive/master.zip
 https://github.com/xivo-pbx/xivo-auth-client/archive/master.zip
+https://github.com/xivo-pbx/xivo-lib-rest-client/archive/master.zip
+
 
 click
 fabric
