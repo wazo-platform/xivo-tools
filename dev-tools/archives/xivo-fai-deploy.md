@@ -41,4 +41,4 @@ Notes
 -----
 
 The script ``xivo-fai-build`` is available in the
-git.xivo.fr:official/xivo-fai.git repo.
+git.xivo.io:official/xivo-fai.git repo.
