@@ -42,6 +42,7 @@ xivo-lib-rest-client
 xivo-libsccp
 xivo-manage-db
 xivo-monitoring
+xivo-nginx
 xivo-provd-cli
 xivo-provd-client
 xivo-provisioning
