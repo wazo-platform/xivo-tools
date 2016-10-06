@@ -35,7 +35,7 @@ class C(ConsumerMixin):
         self.routing_key = routing_key
 
     def get_consumers(self, Consumer, channel):
-        return [Consumer(kombu.Queue(exchange=EXCHANGE, routing_key=self.routing_key, durable=False),
+        return [Consumer(kombu.Queue(exchange=EXCHANGE, routing_key=self.routing_key, exclusive=True),
                 callbacks=[self.on_message])]
 
     def on_message(self, body, message):
