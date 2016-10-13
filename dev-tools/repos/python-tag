@@ -50,6 +50,7 @@ xivo-purge-db
 xivo-res-freeze-check
 xivo-service
 xivo-stat
+xivo-swagger-doc
 xivo-sync
 xivo-sysconfd
 xivo-upgrade
