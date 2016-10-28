@@ -1,0 +1,208 @@
+#!/usr/bin/python3
+# Copyright 2016 Proformatique Inc.
+# SPDX-License-Identifier: GPL-3.0+
+
+# ./extract-traceback /var/log/xivo-*.log /var/log/xivo-*.1.gz
+
+import argparse
+import datetime
+import gzip
+import os.path
+import sys
+
+from collections import defaultdict
+from operator import attrgetter
+
+
+def main():
+    parsed_args = parse_args()
+
+    if not parsed_args.filenames:
+        files = [StdinFile()]
+    else:
+        files = [new_file(filename) for filename in parsed_args.filenames]
+    # XXX usage of the name "file" is meh
+    log_files = [LogFile(file) for file in files]
+
+    # get all errors from all log files and aggregate them
+    service_results = {}
+    for log_file in log_files:
+        service_name = log_file.service_name()
+        service_result = service_results.setdefault(service_name, ServiceResult(service_name))
+        service_result.add_errors(log_file.get_errors())
+
+    # display
+    for service_result in sorted(service_results.values(), key=attrgetter('service_name')):
+        if not service_result.error_groups:
+            continue
+        print('=============================')
+        print(service_result.service_name, '\n')
+
+        error_groups = service_result.error_groups
+        for error_group in sorted(error_groups.values(), key=attrgetter('first_error.datetime')):
+            errors = sorted(error_group.errors, key=attrgetter('datetime'))
+            for error in errors:
+                print(error.log_line or '<no log line>')
+            print(error_group.first_error.traceback)
+            print(error_group.first_error.exception_line)
+            print()
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filenames', nargs='*', metavar='FILE')
+    return parser.parse_args()
+
+
+def new_file(filename):
+    # poor's man file type detection
+    if filename.endswith('.gz'):
+        return GzippedFile(filename)
+    else:
+        return RegularFile(filename)
+
+
+class LogFile(object):
+
+    def __init__(self, file):
+        self._file = file
+
+    def service_name(self):
+        return os.path.basename(self._file.filename).split('.', 1)[0]
+
+    def get_errors(self):
+        errors = []
+        with self._file as fobj:
+            self._get_errors(fobj, errors)
+        return errors
+
+    def _get_errors(self, fobj, errors):
+        parser = _Parser(fobj)
+        try:
+            while True:
+                # look for the next line beginning with "Traceback"
+                while True:
+                    line = parser.readline()
+                    if line.startswith('Traceback'):
+                        break
+                # A: line begins with 'Traceback'
+                log_line = parser.previous_line
+
+                traceback_lines = []
+                line = parser.readline()
+                while line.startswith(' '):
+                    traceback_lines.append(line)
+                    line = parser.readline()
+                exception_line = line
+
+                error = Error(''.join(traceback_lines).rstrip(), log_line.rstrip() if log_line else log_line, exception_line.rstrip())
+                errors.append(error)
+        except EOFError:
+            pass
+
+
+class _Parser(object):
+
+    def __init__(self, fobj):
+        self._fobj = fobj
+        self.previous_line = None
+        self.current_line = None
+
+    def readline(self):
+        self.previous_line = self.current_line
+        line = self._fobj.readline()
+        if not line:
+            raise EOFError()
+        self.current_line = line
+
+        return line
+
+
+class StdinFile(object):
+
+    filename = '<stdin>'
+
+    def __enter__(self):
+        return sys.stdin
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
+
+
+class RegularFile(object):
+
+    def __init__(self, filename):
+        self.filename = filename
+        self._fobj = None
+
+    def __enter__(self):
+        if self._fobj:
+            raise Exception('does not handle nested with statements')
+        self._fobj = open(self.filename, 'rt', encoding='utf-8')
+        return self._fobj
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._fobj.close()
+        self._fobj = None
+
+
+class GzippedFile(object):
+
+    def __init__(self, filename):
+        self.filename = filename
+        self._fobj = None
+
+    def __enter__(self):
+        if self._fobj:
+            raise Exception('does not handle nested with statements')
+        self._fobj = gzip.open(self.filename, 'rt', encoding='utf-8')
+        return self._fobj
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._fobj.close()
+        self._fobj = None
+
+
+class Error(object):
+
+    def __init__(self, traceback, log_line, exception_line):
+        # log_line might be None
+        self.traceback = traceback
+        self.log_line = log_line
+        self.exception_line = exception_line
+        self.datetime = self._extract_datetime()
+
+    def _extract_datetime(self):
+        if not self.log_line:
+            return None
+        try:
+            return datetime.datetime.strptime(self.log_line[:23], '%Y-%m-%d %H:%M:%S,%f')
+        except ValueError:
+            return None
+
+
+class ServiceResult(object):
+
+    def __init__(self, service_name):
+        self.service_name = service_name
+        self.error_groups = defaultdict(ErrorGroup)
+
+    def add_errors(self, errors):
+        for error in errors:
+            self.error_groups[error.traceback].add_error(error)
+
+
+class ErrorGroup(object):
+
+    def __init__(self):
+        self.errors = []
+        self.first_error = None
+
+    def add_error(self, error):
+        if self.first_error is None or not self.first_error.datetime or (error.datetime and error.datetime < self.first_error.datetime):
+            self.first_error = error
+        self.errors.append(error)
+
+
+if __name__ == '__main__':
+    main()
