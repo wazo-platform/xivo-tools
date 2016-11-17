@@ -24,12 +24,17 @@ def main():
     # XXX usage of the name "file" is meh
     log_files = [LogFile(file) for file in files]
 
+    if parsed_args.after:
+        filter_predicate = lambda error: error.datetime is not None and error.datetime > parsed_args.after
+    else:
+        filter_predicate = lambda error: True
+
     # get all errors from all log files and aggregate them
     service_results = {}
     for log_file in log_files:
         service_name = log_file.service_name()
         service_result = service_results.setdefault(service_name, ServiceResult(service_name))
-        service_result.add_errors(log_file.get_errors())
+        service_result.add_errors(filter(filter_predicate, log_file.get_errors()))
 
     # display
     for service_result in sorted(service_results.values(), key=attrgetter('service_name')):
@@ -50,8 +55,14 @@ def main():
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--after', type=datetime_format,
+            help='only show errors after this date (e.g. "2016-11-20 13:43:11")')
     parser.add_argument('filenames', nargs='*', metavar='FILE')
     return parser.parse_args()
+
+
+def datetime_format(value):
+    return datetime.datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
 
 
 def new_file(filename):
@@ -71,12 +82,10 @@ class LogFile(object):
         return os.path.basename(self._file.filename).split('.', 1)[0]
 
     def get_errors(self):
-        errors = []
         with self._file as fobj:
-            self._get_errors(fobj, errors)
-        return errors
+            yield from self._get_errors(fobj)
 
-    def _get_errors(self, fobj, errors):
+    def _get_errors(self, fobj):
         parser = _Parser(fobj)
         try:
             while True:
@@ -95,8 +104,7 @@ class LogFile(object):
                     line = parser.readline()
                 exception_line = line
 
-                error = Error(''.join(traceback_lines).rstrip(), log_line.rstrip() if log_line else log_line, exception_line.rstrip())
-                errors.append(error)
+                yield Error(''.join(traceback_lines).rstrip(), log_line.rstrip() if log_line else log_line, exception_line.rstrip())
         except EOFError:
             pass
 
