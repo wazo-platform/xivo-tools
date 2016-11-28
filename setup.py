@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright (C) 2015 Avencall
+# Copyright (C) 2016 Pascal Cadotte Michaud
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +27,7 @@ setup(
     description='XiVO Tools',
     author='Avencall',
     author_email='dev@avencall.com',
-    url='https://github.com/xivo-pbx/xivo-tools',
+    url='https://github.com/wazo-pbx/xivo-tools',
     packages=find_packages(),
     scripts=['bin/xivo-configure', 'bin/xivo-reset'],
 )

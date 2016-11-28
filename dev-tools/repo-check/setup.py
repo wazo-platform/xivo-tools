@@ -21,7 +21,7 @@ setup(
     description='XiVO Merge assistant',
     author='Avencall',
     author_email='dev@avencall.com',
-    url='https://github.com/xivo-pbx/xivo-tools',
+    url='https://github.com/wazo-pbx/xivo-tools',
     packages=packages,
     scripts=['bin/check_local_xivo_repositories',
              'bin/check_unmerged_branches'],
