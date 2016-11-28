@@ -159,15 +159,15 @@ def _update_archive_on_mirror(version):
 
 
 @task
-def version(prod, dev):
-    """(current, next) update xivo version numbers on mirror and debian package"""
-    jenkins.job_build('prepare_xivo_version', {'XIVO_VERSION_DEV': dev, 'XIVO_VERSION_PROD': prod}, jenkins_token)
+def version(stable, unstable):
+    """(current, next) update wazo version numbers on mirror and debian package"""
+    jenkins.job_build('public-versions', {'UNSTABLE': unstable, 'STABLE': stable}, jenkins_token)
 
     repo = config.get('version', 'repo')
 
     _git_pull_master(repo)
-    local('echo {new} > {repo}/VERSION'.format(new=dev, repo=repo))
-    _commit_and_push(repo, "bump version ({new})".format(new=dev))
+    local('echo {unstable} > {repo}/VERSION'.format(unstable=unstable, repo=repo))
+    _commit_and_push(repo, "bump version ({unstable})".format(unstable=unstable))
 
 
 def _git_pull_master(path):
