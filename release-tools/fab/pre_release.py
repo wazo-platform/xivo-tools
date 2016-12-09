@@ -87,7 +87,7 @@ def _copy_binaries_from_current_version(version, new_file_names):
     faster than transferring the whole new ISO file, as only delta will be
     transferred"""
 
-    new_directory = '/data/iso/archives/.xivo-{version}'.format(version=version)
+    new_directory = '/data/iso/archives/.wazo-{version}'.format(version=version)
     run('rsync -a /data/iso/xivo-current/ {}'.format(new_directory))
     old_file_names = _list_files(new_directory)
     for old, new in zip(old_file_names, new_file_names):
@@ -104,7 +104,7 @@ def _copy_binaries_from_current_version(version, new_file_names):
 def _copy_binaries_delta(version):
     options = "-v -rl --delete --progress --include '/*{version}*' --exclude '/*'".format(version=version)
     src = '/var/www/builder/'
-    dest = 'builder@mirror.xivo.io:/data/iso/archives/.xivo-{version}'.format(version=version)
+    dest = 'builder@mirror.wazo.community:/data/iso/archives/.wazo-{version}'.format(version=version)
 
     command = 'rsync {options} "{src}" "{dest}"'.format(options=options, src=src, dest=dest)
     run(command)
@@ -114,10 +114,10 @@ def _copy_binaries_delta(version):
 
 @hosts(MIRROR_HOST)
 def _chown_binaries(version):
-    command = 'chown -R www-data:www-data /data/iso/archives/.xivo-{version}'.format(version=version)
+    command = 'chown -R www-data:www-data /data/iso/archives/.wazo-{version}'.format(version=version)
     run(command)
 
-    command = 'chmod -R ug+rw /data/iso/archives/.xivo-{version}'.format(version=version)
+    command = 'chmod -R ug+rw /data/iso/archives/.wazo-{version}'.format(version=version)
     run(command)
 
 
@@ -181,9 +181,9 @@ def shortlog(version):
 @task
 @hosts(MIRROR_HOST)
 def update_xivo_rc():
-    """() reprepro update xivo-rc"""
+    """() reprepro update wazo-rc"""
 
-    run('reprepro -vb /data/reprepro/xivo update xivo-rc')
+    run('reprepro -vb /data/reprepro/xivo update wazo-rc')
 
 
 @task
@@ -240,7 +240,7 @@ def test_iso(host):
     print('Checking Debian installation')
     execute(_test_debian_mirrors, host=ssh_host)
 
-    print('Checking XiVO version')
+    print('Checking Wazo version')
     xivo_version = execute(_get_xivo_version, host=ssh_host)[ssh_host]
 
     print('Creating WS user')
@@ -250,7 +250,7 @@ def test_iso(host):
     token = auth.token.new('xivo_service', expiration=60)['token']
     confd.set_token(token)
 
-    print ('Installed version of XiVO is: {}'.format(xivo_version))
+    print ('Installed version of Wazo is: {}'.format(xivo_version))
 
     print('Creating user1')
     user1 = _create_user(confd=confd, firstname='user1', exten='1001', host=host)
@@ -271,7 +271,7 @@ def _check_ssh_connection():
 
 def _test_debian_mirrors():
     policy = run('apt-cache policy')
-    assert_that(policy, contains_string('mirror.xivo.io'))
+    assert_that(policy, contains_string('mirror.wazo.community'))
 
     install = run('apt-get install')
     assert_that(install, contains_string('0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.'))

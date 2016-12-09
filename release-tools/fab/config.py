@@ -15,7 +15,7 @@ MASTER_HOST = "root@xivo-test"
 SLAVE_HOST = "root@xivo-test-slave"
 LOAD_HOST = "root@xivo-load"
 BUILDER_HOST = "builder@builder-32"
-MIRROR_HOST = "root@mirror.xivo.io"
+MIRROR_HOST = "root@mirror.wazo.community"
 GATEWAY_HOST = "root@xivo-dev-gateway"
 TRAFGEN_HOST = "trafgen@trafgen"
 

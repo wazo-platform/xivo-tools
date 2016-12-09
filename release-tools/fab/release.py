@@ -15,7 +15,7 @@ def binaries():
 
     with cd('/data/iso'):
         binaries_path = 'archives'
-        candidates = _list_files(binaries_path, pattern='.xivo-*')
+        candidates = _list_files(binaries_path, pattern='.wazo-*')
         if not candidates:
             abort('Nothing to publish')
 
@@ -26,15 +26,15 @@ def binaries():
                                                                            hidden=hidden_name,
                                                                            visible=visible_name)
                 run(command)
-                command = 'ln -sfn "archives/{candidate}" xivo-current'.format(candidate=visible_name)
+                command = 'ln -sfn "archives/{candidate}" wazo-current'.format(candidate=visible_name)
                 run(command)
                 command = 'ln -sfn "archives/{candidate}"/xivoclient-*-x86.exe xivoclient-latest-x86.exe'.format(candidate=visible_name)
                 run(command)
                 command = 'ln -sfn "archives/{candidate}"/xivoclient-*.dmg xivoclient-latest.dmg'.format(candidate=visible_name)
                 run(command)
-                command = 'ln -sfn "archives/{candidate}"/xivo-*amd64.iso xivo-latest-amd64.iso'.format(candidate=visible_name)
+                command = 'ln -sfn "archives/{candidate}"/wazo-*amd64.iso wazo-latest-amd64.iso'.format(candidate=visible_name)
                 run(command)
-                command = 'ln -sfn "archives/{candidate}"/xivo-*i386.iso xivo-latest.iso'.format(candidate=visible_name)
+                command = 'ln -sfn "archives/{candidate}"/wazo-*i386.iso wazo-latest.iso'.format(candidate=visible_name)
                 run(command)
                 puts('{candidate} is now the current version'.format(candidate=visible_name))
 
@@ -99,14 +99,11 @@ def deb_dist():
     if not confirm("Are you sure you want to publish packages on official mirror ?"):
         abort("publish cancelled")
 
-    codename = "xivo-five"
+    codename = "phoenix"
     path = "/data/reprepro/xivo/conf/distributions"
 
     with _active_distribution(codename, path):
-        run("reprepro -vb /data/reprepro/xivo update xivo-five")
-
-    run('reprepro -vb /data/reprepro/xivo copy squeeze-xivo-skaro-rc xivo-rc xivo-dist xivo-upgrade')
-    run('reprepro -vb /data/reprepro/xivo copy squeeze-xivo-skaro xivo-five xivo-dist xivo-upgrade')
+        run("reprepro -vb /data/reprepro/xivo update phoenix")
 
 
 @contextmanager
@@ -121,7 +118,7 @@ def _active_distribution(codename, path):
 
 @task
 def archive(version):
-    """(current) create an archived version of xivo on mirror and PXE"""
+    """(current) create an archived version of wazo on mirror and PXE"""
     _add_pxe_archive(version)
     execute(_update_archive_on_mirror, version)
 
@@ -144,7 +141,7 @@ def _add_pxe_archive(version):
 @hosts(MIRROR_HOST)
 def _update_archive_on_mirror(version):
     """update distributions and mirrors for archive"""
-    codename = "xivo-{version}".format(version=version)
+    codename = "wazo-{version}".format(version=version)
     archive_path = "/data/reprepro/archive"
     distribution_file = "{}/conf/distributions".format(archive_path)
 
@@ -154,7 +151,7 @@ def _update_archive_on_mirror(version):
     run("reprepro -vb {path} export".format(path=archive_path))
 
     with _active_distribution(codename, distribution_file):
-        cmd = "reprepro -vb {path} update xivo-{version}"
+        cmd = "reprepro -vb {path} update wazo-{version}"
         run(cmd.format(path=archive_path, version=version))
 
 
@@ -191,5 +188,5 @@ def _commit_and_push(path, message):
 
 @task
 def api():
-    """() update http://api.xivo.io (swagger)"""
+    """() update http://api.wazo.community (swagger)"""
     jenkins.job_build('deploy-swagger-doc', token=jenkins_token)
