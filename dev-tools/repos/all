@@ -44,6 +44,7 @@ xivo-dxtora
 xivo-dxtorc
 xivo-fetchfw
 xivo-install-cd
+xivo-keyring
 xivo-lib-python
 xivo-lib-rest-client
 xivo-libsccp
