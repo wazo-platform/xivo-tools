@@ -6,6 +6,7 @@ debian-add-archive
 debian-installer
 libpri
 pylinphonelib
+wazo-libtestlink
 xivo
 xivo-acceptance
 xivo-agentd
