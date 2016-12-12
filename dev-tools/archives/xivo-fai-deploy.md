@@ -19,7 +19,7 @@ git pull
 echo $(xivo-version unstable) >>xivo-versions
 
 export DEBFULLNAME="XiVO Builder Team"
-export DEBEMAIL="release@xivo.io"
+export DEBEMAIL="release@wazo.community"
 bash -x xivo-fai-build
 
 git add data debian/control debian/changelog xivo-versions
@@ -27,7 +27,7 @@ git commit -m "build fai for xivo $(xivo-version unstable)"
 git push
 ```
 
-To be run on root@mirror.xivo.io:
+To be run on root@mirror.wazo.community:
 
 ```
 reprepro -vb /data/reprepro/xivo processincoming xivo-dev
@@ -41,4 +41,4 @@ Notes
 -----
 
 The script ``xivo-fai-build`` is available in the
-git.xivo.io:official/xivo-fai.git repo.
+git.wazo.community:official/xivo-fai.git repo.

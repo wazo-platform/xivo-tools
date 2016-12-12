@@ -20,7 +20,7 @@ from fabric.tasks import execute
 
 XIVO_TEST_HOST = "root@xivo-test"
 XIVO_TEST_SLAVE_HOST = "root@xivo-test-slave"
-MIRROR_HOST = "root@mirror.xivo.io"
+MIRROR_HOST = "root@mirror.wazo.community"
 
 
 def freeze():

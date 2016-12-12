@@ -14,9 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 // ==UserScript==
-// @name        XiVO background
-// @description Change the background of XiVO web-interface to quickly identify different servers.
-// @namespace   http://xivo.io
+// @name        Wazo background
+// @description Change the background of Wazo web-interface to quickly identify different servers.
+// @namespace   http://wazo.community
 // @include     https://assurancetourisk*
 // @grant       none
 // ==/UserScript==

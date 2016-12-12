@@ -14,9 +14,9 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 // ==UserScript==
-// @name        XiVO Autologin
-// @namespace   http://xivo.io
-// @description Automatically login on XiVO web interface.
+// @name        Wazo Autologin
+// @namespace   http://wazo.community
+// @description Automatically login on Wazo web interface.
 // @include     https*
 // @grant       none
 // ==/UserScript==

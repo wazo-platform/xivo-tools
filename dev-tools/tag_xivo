@@ -96,7 +96,7 @@ else
     git_root_directory="$git_root_directory"
 fi
 
-URL_REPOS_LIST="http://mirror.xivo.io/repos/python-tag"
+URL_REPOS_LIST="http://mirror.wazo.community/repos/python-tag"
 GIT_DIRECTORIES=$(wget -qO - "$URL_REPOS_LIST")
 if [ $? -ne 0 ]; then
     echo "Unable to fetch repositories list from $URL_REPOS_LIST."

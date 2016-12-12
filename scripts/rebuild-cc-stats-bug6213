@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# See http://projects.xivo.io/issues/6213
+# See http://projects.wazo.community/issues/6213
 
 usage() {
     echo "usage: $0 <start timestamp> [<end timestamp>]" >&2
