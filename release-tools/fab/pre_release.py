@@ -123,7 +123,7 @@ def _chown_binaries(version):
 
 @task
 def xivo_load():
-    """() run xivo-upgrade on xivo-load and restart load tests"""
+    """() run wazo-upgrade on xivo-load and restart load tests"""
     stop_load_tests()
     execute(stop_load_answer)
     execute(upgrade_xivo_load)
@@ -133,7 +133,7 @@ def xivo_load():
 
 @hosts(LOAD_HOST)
 def upgrade_xivo_load():
-    run('xivo-upgrade -f')
+    run('wazo-upgrade -f')
 
 
 @hosts(TRAFGEN_HOST)
