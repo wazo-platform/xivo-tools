@@ -7,10 +7,10 @@ usage() {
     cat << EOF 
 You have to provide some informations to allow tagging:
 
-    $(basename $0) -v xivo_version [-d git_root_directory]
+    $(basename $0) -v wazo_version [-d git_root_directory]
 
-    -v: xivo_version
-    -d: git_root_directory (default ~/xivo_src)
+    -v: wazo_version
+    -d: git_root_directory (default ~/wazo_src)
 
     example : $(basename $0) -v 12.14
 
@@ -32,14 +32,14 @@ update_repository() {
 
 create_build_cmd() {
     local version=$1
-    local cmd="$git tag -s xivo-$version -m xivo-$version origin/master"
+    local cmd="$git tag -s wazo-$version -m wazo-$version origin/master"
     echo $cmd
 }
 
 create_tag() {
     for dir in $directories; do
         cd $dir
-        lasttag=$(git tag | grep xivo-$version)
+        lasttag=$(git tag | grep wazo-$version)
         if [ -z $lasttag ]; then
             cmd=$(create_build_cmd $version)
             $cmd || exit 1
@@ -91,7 +91,7 @@ else
 fi
 
 if [ -z $git_root_directory ]; then
-    git_root_directory="$HOME/xivo_src"
+    git_root_directory="$HOME/wazo_src"
 else
     git_root_directory="$git_root_directory"
 fi

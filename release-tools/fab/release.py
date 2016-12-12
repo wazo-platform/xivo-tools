@@ -86,9 +86,9 @@ def _update_doc_version(prod, dev):
 
 @task
 def tag(version):
-    """(current) tag xivo repos with version number"""
+    """(current) tag wazo repos with version number"""
     repos = config.get('general', 'repos')
-    cmd = "{repos}/xivo-tools/dev-tools/tag_xivo -v {version} -d {repos}"
+    cmd = "{repos}/xivo-tools/dev-tools/tag_wazo -v {version} -d {repos}"
     local(cmd.format(repos=repos, version=version))
 
 
