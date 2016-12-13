@@ -32,6 +32,8 @@ def binaries():
                 run(command)
                 command = 'ln -sfn "archives/{candidate}"/xivoclient-*.dmg xivoclient-latest.dmg'.format(candidate=visible_name)
                 run(command)
+                command = 'ln -sfn "archives/{candidate}"/xivoclient-*-amd64.deb xivoclient-latest-amd64.deb'.format(candidate=visible_name)
+                run(command)
                 command = 'ln -sfn "archives/{candidate}"/wazo-*amd64.iso wazo-latest-amd64.iso'.format(candidate=visible_name)
                 run(command)
                 command = 'ln -sfn "archives/{candidate}"/wazo-*i386.iso wazo-latest.iso'.format(candidate=visible_name)
