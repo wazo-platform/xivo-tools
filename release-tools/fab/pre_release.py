@@ -117,8 +117,11 @@ def _chown_binaries(version):
     command = 'chown -R www-data:www-data /data/iso/archives/.wazo-{version}'.format(version=version)
     run(command)
 
-    command = 'chmod -R ug+rw /data/iso/archives/.wazo-{version}'.format(version=version)
-    run(command)
+    chmod_files_command = 'chmod -R 664 /data/iso/archives/.wazo-{version}'.format(version=version)
+    run(chmod_files_command)
+
+    chmod_dir_command = 'chmod 775 /data/iso/archives/.wazo-{version}'.format(version=version)
+    run(chmod_dir_command)
 
 
 @task
