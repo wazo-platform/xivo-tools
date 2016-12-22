@@ -1,8 +1,10 @@
 https://github.com/wazo-pbx/xivo-confd-client/archive/master.zip
 https://github.com/wazo-pbx/xivo-auth-client/archive/master.zip
 https://github.com/wazo-pbx/xivo-lib-rest-client/archive/master.zip
-
-
+alembic==0.6.5
+psycopg2==2.5.4  # from alembic revision script
+sqlalchemy==0.9.8  # from alembic revision script
+unidecode==0.04.16  # from alembic revision script
 click
 fabric
 pyhamcrest
