@@ -168,6 +168,22 @@ def version(stable, unstable):
     local('echo {unstable} > {repo}/VERSION'.format(unstable=unstable, repo=repo))
     _commit_and_push(repo, "bump version ({unstable})".format(unstable=unstable))
 
+    repo = config.get('alembic', 'repo')
+
+    _git_pull_master(repo)
+    filename = 'bump_version_{version}'.format(version=unstable.replace('.', '_'))
+    with lcd(repo):
+        local('alembic -x wazo_version={version} revision -m {filename}'.format(
+            version=unstable,
+            filename=filename
+        ))
+        local('git add -A *{filename}.py'.format(filename=filename))
+
+        cmd = """sed -i -r '/^INSERT INTO "infos"/s/[0-9]+\.[0-9]+(\.[0-9]+)?/{}/' populate/populate.sql"""
+        local(cmd.format(unstable))
+
+    _commit_and_push(repo, "bump version ({unstable})".format(unstable=unstable))
+
 
 def _git_pull_master(path):
     msg = '{path}: not on master ! (currently on {branch}). continue anyway ?'
