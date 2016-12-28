@@ -9,7 +9,7 @@ from ConfigParser import ConfigParser
 
 TRANSIFEX_STATS_URL = "http://www.transifex.com/api/2/project/wazo/resource/wazo-client-qt/stats/fr"
 
-JENKINS_JOB_URL = 'http://jenkins.wazo.community/job/xivoclient-build_meta/build'
+JENKINS_JOB_URL = 'https://jenkins.wazo.community/job/xivoclient-build_meta/build'
 
 
 def main():

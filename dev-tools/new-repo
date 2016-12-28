@@ -29,7 +29,7 @@ if repo:
     print(repo.ssh_url)
 
 repo.create_hook('jenkinsgit',
-                 config={'jenkins_url': 'http://jenkins.wazo.community',
+                 config={'jenkins_url': 'https://jenkins.wazo.community',
                          'content-type': 'json'},
                  events=['push'],
                  active=True)
