@@ -25,9 +25,9 @@ setup(
     name='xivo-tools',
     version='0.1',
     description='XiVO Tools',
-    author='Avencall',
-    author_email='dev@avencall.com',
-    url='https://github.com/wazo-pbx/xivo-tools',
+    author='Wazo Authors',
+    author_email='dev.wazo@gmail.com',
+    url='http://wazo.community',
     packages=find_packages(),
     scripts=['bin/xivo-configure', 'bin/xivo-reset'],
 )
