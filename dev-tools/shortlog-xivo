@@ -39,7 +39,7 @@ print_shortlog() {
 }
 
 # normal repositories
-tag_name="xivo-$version"
+tag_name="wazo-$version"
 
 for git_directory in $GIT_DIRECTORIES; do
     cd "$git_directory"
