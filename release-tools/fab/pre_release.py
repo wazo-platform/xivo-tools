@@ -57,7 +57,7 @@ def _stop_xivo_test_slave():
 
 @task
 def binaries(version):
-    """(current) copy ISO and xivo client debs onto mirror (but not publicly visible)"""
+    """(current) copy ISO and wazo client debs onto mirror (but not publicly visible)"""
 
     file_names = execute(_get_binaries_file_names, version).get(BUILDER_HOST)
     execute(_copy_binaries_from_current_version, version, file_names)
@@ -88,7 +88,7 @@ def _copy_binaries_from_current_version(version, new_file_names):
     transferred"""
 
     new_directory = '/data/iso/archives/.wazo-{version}'.format(version=version)
-    run('rsync -a /data/iso/xivo-current/ {}'.format(new_directory))
+    run('rsync -a /data/iso/wazo-current/ {}'.format(new_directory))
     old_file_names = _list_files(new_directory)
     for old, new in zip(old_file_names, new_file_names):
         if old == new:
