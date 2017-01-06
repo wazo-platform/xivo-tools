@@ -1,7 +1,12 @@
+# -*- coding: utf-8 -*-
+
+# Copyright 2013-2017 The Wazo Authors  (see the AUTHORS file)
+# SPDX-License-Identifier: GPL-3.0+
+
 import getpass
 import requests
 
-from fabric.api import execute, hosts, lcd, local, puts, run, task, settings
+from fabric.api import execute, hosts, lcd, local, put, puts, run, task, settings
 from hamcrest import assert_that, contains_string
 from xivo_auth_client.client import AuthClient
 from xivo_confd_client.client import ConfdClient
@@ -170,15 +175,33 @@ def _monitoring_url():
 
 @task
 def shortlog(version):
-    """(previous) send git shortlog to dev@proformatique.com"""
+    """(previous) send email: git shortlog"""
     repos = config.get('general', 'repos')
+    dev_email = config.get('general', 'dev_email')
 
     with lcd(repos):
         cmd = "{repos}/xivo-tools/dev-tools/shortlog-xivo {version}"
         body = local(cmd.format(repos=repos, version=version), capture=True)
 
     subject = 'Shortlog entre {version} et origin/master'.format(version=version)
-    send_email('dev@proformatique.com', subject, body)
+    send_email(dev_email, subject, body)
+
+
+@task
+@hosts(MASTER_HOST)
+def list_tracebacks(version, start_date):
+    """(current, test start date) send email: list of tracebacks (date format: 2017-01-04 14:30:00)"""
+    repos = config.get('general', 'repos')
+    dev_email = config.get('general', 'dev_email')
+
+    local_path = '{repos}/xivo-tools/dev-tools/extract-traceback'.format(repos=repos)
+    put(local_path, 'extract-traceback', mirror_local_mode=True)
+
+    cmd = "./extract-traceback --after '{start_date}' /var/log/xivo-*.log*"
+    body = run(cmd.format(start_date=start_date))
+
+    subject = 'Traceback lors de la journée de test {version}'.format(version=version)
+    send_email(dev_email, subject, body)
 
 
 @task
