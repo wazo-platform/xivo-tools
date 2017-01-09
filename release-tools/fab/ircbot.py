@@ -3,6 +3,7 @@ import re
 
 from irc.client import SimpleIRCClient
 
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -68,7 +69,7 @@ def publish_irc_topic(config, version):
     client = IRCStatusUpdater(config.get('irc', 'channel'),
                               new_topic_function)
 
-    logging.info('connecting to %s', config.get('irc', 'server'))
+    logger.info('Connecting to %s', config.get('irc', 'server'))
     client.connect(config.get('irc', 'server'),
                    6667,
                    config.get('irc', 'nickname'),
