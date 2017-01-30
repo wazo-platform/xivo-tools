@@ -67,7 +67,7 @@ def synchronize_mirrors():
 
 @hosts(XIVO_TEST_HOST)
 def upgrade_xivo_test():
-    run('xivo-upgrade -f')
+    run('wazo-upgrade -f')
 
 
 @hosts(XIVO_TEST_SLAVE_HOST)

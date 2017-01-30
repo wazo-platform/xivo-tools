@@ -54,8 +54,8 @@ def _list_files(path, pattern='*'):
 @task
 @hosts(GATEWAY_HOST)
 def upgrade_dev_gateway():
-    """() run xivo-upgrade on xivo-dev-gateway"""
-    run('xivo-upgrade -f')
+    """() run wazo-upgrade on xivo-dev-gateway"""
+    run('wazo-upgrade -f')
 
 
 @task
