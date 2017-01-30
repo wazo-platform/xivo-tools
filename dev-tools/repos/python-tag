@@ -3,6 +3,7 @@ bntools
 dahdi-linux
 dahdi-tools
 libpri
+wazo-admin-ui
 xivo
 xivo-agentd
 xivo-agentd-cli
