@@ -4,6 +4,7 @@ dahdi-linux
 dahdi-tools
 libpri
 wazo-admin-ui
+wazo-uuid
 xivo
 xivo-agentd
 xivo-agentd-cli

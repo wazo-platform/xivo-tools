@@ -8,6 +8,7 @@ libpri
 pylinphonelib
 wazo-admin-ui
 wazo-libtestlink
+wazo-uuid
 xivo
 xivo-acceptance
 xivo-agentd
