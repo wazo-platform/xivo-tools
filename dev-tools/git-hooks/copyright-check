@@ -6,7 +6,6 @@
 
 import os
 import re
-import stat
 import subprocess
 import sys
 
@@ -35,12 +34,7 @@ def find_files_to_check():
     output = subprocess.check_output(cmd).strip()
     if not output:
         return []
-    return [l.strip() for l in output.split("\n") if not is_symlink(l.strip())]
-
-
-def is_symlink(path):
-    path_stat = os.lstat(path)
-    return stat.S_ISLNK(path_stat.st_mode)
+    return [l.strip() for l in output.split("\n") if not os.path.islink(l.strip())]
 
 
 def find_copyright(filepath):
