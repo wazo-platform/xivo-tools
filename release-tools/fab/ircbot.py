@@ -38,6 +38,10 @@ class IRCStatusUpdater(SimpleIRCClient):
         connection.privmsg("chanserv", message)
 
     def on_mode(self, connection, event):
+        if len(event.arguments) != 2:
+            logger.error("Unexpected event: %s", event)
+            self._stop(connection)
+
         mode, nickname = event.arguments
 
         if self._is_operator:
