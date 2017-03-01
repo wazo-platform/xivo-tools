@@ -24,6 +24,7 @@ xivo-backup
 xivo-build-tools
 xivo-bus
 xivo-call-logs
+xivo-call-logs-client
 xivo-certs
 xivo-ci
 xivo-client-qt

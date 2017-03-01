@@ -18,6 +18,7 @@ xivo-auth-keys
 xivo-backup
 xivo-bus
 xivo-call-logs
+xivo-call-logs-client
 xivo-certs
 xivo-confd
 xivo-confd-client
