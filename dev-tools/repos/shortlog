@@ -10,6 +10,7 @@ wazo-admin-ui-parking-lot
 wazo-admin-ui-switchboard
 wazo-admin-ui-user
 wazo-admin-ui-voicemail
+wazo-plugind
 wazo-uuid
 xivo
 xivo-agentd

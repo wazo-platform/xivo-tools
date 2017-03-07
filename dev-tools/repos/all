@@ -14,6 +14,7 @@ wazo-admin-ui-switchboard
 wazo-admin-ui-user
 wazo-admin-ui-voicemail
 wazo-libtestlink
+wazo-plugind
 wazo-uuid
 xivo
 xivo-acceptance
