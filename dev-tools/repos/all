@@ -7,6 +7,12 @@ debian-installer
 libpri
 pylinphonelib
 wazo-admin-ui
+wazo-admin-ui-conference
+wazo-admin-ui-paging
+wazo-admin-ui-parking-lot
+wazo-admin-ui-switchboard
+wazo-admin-ui-user
+wazo-admin-ui-voicemail
 wazo-libtestlink
 wazo-uuid
 xivo
