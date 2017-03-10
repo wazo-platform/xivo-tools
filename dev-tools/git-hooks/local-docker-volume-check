@@ -1,0 +1,34 @@
+#!/usr/bin/env python2
+
+# -*- coding: utf-8 -*-
+# Copyright 2017 The Wazo Authors  (see the AUTHORS file)
+# SPDX-License-Identifier: GPL-3.0+
+
+import os
+import subprocess
+import sys
+
+
+def main():
+    files = list_files_changed_with_local_git_repos()
+
+    if files:
+        print "ERROR: Modification with LOCAL_GIT_REPOS detected. Refusing to commit."
+        sys.exit(1)
+
+
+def list_files_changed_with_local_git_repos():
+    '''
+    We do not want commits containing uncommented lines using LOCAL_GIT_REPOS.
+    Those lines should stay commented when committed
+    '''
+
+    cmd = ['git', 'diff', '--staged', '--name-only', '-G^\s+-\s+"?\$\{LOCAL_GIT_REPOS\}']
+    output = subprocess.check_output(cmd).strip()
+    if not output:
+        return []
+    return [l.strip() for l in output.split("\n") if not os.path.islink(l.strip())]
+
+
+if __name__ == "__main__":
+    main()
