@@ -12,7 +12,6 @@ from .config import config, CUSTOM_CONFIG_PATH, SCRIPT_PATH
 TEMPLATE_FOLDER = os.path.join(SCRIPT_PATH, 'templates')
 
 session = requests.Session()
-session.verify = False
 session.headers.update({'X-Redmine-API-Key': config.get('redmine', 'token')})
 
 
