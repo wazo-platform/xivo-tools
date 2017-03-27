@@ -6,7 +6,9 @@ libpri
 wazo-admin-ui
 wazo-admin-ui-conference
 wazo-admin-ui-group
+wazo-admin-ui-incall
 wazo-admin-ui-moh
+wazo-admin-ui-outcall
 wazo-admin-ui-paging
 wazo-admin-ui-parking-lot
 wazo-admin-ui-switchboard
