@@ -98,10 +98,21 @@ def _issues_for_version(version_id):
     return response.json()['issues']
 
 
+def _find_news_id(version):
+    url = "{}/projects/{}/news.json".format(config.get('redmine', 'url'),
+                                            config.get('redmine', 'project_id'))
+    response = session.get(url)
+    news = response.json()['news']
+    found = [n for n in news if version in n['title']]
+    if not found:
+        raise Exception('News not found for version: {}'.format(version))
+    return found[0]['id']
+
+
 def _publish_twitter(version):
     oauth_token, oauth_secret = _check_twitter_oauth()
-    version_id = _find_version_id(version)
-    status = config.get('twitter', 'status').format(version=version, version_id=version_id)
+    news_id = _find_news_id(version)
+    status = config.get('twitter', 'status').format(version=version, news_id=news_id)
 
     server = twitter.Twitter(auth=twitter.OAuth(oauth_token,
                                                 oauth_secret,
