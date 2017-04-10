@@ -4,11 +4,12 @@ current_jenkins_version=$(ssh root@jenkins dpkg-query -W -f='\${Version}' jenkin
 [[ $current_jenkins_version =~ ^[0-9]+\.[0-9]+$ ]]
 echo "Current Jenkins version is $current_jenkins_version"
 
-echo "Snapshotting jenkins..."
+echo "Shutting down jenkins..."
 ssh root@kvm-2-dev virsh shutdown jenkins.xivo.io
 while [ "$(ssh kvm-2-dev virsh dominfo jenkins.xivo.io | grep State | awk '{print $2}')" = 'running' ] ; do
 	sleep 5
 done
+echo "Snapshotting jenkins..."
 ssh root@kvm-2-dev virsh snapshot-create-as jenkins.xivo.io "$current_jenkins_version"
 ssh root@kvm-2-dev virsh start jenkins.xivo.io
 
