@@ -20,6 +20,7 @@ wazo-admin-ui-trunk
 wazo-admin-ui-user
 wazo-admin-ui-voicemail
 wazo-plugind
+wazo-plugind-client
 wazo-uuid
 xivo
 xivo-agentd
