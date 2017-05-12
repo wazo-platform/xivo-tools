@@ -21,9 +21,9 @@ done
 
 echo "Upgrading jenkins..."
 ssh root@jenkins apt-get update
-ssh root@jenkins apt-get -y upgrade
-ssh root@jenkins apt-get -y dist-upgrade
-ssh root@jenkins apt-get autoremove
+ssh root@jenkins DEBIAN_FRONTEND=noninteractive apt-get -y upgrade
+ssh root@jenkins DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade
+ssh root@jenkins apt-get -y autoremove
 
 echo
 echo "Things left to do:"
