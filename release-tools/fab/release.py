@@ -6,6 +6,7 @@ from .config import config
 from .config import jenkins, jenkins_token
 from .config import MIRROR_HOST
 from .config import GATEWAY_HOST
+from . import repos
 
 
 @task
@@ -89,9 +90,10 @@ def _update_doc_version(prod, dev):
 @task
 def tag(version):
     """(current) tag wazo repos with version number"""
-    repos = config.get('general', 'repos')
-    cmd = "{repos}/xivo-tools/dev-tools/tag_wazo -v {version} -d {repos}"
-    local(cmd.format(repos=repos, version=version))
+    repos_dir = config.get('general', 'repos')
+    repos.raise_missing_repos('python-tag', repos_dir)
+    cmd = "{repos_dir}/xivo-tools/dev-tools/tag_wazo -v {version} -d {repos_dir}"
+    local(cmd.format(repos_dir=repos_dir, version=version))
 
 
 @task

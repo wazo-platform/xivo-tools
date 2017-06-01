@@ -11,6 +11,7 @@ from hamcrest import assert_that, contains_string
 from xivo_auth_client.client import AuthClient
 from xivo_confd_client.client import ConfdClient
 
+from . import repos
 from .config import config
 from .config import jenkins, jenkins_token
 from .config import MASTER_HOST
@@ -177,12 +178,13 @@ def _monitoring_url():
 @task
 def shortlog(version):
     """(previous) send email: git shortlog"""
-    repos = config.get('general', 'repos')
+    repos_dir = config.get('general', 'repos')
     dev_email = config.get('general', 'dev_email')
 
-    with lcd(repos):
-        cmd = "{repos}/xivo-tools/dev-tools/shortlog-xivo {version}"
-        body = local(cmd.format(repos=repos, version=version), capture=True)
+    repos.raise_missing_repos('shortlog', repos_dir)
+    with lcd(repos_dir):
+        cmd = "{repos_dir}/xivo-tools/dev-tools/shortlog-xivo {version}"
+        body = local(cmd.format(repos_dir=repos_dir, version=version), capture=True)
 
     subject = 'Shortlog entre {version} et origin/master'.format(version=version)
     send_email(dev_email, subject, body)
