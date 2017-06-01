@@ -6,7 +6,7 @@
 import getpass
 import requests
 
-from fabric.api import execute, hosts, lcd, local, put, puts, run, task, settings
+from fabric.api import abort, execute, hosts, lcd, local, put, puts, run, task, settings
 from hamcrest import assert_that, contains_string
 from xivo_auth_client.client import AuthClient
 from xivo_confd_client.client import ConfdClient
@@ -182,9 +182,13 @@ def shortlog(version):
     dev_email = config.get('general', 'dev_email')
 
     repos.raise_missing_repos('shortlog', repos_dir)
-    with lcd(repos_dir):
+    with lcd(repos_dir), settings(warn_only=True):
         cmd = "{repos_dir}/xivo-tools/dev-tools/shortlog-xivo {version}"
-        body = local(cmd.format(repos_dir=repos_dir, version=version), capture=True)
+        result = local(cmd.format(repos_dir=repos_dir, version=version), capture=True)
+
+    if result.failed:
+        abort(result.stderr)
+    body = result
 
     subject = 'Shortlog entre {version} et origin/master'.format(version=version)
     send_email(dev_email, subject, body)
