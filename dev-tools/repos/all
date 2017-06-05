@@ -26,6 +26,7 @@ wazo-admin-ui-user
 wazo-admin-ui-voicemail
 wazo-libtestlink
 wazo-plugind
+wazo-plugind-cli
 wazo-plugind-client
 wazo-uuid
 xivo
