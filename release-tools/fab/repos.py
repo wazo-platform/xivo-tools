@@ -37,4 +37,4 @@ def raise_missing_repos(tag, base_dir):
         message += '\n'.join(command.format(repo=missing_repo, base_dir=base_dir) for missing_repo in _missing_repos)
         logger.error(message)
 
-    raise SystemExit(1)
+        raise SystemExit(1)
