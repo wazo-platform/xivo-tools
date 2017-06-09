@@ -28,6 +28,7 @@ wazo-libtestlink
 wazo-plugind
 wazo-plugind-cli
 wazo-plugind-client
+wazo-service
 wazo-uuid
 xivo
 xivo-acceptance
@@ -83,7 +84,6 @@ xivo-provd-plugins
 xivo-provisioning
 xivo-purge-db
 xivo-res-freeze-check
-xivo-service
 xivo-sounds
 xivo-stat
 xivo-sync

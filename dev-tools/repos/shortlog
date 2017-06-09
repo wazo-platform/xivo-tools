@@ -21,6 +21,7 @@ wazo-admin-ui-switchboard
 wazo-admin-ui-trunk
 wazo-admin-ui-user
 wazo-admin-ui-voicemail
+wazo-service
 wazo-plugind
 wazo-plugind-cli
 wazo-plugind-client
@@ -69,7 +70,6 @@ xivo-provd-client
 xivo-provisioning
 xivo-purge-db
 xivo-res-freeze-check
-xivo-service
 xivo-stat
 xivo-swagger-doc
 xivo-sync
