@@ -30,7 +30,7 @@ Installation
 
 5. Restart the XiVO stack::
 
-     # xivo-service restart
+     # wazo-service restart
 
 You should also make sure that your XiVO restart correctly by restarting your
 machine.
@@ -48,7 +48,7 @@ Uninstallation
 
 3. Restart the XiVO stack (or only xivo-ctid)::
     
-    # xivo-service restart
+    # wazo-service restart
 
 4. Remove amiproxy from the boot sequence::
     

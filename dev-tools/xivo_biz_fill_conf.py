@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2013-2014 Avencall
+# Copyright 2013-2017 The Wazo Authors  (see the AUTHORS file)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -167,8 +167,8 @@ class PrepareXivoBiz(object):
         world.ssh_client_xivo.check_call(cmd)
         cmd = ['sed', '-i', '"23s/pri_cpe/pri_net/"', '/etc/asterisk/dahdi-channels.conf']
         world.ssh_client_xivo.check_call(cmd)
-        cmd = ['xivo-service', 'restart']
-        print 'Wait during xivo-service restart'
+        cmd = ['wazo-service', 'restart']
+        print 'Wait during wazo-service restart'
         world.ssh_client_xivo.check_call(cmd)
         cmd = ['asterisk', '-rx', '"dahdi show status"']
         res = world.ssh_client_xivo.out_call(cmd)

@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 #
-# Copyright (C) 2014 Avencall
+# Copyright 2014-2017 The Wazo Authors  (see the AUTHORS file)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,19 +25,19 @@ from xivo_tools.helpers.http import sysconfd_http_request
 
 def enable_xivo_services():
     logging.info('Enabling XiVO services')
-    data = {'xivo-service': 'enable'}
+    data = {'wazo-service': 'enable'}
     sysconfd('xivoctl', data)
 
 
 def start_xivo_services():
     logging.info('Starting XiVO services')
-    data = {'xivo-service': 'start xivo'}
+    data = {'wazo-service': 'start xivo'}
     sysconfd('xivoctl', data)
 
 
 def stop_xivo_services():
     logging.info('Stopping XiVO services')
-    data = {'xivo-service': 'stop xivo'}
+    data = {'wazo-service': 'stop xivo'}
     sysconfd('xivoctl', data)
 
 
