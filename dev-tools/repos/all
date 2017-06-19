@@ -30,6 +30,8 @@ wazo-plugind-cli
 wazo-plugind-client
 wazo-service
 wazo-uuid
+wazo-webhookd
+wazo-webhookd-client
 xivo
 xivo-acceptance
 xivo-agentd
