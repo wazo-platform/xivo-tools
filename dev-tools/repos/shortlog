@@ -21,6 +21,8 @@ wazo-admin-ui-switchboard
 wazo-admin-ui-trunk
 wazo-admin-ui-user
 wazo-admin-ui-voicemail
+wazo-call-logs
+wazo-call-logs-client
 wazo-service
 wazo-plugind
 wazo-plugind-cli
@@ -40,8 +42,6 @@ xivo-auth-client
 xivo-auth-keys
 xivo-backup
 xivo-bus
-xivo-call-logs
-xivo-call-logs-client
 xivo-certs
 xivo-confd
 xivo-confd-client
