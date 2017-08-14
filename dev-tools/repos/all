@@ -27,6 +27,7 @@ wazo-admin-ui-voicemail
 wazo-call-logd
 wazo-call-logd-client
 wazo-libtestlink
+wazo-market-client
 wazo-plugind
 wazo-plugind-cli
 wazo-plugind-client
