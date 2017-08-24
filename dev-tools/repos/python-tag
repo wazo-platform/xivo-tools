@@ -23,6 +23,8 @@ wazo-admin-ui-user
 wazo-admin-ui-voicemail
 wazo-call-logd
 wazo-call-logd-client
+wazo-market
+wazo-market-client
 wazo-plugind
 wazo-plugind-cli
 wazo-plugind-client
