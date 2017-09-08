@@ -32,6 +32,7 @@ wazo-market-client
 wazo-plugind
 wazo-plugind-cli
 wazo-plugind-client
+wazo-res-amqp
 wazo-service
 wazo-uuid
 wazo-webhookd
