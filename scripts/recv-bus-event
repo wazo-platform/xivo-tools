@@ -21,6 +21,7 @@ import kombu
 import logging
 
 from kombu.mixins import ConsumerMixin
+from pprint import pformat
 
 EXCHANGE = kombu.Exchange('xivo', type='topic')
 
@@ -39,7 +40,7 @@ class C(ConsumerMixin):
                 callbacks=[self.on_message])]
 
     def on_message(self, body, message):
-        logger.info('Received: %s', body)
+        logger.info('Received: %s', pformat(body))
         message.ack()
 
 
