@@ -26,6 +26,7 @@ wazo-admin-ui-user
 wazo-admin-ui-voicemail
 wazo-call-logd
 wazo-call-logd-client
+wazo-client-qt
 wazo-libtestlink
 wazo-market
 wazo-market-client
@@ -54,7 +55,6 @@ xivo-build-tools
 xivo-bus
 xivo-certs
 xivo-ci
-xivo-client-qt
 xivo-confd
 xivo-confd-client
 xivo-confgend
