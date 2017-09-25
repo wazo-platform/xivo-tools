@@ -21,6 +21,7 @@ wazo-admin-ui-switchboard
 wazo-admin-ui-trunk
 wazo-admin-ui-user
 wazo-admin-ui-voicemail
+wazo-admin-ui-webhook
 wazo-call-logd
 wazo-call-logd-client
 wazo-market
