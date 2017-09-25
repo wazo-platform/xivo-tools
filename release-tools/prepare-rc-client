@@ -9,22 +9,22 @@ from ConfigParser import ConfigParser
 
 TRANSIFEX_STATS_URL = "http://www.transifex.com/api/2/project/wazo/resource/wazo-client-qt/stats/fr"
 
-JENKINS_JOB_URL = 'https://jenkins.wazo.community/job/xivoclient-build_meta/build'
+JENKINS_JOB_URL = 'https://jenkins.wazo.community/job/wazoclient-build_meta/build'
 
 
 def main():
-    parser = argparse.ArgumentParser('freeze XiVO Client')
+    parser = argparse.ArgumentParser('freeze Wazo Client')
     parser.add_argument('version', help='Version to freeze')
     parser.add_argument('--config', help='Path to configuration file',
-                        default=os.path.expanduser('~/.config/xivo-freeze'))
-    parser.add_argument('--repo', help='Path to xivo client repository',
-                        default=os.path.expanduser('~/xivo-client-qt'))
+                        default=os.path.expanduser('~/.config/wazo-freeze'))
+    parser.add_argument('--repo', help='Path to wazo client repository',
+                        default=os.path.expanduser('~/wazo-client-qt'))
 
     args = parser.parse_args()
 
     synchronize_translations(args.repo)
 
-    print "tagging xivo client"
+    print "tagging wazo client"
     tag_xivo_client(args.repo, args.version)
 
     print "launching builds"
@@ -32,7 +32,7 @@ def main():
 
 
 def synchronize_translations(repo):
-    print "updating xivo client repo"
+    print "updating wazo client repo"
     update_xivo_client_repo(repo)
 
     print "synchronizing transifex"
@@ -137,7 +137,7 @@ def ask_for_confirmation(message):
 
 
 def tag_xivo_client(repo, version):
-    tag_version = 'xivo-client-%s' % version
+    tag_version = 'wazo-client-%s' % version
     tag_name = tag_version
 
     confirmed = ask_for_confirmation('Are you sure you want to tag version %s ?' % tag_version)
