@@ -22,6 +22,7 @@ wazo-admin-ui-trunk
 wazo-admin-ui-user
 wazo-admin-ui-voicemail
 wazo-admin-ui-webhook
+wazo-auth
 wazo-call-logd
 wazo-call-logd-client
 wazo-client-qt
@@ -43,7 +44,6 @@ xivo-agentd-client
 xivo-agid
 xivo-amid
 xivo-amid-client
-xivo-auth
 xivo-auth-client
 xivo-auth-keys
 xivo-backup
