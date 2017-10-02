@@ -7,7 +7,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-XIVO_CLIENT_DIRECTORY="xivo-client-qt"
+WAZO_CLIENT_DIRECTORY="wazo-client-qt"
 
 version="$1"
 
@@ -57,13 +57,13 @@ for git_directory in $GIT_DIRECTORIES; do
     cd "$OLDPWD"
 done
 
-# xivo client repository
-cd "$XIVO_CLIENT_DIRECTORY"
+# wazo client repository
+cd "$WAZO_CLIENT_DIRECTORY"
 
-print_header "$XIVO_CLIENT_DIRECTORY"
+print_header "$WAZO_CLIENT_DIRECTORY"
 git fetch -q
 
-tag_name_prefix="xivo-client-$version"
+tag_name_prefix="wazo-client-$version"
 tag_name=$(git tag -l "$tag_name_prefix*" | sort | tail -n1)
 if [ -z "$tag_name" ]; then
     echo "Error: this repository has no tag $tag_name_prefix"

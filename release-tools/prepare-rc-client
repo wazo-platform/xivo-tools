@@ -25,7 +25,7 @@ def main():
     synchronize_translations(args.repo)
 
     print "tagging wazo client"
-    tag_xivo_client(args.repo, args.version)
+    tag_wazo_client(args.repo, args.version)
 
     print "launching builds"
     launch_builds(args.config)
@@ -33,7 +33,7 @@ def main():
 
 def synchronize_translations(repo):
     print "updating wazo client repo"
-    update_xivo_client_repo(repo)
+    update_wazo_client_repo(repo)
 
     print "synchronizing transifex"
     synchronize_transifex(repo)
@@ -45,7 +45,7 @@ def synchronize_translations(repo):
     commit_and_push(repo)
 
 
-def update_xivo_client_repo(repo):
+def update_wazo_client_repo(repo):
     make_sure_repo_is_clean(repo)
     switch_to_branch_master(repo)
     pull_repo(repo)
@@ -136,7 +136,7 @@ def ask_for_confirmation(message):
     return response == "yes"
 
 
-def tag_xivo_client(repo, version):
+def tag_wazo_client(repo, version):
     tag_version = 'wazo-client-%s' % version
     tag_name = tag_version
 
@@ -167,7 +167,7 @@ def read_or_create_job_token(config_path):
         config.add_section('jenkins')
 
     if not config.has_option('jenkins', 'job_token'):
-        token = raw_input("Jenkins job token not found. Please enter token for job build-xivoclient-meta: ")
+        token = raw_input("Jenkins job token not found. Please enter token for job build-wazoclient-meta: ")
         config.set('jenkins', 'job_token', token)
         with open(config_path, 'w') as f:
             config.write(f)
