@@ -283,7 +283,7 @@ def test_iso(host):
     token = auth.token.new('xivo_service', expiration=60)['token']
     confd.set_token(token)
 
-    print ('Installed version of Wazo is: {}'.format(xivo_version))
+    print('Installed version of Wazo is: {}'.format(xivo_version))
 
     print('Creating user1')
     user1 = _create_user(confd=confd, firstname='user1', exten='1001', host=host)
@@ -315,7 +315,7 @@ def _get_xivo_version():
 
 
 def _create_ws_user(login, password):
-    sql = "DELETE FROM accesswebservice ; INSERT INTO accesswebservice (name, login, passwd, acl) VALUES ('{login}', '{login}', '{password}', '{{confd.#}}');".format(login=login, password=password)
+    sql = "DELETE FROM accesswebservice WHERE login = 'test-iso'; INSERT INTO accesswebservice (name, login, passwd, acl) VALUES ('{login}', '{login}', '{password}', '{{confd.#}}');".format(login=login, password=password)
     run('sudo -u postgres psql asterisk -c "{sql}" ; xivo-update-keys'.format(sql=sql))
 
 
