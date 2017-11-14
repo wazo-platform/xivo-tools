@@ -213,7 +213,7 @@ def list_tracebacks(version, start_date):
 
 @task
 @hosts(MIRROR_HOST)
-def update_xivo_rc():
+def update_wazo_rc():
     """() reprepro update wazo-rc"""
 
     run('reprepro -vb /data/reprepro/xivo update wazo-rc')
