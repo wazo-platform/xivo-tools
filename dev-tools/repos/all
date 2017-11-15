@@ -11,6 +11,7 @@ wazo-admin-ui-cdr
 wazo-admin-ui-conference
 wazo-admin-ui-context
 wazo-admin-ui-device
+wazo-admin-ui-entity
 wazo-admin-ui-extension
 wazo-admin-ui-group
 wazo-admin-ui-incall
