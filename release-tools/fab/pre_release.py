@@ -204,7 +204,7 @@ def list_tracebacks(version, start_date):
     local_path = '{repos}/xivo-tools/dev-tools/extract-traceback'.format(repos=repos)
     put(local_path, 'extract-traceback', mirror_local_mode=True)
 
-    cmd = "./extract-traceback --after '{start_date}' /var/log/xivo-*.log*"
+    cmd = "./extract-traceback --after '{start_date}' /var/log/xivo-*.log* /var/log/wazo-*.log*"
     body = run(cmd.format(start_date=start_date))
 
     subject = 'Traceback lors de la journée de test {version}'.format(version=version)
