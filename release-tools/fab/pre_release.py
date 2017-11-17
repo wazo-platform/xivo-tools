@@ -220,17 +220,6 @@ def update_wazo_rc():
 
 
 @task
-@hosts(MIRROR_HOST)
-def update_wazo_dev_postgresql():
-    """() reprepro update wazo-dev for postgresql package"""
-
-    run('reprepro -vb /data/reprepro/xivo update wazo-dev')
-    print('If a new version of postgresql has been updated, make the following steps:')
-    print('* update postgresql-9.4 version in xivo-dbms/debian/control')
-    print('* update all packages with xivo-dbms as dependency')
-
-
-@task
 def test_iso(host):
     """(iso_host) automatically create conditions for testing an ISO install"""
 
