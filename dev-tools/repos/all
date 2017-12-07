@@ -30,6 +30,7 @@ wazo-auth
 wazo-call-logd
 wazo-call-logd-client
 wazo-client-qt
+wazo-debug
 wazo-libtestlink
 wazo-market
 wazo-market-client

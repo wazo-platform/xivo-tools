@@ -8,6 +8,7 @@ wazo-admin-ui-market
 wazo-auth
 wazo-call-logd
 wazo-call-logd-client
+wazo-debug
 wazo-market
 wazo-market-client
 wazo-plugind
