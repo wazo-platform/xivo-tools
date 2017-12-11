@@ -1,3 +1,5 @@
+import re
+
 from contextlib import contextmanager
 from fabric.api import abort, cd, execute, hosts, local, lcd, puts, run, task
 from fabric.contrib.console import confirm
@@ -82,6 +84,7 @@ def _update_doc_version(prod, dev):
     repo = config.get('doc', 'repo')
     with lcd(repo):
         local('git checkout master')
+    prod = re.escape(prod)
     cmd = "sed -i 's/{prod}/{dev}/g' {repo}/source/conf.py"
     local(cmd.format(prod=prod, dev=dev, repo=repo))
     _commit_and_push(repo, "bump version to {dev}".format(dev=dev))
