@@ -38,19 +38,23 @@ class IRCStatusUpdater(SimpleIRCClient):
         connection.privmsg("chanserv", message)
 
     def on_mode(self, connection, event):
-        if len(event.arguments) != 2:
+        if event.arguments == ['+o', connection.nickname]:
+            pass
+        elif event.arguments == ['+oo', connection.nickname, connection.nickname]:
+            # This happens sometimes, but it's all right...
+            pass
+        else:
             logger.error("Unexpected event: %s", event)
             self._stop(connection)
+            return
 
-        mode, nickname = event.arguments
-
+        # We get two consecutive identical MODE messages; ignore the second one
         if self._is_operator:
-            return  # we get two consecutive identical MODE messages; ignore the second one
+            return
 
-        if mode == '+o':
-            self._is_operator = True
+        self._is_operator = True
 
-        if self._is_operator and self._current_topic is not None:
+        if self._current_topic is not None:
             new_topic = self._new_topic(self._current_topic)
             logger.info("updating topic to '%s'", new_topic)
             connection.topic(self._channel, new_topic)
