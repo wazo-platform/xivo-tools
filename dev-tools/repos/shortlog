@@ -6,6 +6,7 @@ libpri
 wazo-admin-ui
 wazo-admin-ui-market
 wazo-auth
+wazo-auth-cli
 wazo-call-logd
 wazo-call-logd-client
 wazo-client-qt
