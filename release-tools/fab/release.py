@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+# Copyright 2015-2018 The Wazo Authors  (see the AUTHORS file)
+# SPDX-License-Identifier: GPL-3.0+
+
 import re
 
 from contextlib import contextmanager
@@ -106,11 +110,11 @@ def deb_dist():
     if not confirm("Are you sure you want to publish packages on official mirror ?"):
         abort("publish cancelled")
 
-    codename = "phoenix"
+    codename = "phoenix-stretch"
     path = "/data/reprepro/xivo/conf/distributions"
 
     with _active_distribution(codename, path):
-        run("reprepro -vb /data/reprepro/xivo update phoenix")
+        run("reprepro -vb /data/reprepro/xivo update phoenix-stretch")
 
 
 @contextmanager
