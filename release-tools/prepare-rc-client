@@ -156,7 +156,8 @@ def launch_builds(config_path):
     build_params = {'parameter': [{'name': 'GIT_BRANCH', 'value': 'master'}]}
     payload = {'token': job_token,
                'json': json.dumps(build_params)}
-    requests.post(JENKINS_JOB_URL, data=payload)
+    response = requests.post(JENKINS_JOB_URL, data=payload)
+    response.raise_for_status()
 
 
 def read_or_create_job_token(config_path):
