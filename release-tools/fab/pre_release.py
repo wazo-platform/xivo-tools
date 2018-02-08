@@ -242,9 +242,9 @@ def test_iso(host):
         "license": True,
         "timezone": "America/Montreal",
         "language": "en_US",
-        "entity_name": "Proformatique",
+        "entity_name": "Wazo",
         "network": {
-            "hostname": "xivo-iso",
+            "hostname": "wazo-iso",
             "domain": "lan.proformatique.com",
             "interface": discover['interfaces'][0]['interface'],
             "ip_address": discover['interfaces'][0]['ip_address'],
