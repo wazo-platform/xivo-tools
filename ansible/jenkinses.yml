@@ -1,0 +1,8 @@
+- hosts: jenkinses
+  remote_user: root
+  tasks:
+    - name: jenkins-cli
+      copy:
+        src: usr/local/bin/jenkins-cli
+        dest: /usr/local/bin/jenkins-cli
+        mode: u=rwx,g=rx,o=rx
