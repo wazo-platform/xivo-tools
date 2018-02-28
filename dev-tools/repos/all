@@ -7,6 +7,8 @@ debian-installer
 libpri
 pylinphonelib
 wazo-admin-ui
+wazo-admin-ui-call-filter
+wazo-admin-ui-call-permission
 wazo-admin-ui-cdr
 wazo-admin-ui-conference
 wazo-admin-ui-context
@@ -14,6 +16,7 @@ wazo-admin-ui-device
 wazo-admin-ui-entity
 wazo-admin-ui-extension
 wazo-admin-ui-funckey
+wazo-admin-ui-general-settings
 wazo-admin-ui-group
 wazo-admin-ui-incall
 wazo-admin-ui-ivr
