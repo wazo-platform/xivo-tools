@@ -90,7 +90,7 @@ xivo-keyring
 xivo-lib-python
 xivo-lib-rest-client
 xivo-libsccp
-xivo-loadtest
+xivo-load-tester
 xivo-manage-db
 xivo-migration-scripts
 xivo-monitoring
