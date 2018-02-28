@@ -42,7 +42,7 @@ print_shortlog() {
 tag_name="wazo-$version"
 
 for git_directory in $GIT_DIRECTORIES; do
-    cd "$git_directory"
+    cd "$git_directory" > /dev/null
 
     print_header "$git_directory"
     git fetch -q
@@ -58,7 +58,7 @@ for git_directory in $GIT_DIRECTORIES; do
 done
 
 # wazo client repository
-cd "$WAZO_CLIENT_DIRECTORY"
+cd "$WAZO_CLIENT_DIRECTORY" > /dev/null
 
 print_header "$WAZO_CLIENT_DIRECTORY"
 git fetch -q
