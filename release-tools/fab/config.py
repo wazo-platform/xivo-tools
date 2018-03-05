@@ -16,7 +16,7 @@ SLAVE_HOST = "root@xivo-test-slave"
 LOAD_HOST = "root@xivo-load"
 BUILDER_HOST = "builder@builder-32"
 MIRROR_HOST = "root@mirror.wazo.community"
-GATEWAY_HOST = "root@xivo-dev-gateway"
+GATEWAY_HOST = "root@wazo-dev-gateway"
 TRAFGEN_HOST = "trafgen@trafgen"
 
 jenkins = Jenkins(config.get('jenkins', 'url'))
