@@ -1,8 +1,9 @@
 - hosts: jenkinses
   remote_user: root
   tasks:
-    - name: jenkins-cli
-      copy:
-        src: usr/local/bin/jenkins-cli
-        dest: /usr/local/bin/jenkins-cli
-        mode: u=rwx,g=rx,o=rx
+    - name: Install Jenkins
+      apt:
+        name: jenkins
+    - name: Install openjdk-8-jre for display warnings-plugin graphs
+      apt:
+        name: openjdk-8-jre
