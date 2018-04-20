@@ -196,7 +196,7 @@ def shortlog(version):
 @task
 @hosts(MASTER_HOST)
 def list_tracebacks(version, start_date):
-    """(current, test start date) send email: list of tracebacks (date format: 2017-01-04 14:30:00)"""
+    """(current, test start date) send email: list of tracebacks (date format: 2018-01-04 14:30:00)"""
     repos = config.get('general', 'repos')
     dev_email = config.get('general', 'dev_email')
 
