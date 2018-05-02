@@ -39,6 +39,7 @@ wazo-call-logd
 wazo-call-logd-client
 wazo-client-qt
 wazo-debug
+wazo-dird
 wazo-libtestlink
 wazo-market
 wazo-market-client
@@ -77,7 +78,6 @@ xivo-ctid-ng
 xivo-ctid-ng-client
 xivo-dao
 xivo-dbms
-xivo-dird
 xivo-dird-client
 xivo-dird-phoned
 xivo-dist
