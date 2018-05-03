@@ -27,7 +27,7 @@ LOAD_ANSWER_TMUX_SESSION = 'load-answer'
 @task
 def translations():
     """() update translations for dird and admin-ui"""
-    jenkins.job_build('xivo-dird-translations', token=jenkins_token)
+    jenkins.job_build('wazo-dird-translations', token=jenkins_token)
     jenkins.job_build('wazo-admin-ui-all-translations', token=jenkins_token)
 
 
