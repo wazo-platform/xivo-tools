@@ -4,7 +4,7 @@
 # Copyright 2015-2018 The Wazo Authors  (see the AUTHORS file)
 
 usage() {
-    cat << EOF 
+    cat << EOF
 You have to provide some informations to allow tagging:
 
     $(basename $0) -v wazo_version [-d git_root_directory]
