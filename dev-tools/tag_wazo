@@ -1,7 +1,7 @@
 #!/bin/bash
 # Author: Nicolas Hicher <nhicher@proformatique.com (atarakt)>
 # License: GNU General Public License (GPL) V3
-# Copyright: (C) 2015 Avencall
+# Copyright 2015-2018 The Wazo Authors  (see the AUTHORS file)
 
 usage() {
     cat << EOF 
@@ -18,16 +18,23 @@ EOF
     exit
 }
 
-update_repository() {
+update_directory() {
+    local dir="${1}"
+    pushd "${dir}" >> /dev/null
+    $git fetch -q origin || exit 1
+    echo "$(basename ${dir}) updated."
+    popd >> /dev/null
+}
+
+update_repositories() {
     local directories=$*
     echo "Ensure we start from an up-to-date repository"
+
     for dir in $directories; do
-        cd $dir
-        echo "updating $dir"
-        $git fetch -q origin || exit 1
-        echo "done"
-        cd "$OLDPWD"
+        update_directory "${dir}" &
     done
+
+    wait
 }
 
 create_build_cmd() {
@@ -106,5 +113,5 @@ fi
 directories=$(sed "s|^|$git_root_directory/|g" <<< "$GIT_DIRECTORIES")
 
 check_if_directories_exist
-update_repository $directories
+update_repositories $directories
 create_tag $directories
