@@ -69,6 +69,7 @@ create_tags() {
 
     for dir in ${directories}; do
         if [ "$i" -eq 0 ]; then
+            # The first tag is not executed in background to be able to enter the GPG password
             create_tag "${dir}" "${version}" "${cmd}"
         else
             create_tag "${dir}" "${version}" "${cmd}" &
