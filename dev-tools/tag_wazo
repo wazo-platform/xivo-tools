@@ -37,25 +37,46 @@ update_repositories() {
     wait
 }
 
-create_build_cmd() {
+create_tag_cmd() {
     local version=$1
     local cmd="$git tag -s wazo-$version -m wazo-$version origin/master"
     echo $cmd
 }
 
 create_tag() {
-    for dir in $directories; do
-        cd $dir
-        lasttag=$(git tag | grep wazo-$version)
-        if [ -z $lasttag ]; then
-            cmd=$(create_build_cmd $version)
-            $cmd || exit 1
-            $git push --tags -q || exit 1
+    local dir="${1}"
+    local version="${2}"
+    local cmd="${3}"
+
+    pushd "${dir}" >> /dev/null
+
+    lasttag=$(git tag | grep "wazo-${version}")
+    if [ -z $lasttag ]; then
+        $cmd || exit 1
+        $git push --tags -q || exit 1
+        echo "$(basename ${dir}) tagged"
+    else
+        echo "$dir has already been tagged."
+    fi
+
+    popd >> /dev/null
+}
+
+create_tags() {
+    local directories=$*
+    local cmd=$(create_tag_cmd $version)
+    local i=0
+
+    for dir in ${directories}; do
+        if [ "$i" -eq 0 ]; then
+            create_tag "${dir}" "${version}" "${cmd}"
         else
-            echo "$dir has already been tagged."
+            create_tag "${dir}" "${version}" "${cmd}" &
         fi
-        cd "$OLDPWD"
+        i=$((i+1))
     done
+
+    wait
 }
 
 check_if_directories_exist() {
@@ -114,4 +135,4 @@ directories=$(sed "s|^|$git_root_directory/|g" <<< "$GIT_DIRECTORIES")
 
 check_if_directories_exist
 update_repositories $directories
-create_tag $directories
+create_tags $directories
