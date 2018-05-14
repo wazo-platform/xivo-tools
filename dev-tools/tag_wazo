@@ -43,6 +43,18 @@ create_tag_cmd() {
     echo $cmd
 }
 
+push_tags() {
+    local directories=$*
+
+    for dir in ${directories}; do
+        pushd "${dir}" >> /dev/null
+        $git push --tags -q || exit 1
+        popd >> /dev/null
+    done
+
+    wait
+}
+
 create_tag() {
     local dir="${1}"
     local version="${2}"
@@ -52,11 +64,10 @@ create_tag() {
 
     lasttag=$(git tag | grep "wazo-${version}")
     if [ -z $lasttag ]; then
-        $cmd || exit 1
-        $git push --tags -q || exit 1
+        $cmd || echo "failed to tag ${dir}" ; exit 1
         echo "$(basename ${dir}) tagged"
     else
-        echo "$dir has already been tagged."
+        echo "$(basename ${dir}) has already been tagged."
     fi
 
     popd >> /dev/null
@@ -66,13 +77,17 @@ create_tags() {
     local directories=$*
     local cmd=$(create_tag_cmd $version)
     local i=0
+    local worker=16
 
     for dir in ${directories}; do
-        if [ "$i" -eq 0 ]; then
-            # The first tag is not executed in background to be able to enter the GPG password
-            create_tag "${dir}" "${version}" "${cmd}"
-        else
-            create_tag "${dir}" "${version}" "${cmd}" &
+        echo "tagging $(basename ${dir})..."
+        create_tag "${dir}" "${version}" "${cmd}" &
+
+        n=$(($i%$worker))
+        # We have to wait on the first tag for the gpg agent to ask for a password
+        # We stop at each 10 tags to avoid flooding the gpg agent
+        if [ "${n}" -eq 0 ]; then
+            wait
         fi
         i=$((i+1))
     done
@@ -137,3 +152,4 @@ directories=$(sed "s|^|$git_root_directory/|g" <<< "$GIT_DIRECTORIES")
 check_if_directories_exist
 update_repositories $directories
 create_tags $directories
+push_tags $directories
