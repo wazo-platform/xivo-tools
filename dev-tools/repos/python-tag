@@ -17,6 +17,7 @@ wazo-market-client
 wazo-plugind
 wazo-plugind-cli
 wazo-plugind-client
+wazo-provd-client
 wazo-res-amqp
 wazo-res-stasis-amqp
 wazo-service
