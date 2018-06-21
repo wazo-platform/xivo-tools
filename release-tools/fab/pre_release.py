@@ -314,7 +314,7 @@ def _get_xivo_version():
 
 
 def _create_ws_user(login, password):
-    sql = "DELETE FROM accesswebservice WHERE login = 'test-iso'; INSERT INTO accesswebservice (name, login, passwd, acl) VALUES ('{login}', '{login}', '{password}', '{{confd.#}}');".format(login=login, password=password)
+    sql = "DELETE FROM accesswebservice WHERE login = 'test-iso'; INSERT INTO accesswebservice (name, login, passwd, acl) VALUES ('{login}', '{login}', '{password}', '{{confd.#, auth.#}}');".format(login=login, password=password)
     run('sudo -u postgres psql asterisk -c "{sql}" ; xivo-update-keys'.format(sql=sql))
 
 
