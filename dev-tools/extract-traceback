@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Copyright 2016 Proformatique Inc.
+# Copyright 2016-2018 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0+
 
 # ./extract-traceback /var/log/xivo-*.log /var/log/xivo-*.1.gz
@@ -92,14 +92,15 @@ class LogFile(object):
                 # look for the next line beginning with "Traceback"
                 while True:
                     line = parser.readline()
-                    if line.startswith('Traceback'):
+                    if 'Traceback' in line:
                         break
                 # A: line begins with 'Traceback'
                 log_line = parser.previous_line
 
                 traceback_lines = []
                 line = parser.readline()
-                while line.startswith(' '):
+                # Catch output from main thread OR child thread
+                while line.startswith(' ') or ':  ' in line:
                     traceback_lines.append(line)
                     line = parser.readline()
                 exception_line = line
