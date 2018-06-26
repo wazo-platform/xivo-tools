@@ -11,6 +11,7 @@ You have to provide some informations to allow tagging:
 
     -v: wazo_version
     -d: git_root_directory (default ~/wazo_src)
+    -p: tag prefix (default wazo)
 
     example : $(basename $0) -v 12.14
 
@@ -39,7 +40,7 @@ update_repositories() {
 
 create_tag_cmd() {
     local version=$1
-    local cmd="$git tag -s wazo-$version -m wazo-$version origin/master"
+    local cmd="$git tag -s $tag_prefix-$version -m $tag_prefix-$version origin/master"
     echo $cmd
 }
 
@@ -68,7 +69,7 @@ create_tag() {
 
     pushd "${dir}" >> /dev/null
 
-    lasttag=$(git tag | grep "wazo-${version}")
+    lasttag=$(git tag | grep "${tag_prefix}-${version}")
     if [ -z $lasttag ]; then
         $cmd || echo "failed to tag ${dir}" ; exit 1
         echo "$(basename ${dir}) tagged"
@@ -120,6 +121,7 @@ do
   case ${opt} in
     d) git_root_directory=${OPTARG};;
     v) version=${OPTARG};;
+    p) tag_prefix=${OPTARG};;
     x) debug=1;;
     '?')  echo "${0} : option ${OPTARG} is not valid" >&2
           exit -1
@@ -144,6 +146,12 @@ if [ -z $git_root_directory ]; then
     git_root_directory="$HOME/wazo_src"
 else
     git_root_directory="$git_root_directory"
+fi
+
+if [ -z $tag_prefix ]; then
+    tag_prefix="wazo"
+else
+    tag_prefix="${tag_prefix}"
 fi
 
 URL_REPOS_LIST="http://mirror.wazo.community/repos/python-tag"
