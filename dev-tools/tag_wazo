@@ -116,7 +116,7 @@ check_if_directories_exist() {
     fi
 }
 
-while getopts :d:v:xy opt
+while getopts :d:v:p:xy opt
 do
   case ${opt} in
     d) git_root_directory=${OPTARG};;
