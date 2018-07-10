@@ -71,7 +71,8 @@ def doc(prod, dev):
     doc_path = config.get('doc', 'repo')
 
     _git_pull_master(doc_path)
-    _merge_doc_to_stable()
+    # Freeze stable on 18.03
+    # _merge_doc_to_stable()
     _update_doc_version(prod, dev)
 
 
