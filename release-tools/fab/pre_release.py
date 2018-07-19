@@ -281,6 +281,9 @@ def test_iso(host):
     auth = AuthClient(host, username='test-iso', password=password, verify_certificate=False)
     token = auth.token.new('xivo_service', expiration=60)['token']
     confd.set_token(token)
+    auth.set_token(token)
+    tenant_uuid = auth.tenants.list(name='wazo')['items'][0]['uuid']
+    confd.set_tenant(tenant_uuid)
 
     print('Installed version of Wazo is: {}'.format(xivo_version))
 
