@@ -6877,6 +6877,7 @@ SELECT pg_catalog.setval('directories_id_seq', 3, true);
 --
 
 COPY entity (id, name, displayname, phonenumber, faxnumber, email, url, address1, address2, city, state, zipcode, country, disable, dcreate, description) FROM stdin;
+1													0	0	simulate wizard passed
 \.
 
 
@@ -6884,7 +6885,7 @@ COPY entity (id, name, displayname, phonenumber, faxnumber, email, url, address1
 -- Name: entity_id_seq; Type: SEQUENCE SET; Schema: public; Owner: asterisk
 --
 
-SELECT pg_catalog.setval('entity_id_seq', 1, false);
+SELECT pg_catalog.setval('entity_id_seq', 2, false);
 
 
 --
