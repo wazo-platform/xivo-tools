@@ -35,4 +35,12 @@ echo "Things left to do:"
 echo "1. (optional) reboot Jenkins: ssh root@jenkins reboot"
 echo "2. delete oldest snapshot: ssh root@kvm-2-dev virsh snapshot-delete jenkins.xivo.io <snapshot>"
 ssh root@kvm-2-dev virsh snapshot-list jenkins.xivo.io
-echo "3. update Jenkins plugins"
+echo "3. (optional) resize qcow2 image (lasts more than 10min):"
+echo "  - ssh root@kvm-2-dev virsh start jenkins.xivo.io"
+echo "  - ssh root@jenkins"
+echo "     - dd if=/dev/zero of=/zero bs=1M"
+echo "     - rm /zero"
+echo "     - poweroff"
+echo "  - ssh root@kvm-2-dev virt-sparsify /var/lib/libvirt/images/jenkins.xivo.io.qcow2"
+ssh root@kvm-2-dev virsh snapshot-list jenkins.xivo.io
+echo "4. update Jenkins plugins"
