@@ -41,6 +41,6 @@ echo "  - ssh root@jenkins"
 echo "     - dd if=/dev/zero of=/zero bs=1M"
 echo "     - rm /zero"
 echo "     - poweroff"
-echo "  - ssh root@kvm-2-dev virt-sparsify /var/lib/libvirt/images/jenkins.xivo.io.qcow2"
+echo "  - ssh root@kvm-2-dev virt-sparsify --in-place /var/lib/libvirt/images/jenkins.xivo.io.qcow2"
 ssh root@kvm-2-dev virsh snapshot-list jenkins.xivo.io
 echo "4. update Jenkins plugins"
