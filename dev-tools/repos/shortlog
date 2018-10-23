@@ -5,6 +5,7 @@ dahdi-tools
 libpri
 wazo-admin-ui
 wazo-admin-ui-market
+wazo-asterisk-config
 wazo-auth
 wazo-auth-cli
 wazo-call-logd
