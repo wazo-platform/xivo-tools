@@ -13,6 +13,7 @@ wazo-call-logd-client
 wazo-client-qt
 wazo-dird
 wazo-dird-client
+wazo-libsccp
 wazo-market
 wazo-market-client
 wazo-plugind
@@ -55,7 +56,6 @@ xivo-dxtorc
 xivo-fetchfw
 xivo-lib-python
 xivo-lib-rest-client
-xivo-libsccp
 xivo-manage-db
 xivo-monitoring
 xivo-nginx
