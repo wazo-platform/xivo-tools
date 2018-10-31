@@ -13,6 +13,7 @@ wazo-call-logd-client
 wazo-client-qt
 wazo-dird
 wazo-dird-client
+wazo-engined
 wazo-libsccp
 wazo-market
 wazo-market-client
