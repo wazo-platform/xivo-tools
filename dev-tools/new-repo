@@ -28,8 +28,5 @@ repo = wazo_pbx.create_repo(repo_name)
 if repo:
     print(repo.ssh_url)
 
-repo.create_hook('jenkinsgit',
-                 config={'jenkins_url': 'https://jenkins.wazo.community',
-                         'content-type': 'json'},
-                 events=['push'],
-                 active=True)
+repo.create_hook('web',
+                 config={'url': 'https://jenkins.wazo.community/github-webhook'})
