@@ -43,6 +43,7 @@ wazo-debug
 wazo-dird
 wazo-dird-client
 wazo-setupd
+wazo-setupd-client
 wazo-libsccp
 wazo-libtestlink
 wazo-market
