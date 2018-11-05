@@ -29,4 +29,4 @@ if repo:
     print(repo.ssh_url)
 
 repo.create_hook('web',
-                 config={'url': 'https://jenkins.wazo.community/github-webhook'})
+                 config={'url': 'https://jenkins.wazo.community/github-webhook/'})
