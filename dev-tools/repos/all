@@ -42,7 +42,7 @@ wazo-client-qt
 wazo-debug
 wazo-dird
 wazo-dird-client
-wazo-engined
+wazo-setupd
 wazo-libsccp
 wazo-libtestlink
 wazo-market
