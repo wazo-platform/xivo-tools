@@ -36,6 +36,7 @@ wazo-admin-ui-webhook
 wazo-asterisk-config
 wazo-auth
 wazo-auth-cli
+wazo-auth-keys
 wazo-call-logd
 wazo-call-logd-client
 wazo-client-qt

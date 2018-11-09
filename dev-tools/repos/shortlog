@@ -8,6 +8,7 @@ wazo-admin-ui-market
 wazo-asterisk-config
 wazo-auth
 wazo-auth-cli
+wazo-auth-keys
 wazo-call-logd
 wazo-call-logd-client
 wazo-client-qt
