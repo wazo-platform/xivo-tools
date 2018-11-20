@@ -43,6 +43,7 @@ wazo-client-qt
 wazo-debug
 wazo-dird
 wazo-dird-client
+wazo-doc
 wazo-setupd
 wazo-setupd-client
 wazo-libsccp
@@ -87,7 +88,6 @@ xivo-dao
 xivo-dbms
 xivo-dird-phoned
 xivo-dist
-xivo-doc
 xivo-dxtora
 xivo-dxtorc
 xivo-fetchfw
