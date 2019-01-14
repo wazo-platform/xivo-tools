@@ -12,6 +12,8 @@ wazo-auth-cli
 wazo-auth-keys
 wazo-call-logd
 wazo-call-logd-client
+wazo-chatd
+wazo-chatd-client
 wazo-client-qt
 wazo-debug
 wazo-dird
