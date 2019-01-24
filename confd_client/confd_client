@@ -48,11 +48,11 @@ class KeyValueParamType(c.ParamType):
 class Confd(object):
 
     @classmethod
-    def from_options(cls, host, port, token):
+    def from_options(cls, host, port, token, tenant):
         url = "https://{}:{}/1.1".format(host, port)
-        return cls(url, token)
+        return cls(url, token, tenant)
 
-    def __init__(self, base_url, token):
+    def __init__(self, base_url, token, tenant):
         self.base_url = base_url
         self.session = requests.Session()
         self.session.verify = False
@@ -60,6 +60,7 @@ class Confd(object):
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'X-Auth-Token': token,
+            'Wazo-Tenant': tenant,
         }
 
     def __call__(self, method, url, **parameters):
@@ -118,12 +119,13 @@ destination_type = KeyValueParamType(user_id=c.INT,
 @c.option('--host', '-H', default='wazo-test', envvar='XIVO_HOST')
 @c.option('--port', '-p', default=9486, envvar='XIVO_CONFD_PORT', type=c.INT)
 @c.option('--token', '-t', envvar='WAZO_TOKEN')
-def cli(debug, host, port, token):
+@c.option('--tenant', '-T', envvar='WAZO_TENANT')
+def cli(debug, host, port, token, tenant):
     setup_logging(debug)
 
-    logging.debug("host: %s, port: %d, token: %s", host, port, token)
+    logging.debug("host: %s, port: %d, token: %s, tenant: %s", host, port, token, tenant)
     global confd
-    confd = Confd.from_options(host, port, token)
+    confd = Confd.from_options(host, port, token, tenant)
 
 
 def setup_logging(debug=False):
