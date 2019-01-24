@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (C) 2014-2015 Avencall
+# Copyright 2014-2019 The Wazo Authors  (see the AUTHORS file)
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -48,17 +48,19 @@ class KeyValueParamType(c.ParamType):
 class Confd(object):
 
     @classmethod
-    def from_options(cls, host, port, username, password):
+    def from_options(cls, host, port, token):
         url = "https://{}:{}/1.1".format(host, port)
-        return cls(url, username, password)
+        return cls(url, token)
 
-    def __init__(self, base_url, username, password):
+    def __init__(self, base_url, token):
         self.base_url = base_url
         self.session = requests.Session()
         self.session.verify = False
-        self.session.auth = requests.auth.HTTPDigestAuth(username, password)
-        self.session.headers = {'Accept': 'application/json',
-                                'Content-Type': 'application/json'}
+        self.session.headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-Auth-Token': token,
+        }
 
     def __call__(self, method, url, **parameters):
         full_url = self._build_url(url)
@@ -113,17 +115,15 @@ destination_type = KeyValueParamType(user_id=c.INT,
 
 @c.group()
 @c.option('--debug', '-d', default=False, is_flag=True)
-@c.option('--host', '-H', default='xivo-test', envvar='XIVO_HOST')
+@c.option('--host', '-H', default='wazo-test', envvar='XIVO_HOST')
 @c.option('--port', '-p', default=9486, envvar='XIVO_CONFD_PORT', type=c.INT)
-@c.option('--username', '-u', default='admin', envvar='XIVO_CONFD_USERNAME')
-@c.option('--password', '-P', default='proformatique', envvar='XIVO_CONFD_PASSWORD')
-def cli(debug, host, port, username, password):
+@c.option('--token', '-t', envvar='WAZO_TOKEN')
+def cli(debug, host, port, token):
     setup_logging(debug)
 
-    logging.debug("host: %s, port: %d, username: %s, password: %s", host, port,
-                  username, password)
+    logging.debug("host: %s, port: %d, token: %s", host, port, token)
     global confd
-    confd = Confd.from_options(host, port, username, password)
+    confd = Confd.from_options(host, port, token)
 
 
 def setup_logging(debug=False):
