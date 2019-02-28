@@ -35,6 +35,7 @@ wazo-service
 wazo-uuid
 wazo-webhookd
 wazo-webhookd-client
+wazo-websocketd-client
 xivo
 xivo-acceptance
 xivo-agentd
