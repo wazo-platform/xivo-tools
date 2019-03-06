@@ -46,8 +46,6 @@ xivo-confd-client
 xivo-confgend
 xivo-confgend-client
 xivo-config
-xivo-ctid
-xivo-ctid-client
 xivo-ctid-ng
 xivo-ctid-ng-client
 xivo-dao
