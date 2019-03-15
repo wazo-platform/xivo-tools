@@ -28,6 +28,11 @@ def parse_args():
         'filename',
         help='The CSV filename',
     )
+    parser.add_argument(
+        '-T',
+        '--tenant',
+        help="Then tenant UUID that should be used for the import, defaults to the token's tenant",
+    )
     return parser.parse_args()
 
 
@@ -50,6 +55,8 @@ def main():
         verify_certificate=False,
         prefix='api/confd',
     )
+    if args.tenant:
+        client.set_tenant(args.tenant)
 
     result = csv_import(client, args.filename)
 
