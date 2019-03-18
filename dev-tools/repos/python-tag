@@ -63,7 +63,6 @@ xivo-manage-db
 xivo-monitoring
 xivo-nginx
 xivo-provd-cli
-xivo-provd-client
 xivo-provisioning
 xivo-purge-db
 xivo-res-freeze-check
