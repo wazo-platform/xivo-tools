@@ -11,11 +11,11 @@ while [ "$(ssh kvm-2-dev virsh dominfo jenkins.xivo.io | grep State | awk '{prin
 done
 echo "Snapshotting jenkins..."
 # Unplug raw volume, it can't be snapshot
-ssh root@kvm-2-dev virsh detach-disk --config jenkins.xivo.io sda
+ssh root@kvm-2-dev virsh detach-disk --config jenkins.xivo.io vdb
 # Snapshot
 ssh root@kvm-2-dev virsh snapshot-create-as jenkins.xivo.io "$current_jenkins_version"
 # Plug back the raw volume
-ssh root@kvm-2-dev virsh attach-disk --config jenkins.xivo.io /var/lib/libvirt/images/jenkins-docker.img sda --targetbus scsi --driver qemu --subdriver raw
+ssh root@kvm-2-dev virsh attach-disk --config jenkins.xivo.io /var/lib/libvirt/images/jenkins-docker.img vdb --targetbus virtio --driver qemu --subdriver raw
 ssh root@kvm-2-dev virsh start jenkins.xivo.io
 
 echo "Waiting for jenkins to come back up..."
