@@ -22,7 +22,6 @@ wazo-doc
 wazo-setupd
 wazo-setupd-client
 wazo-libsccp
-wazo-libtestlink
 wazo-market
 wazo-market-client
 wazo-plugind
