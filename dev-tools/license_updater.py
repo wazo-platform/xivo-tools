@@ -9,7 +9,7 @@ old_licenses = [
     r'^# This program(.|\n)*MA 02110-1301 USA.$',
     r'^# This program(.|\n)*<http://www.gnu.org/licenses/>$',
 ]
-new_license = '# SPDX-License-Identifier: GPL-3.0+'
+new_license = '# SPDX-License-Identifier: GPL-3.0-or-later'
 
 
 # Usage
