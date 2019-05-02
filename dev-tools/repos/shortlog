@@ -45,8 +45,8 @@ xivo-confd-client
 xivo-confgend
 xivo-confgend-client
 xivo-config
-xivo-ctid-ng
-xivo-ctid-ng-client
+wazo-calld
+wazo-calld-client
 xivo-dao
 xivo-dbms
 xivo-dird-phoned
