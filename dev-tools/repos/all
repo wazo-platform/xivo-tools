@@ -6,6 +6,7 @@ debian-add-archive
 debian-installer
 libpri
 pylinphonelib
+wazo-acceptance
 wazo-asterisk-config
 wazo-auth
 wazo-auth-cli
@@ -36,7 +37,6 @@ wazo-webhookd
 wazo-webhookd-client
 wazo-websocketd-client
 xivo
-xivo-acceptance
 xivo-agentd
 xivo-agentd-cli
 xivo-agentd-client
