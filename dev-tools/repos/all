@@ -10,6 +10,7 @@ wazo-acceptance
 wazo-asterisk-config
 wazo-auth
 wazo-auth-cli
+wazo-auth-client
 wazo-auth-keys
 wazo-call-logd
 wazo-call-logd-client
@@ -43,7 +44,6 @@ xivo-agentd-client
 xivo-agid
 xivo-amid
 xivo-amid-client
-xivo-auth-client
 xivo-backup
 xivo-build-tools
 xivo-bus
