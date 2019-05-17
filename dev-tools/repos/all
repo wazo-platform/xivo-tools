@@ -19,6 +19,7 @@ wazo-chatd-client
 wazo-debug
 wazo-dird
 wazo-dird-client
+wazo-dird-phoned
 wazo-doc
 wazo-setupd
 wazo-setupd-client
@@ -59,7 +60,6 @@ wazo-calld
 wazo-calld-client
 xivo-dao
 xivo-dbms
-xivo-dird-phoned
 xivo-dist
 xivo-dxtora
 xivo-dxtorc
