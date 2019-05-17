@@ -31,6 +31,7 @@ wazo-service
 wazo-uuid
 wazo-webhookd
 wazo-webhookd-client
+xivo-websocketd
 wazo-websocketd-client
 xivo
 xivo-agentd
@@ -71,4 +72,3 @@ xivo-sync
 xivo-sysconfd
 xivo-upgrade
 xivo-utils
-xivo-websocketd
