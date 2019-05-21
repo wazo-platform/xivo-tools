@@ -20,6 +20,7 @@ wazo-setupd-client
 wazo-libsccp
 wazo-market
 wazo-market-client
+wazo-platform
 wazo-plugind
 wazo-plugind-cli
 wazo-plugind-client
@@ -32,7 +33,6 @@ wazo-webhookd
 wazo-webhookd-client
 wazo-websocketd
 wazo-websocketd-client
-xivo
 xivo-agentd
 xivo-agentd-cli
 xivo-agentd-client
