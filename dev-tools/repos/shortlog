@@ -43,7 +43,7 @@ xivo-backup
 xivo-bus
 xivo-certs
 xivo-confd
-xivo-confd-client
+wazo-confd-client
 xivo-confgend
 xivo-confgend-client
 xivo-config

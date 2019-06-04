@@ -52,7 +52,7 @@ xivo-bus
 xivo-certs
 xivo-ci
 xivo-confd
-xivo-confd-client
+wazo-confd-client
 xivo-confgend
 xivo-confgend-client
 xivo-config
