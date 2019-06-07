@@ -18,6 +18,7 @@ wazo-calld
 wazo-calld-client
 wazo-chatd
 wazo-chatd-client
+wazo-confd
 wazo-confd-client
 wazo-debug
 wazo-dird
@@ -54,7 +55,6 @@ xivo-build-tools
 xivo-bus
 xivo-certs
 xivo-ci
-xivo-confd
 xivo-confgend
 xivo-confgend-client
 xivo-config
