@@ -45,8 +45,8 @@ wazo-webhookd
 wazo-webhookd-client
 wazo-websocketd
 wazo-websocketd-client
-xivo-agentd-cli
-xivo-agentd-client
+wazo-agentd-cli
+wazo-agentd-client
 xivo-agid
 xivo-amid
 xivo-amid-client
