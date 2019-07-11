@@ -3,8 +3,11 @@ bntools
 dahdi-linux
 dahdi-tools
 libpri
-wazo-asterisk-config
 wazo-agentd
+wazo-agentd-cli
+wazo-agentd-client
+wazo-ansible
+wazo-asterisk-config
 wazo-auth
 wazo-auth-cli
 wazo-auth-client
@@ -40,8 +43,6 @@ wazo-webhookd
 wazo-webhookd-client
 wazo-websocketd
 wazo-websocketd-client
-wazo-agentd-cli
-wazo-agentd-client
 xivo-agid
 xivo-amid
 xivo-amid-client
