@@ -23,6 +23,7 @@ wazo-confd-client
 wazo-dird
 wazo-dird-client
 wazo-dird-phoned
+wazo-iso
 wazo-libsccp
 wazo-market
 wazo-market-client
