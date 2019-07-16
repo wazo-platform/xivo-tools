@@ -39,6 +39,7 @@ wazo-res-stasis-amqp
 wazo-service
 wazo-setupd
 wazo-setupd-client
+wazo-ui
 wazo-uuid
 wazo-webhookd
 wazo-webhookd-client
