@@ -32,6 +32,7 @@ wazo-plugind
 wazo-plugind-cli
 wazo-plugind-client
 wazo-provd-client
+wazo-purge-db
 wazo-res-amqp
 wazo-res-stasis-amqp
 wazo-service
@@ -65,7 +66,6 @@ xivo-monitoring
 xivo-nginx
 xivo-provd-cli
 xivo-provisioning
-xivo-purge-db
 xivo-res-freeze-check
 xivo-stat
 xivo-swagger-doc
