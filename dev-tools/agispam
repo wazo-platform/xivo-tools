@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 #
-# Small utility to do simultaneous requests to xivo-agid (or any FastAGI server).
+# Small utility to do simultaneous requests to wazo-agid (or any FastAGI server).
 #
-# Originally developed to test a "thread related" bug in xivo-agid (#5145).
+# Originally developed to test a "thread related" bug in wazo-agid (#5145).
 
 import argparse
 import itertools
