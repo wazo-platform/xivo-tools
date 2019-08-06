@@ -27,6 +27,7 @@ wazo-iso
 wazo-libsccp
 wazo-market
 wazo-market-client
+wazo-nginx
 wazo-platform
 wazo-plugind
 wazo-plugind-cli
@@ -63,7 +64,6 @@ xivo-lib-python
 xivo-lib-rest-client
 xivo-manage-db
 xivo-monitoring
-xivo-nginx
 xivo-provd-cli
 xivo-provisioning
 xivo-res-freeze-check

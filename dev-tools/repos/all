@@ -34,6 +34,7 @@ wazo-libsccp
 wazo-libtestlink
 wazo-market
 wazo-market-client
+wazo-nginx
 wazo-platform
 wazo-plugind
 wazo-plugind-cli
@@ -75,7 +76,6 @@ xivo-load-tester
 xivo-manage-db
 xivo-migration-scripts
 xivo-monitoring
-xivo-nginx
 xivo-provd-cli
 xivo-provd-plugins
 xivo-provisioning
