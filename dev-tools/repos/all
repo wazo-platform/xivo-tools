@@ -43,6 +43,7 @@ wazo-plugind-client
 wazo-provd
 wazo-provd-cli
 wazo-provd-client
+wazo-provd-plugins
 wazo-purge-db
 wazo-res-amqp
 wazo-res-stasis-amqp
@@ -78,7 +79,6 @@ xivo-load-tester
 xivo-manage-db
 xivo-migration-scripts
 xivo-monitoring
-xivo-provd-plugins
 xivo-res-freeze-check
 xivo-sounds
 xivo-stat
