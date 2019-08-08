@@ -34,6 +34,7 @@ wazo-plugind
 wazo-plugind-cli
 wazo-plugind-client
 wazo-provd
+wazo-provd-cli
 wazo-provd-client
 wazo-purge-db
 wazo-res-amqp
@@ -65,7 +66,6 @@ xivo-lib-python
 xivo-lib-rest-client
 xivo-manage-db
 xivo-monitoring
-xivo-provd-cli
 xivo-res-freeze-check
 xivo-stat
 xivo-swagger-doc
