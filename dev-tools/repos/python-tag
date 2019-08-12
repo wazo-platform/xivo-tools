@@ -24,13 +24,13 @@ wazo-confd-client
 wazo-debug
 wazo-dird
 wazo-dird-client
-wazo-dird-phoned
 wazo-doc
 wazo-iso
 wazo-libsccp
 wazo-market
 wazo-market-client
 wazo-nginx
+wazo-phoned
 wazo-platform
 wazo-plugind
 wazo-plugind-cli
