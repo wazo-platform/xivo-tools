@@ -6,6 +6,7 @@ libpri
 wazo-agentd
 wazo-agentd-cli
 wazo-agentd-client
+wazo-amid
 wazo-agid
 wazo-ansible
 wazo-asterisk-config
@@ -50,7 +51,6 @@ wazo-webhookd
 wazo-webhookd-client
 wazo-websocketd
 wazo-websocketd-client
-xivo-amid
 xivo-amid-client
 xivo-backup
 xivo-bus
