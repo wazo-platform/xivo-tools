@@ -46,6 +46,7 @@ wazo-service
 wazo-setupd
 wazo-setupd-client
 wazo-ui
+wazo-upgrade
 wazo-uuid
 wazo-webhookd
 wazo-webhookd-client
@@ -73,5 +74,4 @@ xivo-stat
 xivo-swagger-doc
 xivo-sync
 xivo-sysconfd
-xivo-upgrade
 xivo-utils
