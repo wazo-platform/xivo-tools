@@ -2,7 +2,7 @@ xivo-fai-deploy
 ===============
 
 This is the description of a Jenkins job named xivo-fai-deploy. It has become
-obsolete with the arrival of the xivo-dist script.
+obsolete with the arrival of the wazo-dist script.
 
 Jenkins job
 -----------

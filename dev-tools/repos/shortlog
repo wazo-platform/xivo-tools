@@ -59,7 +59,7 @@ xivo-confgend-client
 xivo-config
 xivo-dao
 xivo-dbms
-xivo-dist
+wazo-dist
 xivo-dxtora
 xivo-dxtorc
 xivo-fetchfw
