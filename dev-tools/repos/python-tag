@@ -29,6 +29,7 @@ wazo-dird
 wazo-dird-client
 wazo-doc
 wazo-dxtora
+wazo-dxtorc
 wazo-iso
 wazo-libsccp
 wazo-market
@@ -63,7 +64,6 @@ xivo-config
 xivo-dao
 xivo-dbms
 wazo-dist
-xivo-dxtorc
 xivo-fetchfw
 xivo-lib-python
 xivo-lib-rest-client
