@@ -21,7 +21,7 @@ if not (user and password):
     sys.exit(1)
 
 github = login(user, password)
-wazo_pbx = github.organization('wazo-pbx')
+wazo_pbx = github.organization('wazo-platform')
 
 repo = wazo_pbx.create_repo(repo_name)
 
