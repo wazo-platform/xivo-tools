@@ -36,24 +36,24 @@ def list_missing_files(dcmp):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser('Prepare new XIVO/ASTERISK sound files for packaging')
+    parser = argparse.ArgumentParser('Prepare new WAZO/ASTERISK sound files for packaging')
     parser.add_argument('new_language', help='Language of new sound packages')
     parser.add_argument('source_directory', help='Directory containing original wav files for new language')
-    parser.add_argument('xivo_sounds_git', help='Directory containing xivo-sounds git repository')
+    parser.add_argument('wazo_sounds_git', help='Directory containing wazo-sounds git repository')
 
     args = parser.parse_args()
     source_directory = abspath(args.source_directory)
-    xivo_sounds_git = abspath(args.xivo_sounds_git)
+    wazo_sounds_git = abspath(args.wazo_sounds_git)
 
-    xivo_path = xivo_sounds_git + '/xivo/wav/'
-    dcmp = dircmp(source_directory, xivo_path + '/' + REF_LANG)
+    wazo_path = wazo_sounds_git + '/wazo/wav/'
+    dcmp = dircmp(source_directory, wazo_path + '/' + REF_LANG)
     move_common_files_to_destination(dcmp, args.new_language, REF_LANG)
 
-    asterisk_path = xivo_sounds_git + '/asterisk/wav/'
+    asterisk_path = wazo_sounds_git + '/asterisk/wav/'
     dcmp = dircmp(source_directory, asterisk_path + '/' + REF_LANG)
     move_common_files_to_destination(dcmp, args.new_language, REF_LANG)
 
-    dcmp = dircmp(xivo_path + REF_LANG, xivo_path + args.new_language)
+    dcmp = dircmp(wazo_path + REF_LANG, wazo_path + args.new_language)
     list_missing_files(dcmp)
 
     dcmp = dircmp(asterisk_path + REF_LANG, asterisk_path + args.new_language)
