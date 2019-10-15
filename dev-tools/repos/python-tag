@@ -31,6 +31,7 @@ wazo-doc
 wazo-dxtora
 wazo-dxtorc
 wazo-iso
+wazo-lib-rest-client
 wazo-libsccp
 wazo-market
 wazo-market-client
@@ -66,7 +67,6 @@ xivo-dbms
 wazo-dist
 xivo-fetchfw
 xivo-lib-python
-xivo-lib-rest-client
 xivo-manage-db
 xivo-monitoring
 xivo-res-freeze-check
