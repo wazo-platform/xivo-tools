@@ -1,0 +1,16 @@
+version: '3'
+services:
+  postgresql-installed:
+    image: postgres:11
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DATABASE: asterisk
+    ports:
+      - 127.0.0.1:15432:5432
+  postgresql-migrated:
+    image: postgres:11
+    environment:
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DATABASE: asterisk
+    ports:
+      - 127.0.0.1:15433:5432

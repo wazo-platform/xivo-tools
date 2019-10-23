@@ -1,15 +1,16 @@
-#!/usr/bin/python
-import StringIO
+#!/usr/bin/env python
+
 import argparse
 import logging
 import os
 import sh
-import sys
+import StringIO
 import sqlalchemy as sa
+import sqlalchemy_utils
+import sys
 import xivo_dao.alchemy.all
 
 from ConfigParser import ConfigParser
-from contextlib import contextmanager
 
 from alembic.config import Config as AlembicConfig
 from alembic import command as alembic_command
@@ -17,8 +18,9 @@ from alembic import command as alembic_command
 from xivo_dao.helpers import db_manager
 
 logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger('sh.stream_bufferer')
-logger.setLevel(logging.CRITICAL)
+logger = logging.getLogger('sh.stream_bufferer').setLevel(logging.WARNING)
+logger = logging.getLogger('sh.streamreader').setLevel(logging.WARNING)
+logger = logging.getLogger('sh.command').setLevel(logging.WARNING)
 
 CWD_PATH = os.path.abspath(os.path.dirname(__file__))
 DB_URI = "postgres://{username}:{password}@{host}/{dbname}"
@@ -28,7 +30,7 @@ config.read(os.path.join(CWD_PATH, 'defaults.ini'))
 
 
 def argparser():
-    parser = argparse.ArgumentParser('compare XiVO database schemas and check for inconsitencies')
+    parser = argparse.ArgumentParser('Compare Wazo database schemas and check for inconsistencies')
     parser.add_argument('--config', help='config file')
     return parser
 
@@ -40,160 +42,135 @@ def main():
     if args.config:
         config.read(args.config)
 
-    generate_installation_schema()
-    generate_migration_schema()
+    installed_postgresql_uri = config.get('database_uri', 'installed')
+    migrated_postgresql_uri = config.get('database_uri', 'migrated')
 
-    installed_schema = config.get('schema', 'installed')
-    migrated_schema = config.get('schema', 'migrated')
-    differences = compare_schemas(installed_schema, migrated_schema)
+    generate_installed_database(installed_postgresql_uri)
+    generate_migrated_database(migrated_postgresql_uri)
+
+    differences = compare_schemas(migrated_postgresql_uri, installed_postgresql_uri)
 
     if differences:
         print
-        print "Differences detected from installed to migrated schema: "
+        print "These commands are showing what migration script should be added in order to obtain the same schema as a fresh install."
+        print "Differences detected from migrated to installed schema: "
         print
         print differences
         sys.exit(1)
 
 
-def generate_installation_schema():
-    schema = config.get('schema', 'installed')
-    alembic_cfg = build_alembic_config()
+def generate_installed_database(postgresql_uri):
+    alembic_cfg = build_alembic_config(postgresql_uri)
 
-    reset_database()
-    create_tables()
-    populate_db()
-    #make sure stamp doesn't show up in diff
+    reset_database(postgresql_uri)
+    create_tables(postgresql_uri)
+    populate_db(postgresql_uri)
+    # make sure stamp doesn't show up in diff
     alembic_command.stamp(alembic_cfg, 'head')
-    extract_schema(schema)
 
 
-def generate_migration_schema():
-    schema = config.get('schema', 'migrated')
+def generate_migrated_database(postgresql_uri):
     script = os.path.join(CWD_PATH, 'asterisk_migration.sql')
 
-    reset_database()
-    run_script(script)
-    run_alembic_migrations()
-    extract_schema(schema)
+    reset_database(postgresql_uri)
+    run_script(script, postgresql_uri)
+    run_alembic_migrations(postgresql_uri)
 
 
-def reset_database():
-    drop_database()
-    create_database()
-    enable_extensions()
+def reset_database(postgresql_uri):
+    drop_database(postgresql_uri)
+    create_database(postgresql_uri)
+    enable_extensions(postgresql_uri)
 
 
-def drop_database():
+def drop_database(postgresql_uri):
     logging.info("dropping database")
+    if sqlalchemy_utils.functions.database_exists(postgresql_uri):
+        engine = sa.create_engine(postgresql_uri)
+        engine.execute('DROP OWNED BY asterisk CASCADE;')
+        engine.execute('DROP ROLE IF EXISTS asterisk;')
+        engine.dispose()
 
-    with db_superuser():
-        sql = 'DROP DATABASE IF EXISTS %s;' % config.get('database', 'dbname')
-        sh.psql('-c', sql)
+        sqlalchemy_utils.functions.drop_database(postgresql_uri)
 
 
-def create_database():
+def create_database(postgresql_uri):
     logging.info("creating database")
 
-    db_name = config.get('database', 'dbname')
-    db_user = config.get('database', 'username')
-    with db_superuser():
-        sh.createdb('-E', 'utf8', '-O', db_user, db_name)
+    sqlalchemy_utils.functions.create_database(postgresql_uri)
+
+    engine = sa.create_engine(postgresql_uri)
+    engine.execute('CREATE ROLE asterisk WITH PASSWORD \'superpass\';')
+    engine.dispose()
 
 
-def enable_extensions():
+def enable_extensions(postgresql_uri):
     logging.info("enabling DB extensions")
+    engine = sa.create_engine(postgresql_uri)
+    engine.execute('CREATE EXTENSION IF NOT EXISTS "pgcrypto";')
+    engine.execute('CREATE EXTENSION IF NOT EXISTS "uuid-ossp";')
+    engine.dispose()
 
-    with db_superuser():
-        sh.psql('-c', 'CREATE EXTENSION IF NOT EXISTS "pgcrypto";', 'asterisk')
-        sh.psql('-c', 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";', 'asterisk')
 
-
-def create_tables():
+def create_tables(postgresql_uri):
     logging.info("creating tables")
 
-    engine = sa.create_engine(sqlalchemy_url())
+    engine = sa.create_engine(postgresql_uri)
     db_manager.Base.metadata.create_all(bind=engine)
     engine.dispose()
 
 
-def populate_db():
+def populate_db(postgresql_uri):
     path = "{}/populate/populate.sql".format(config.get('repos', 'manage_db'))
-    run_script_superuser(path)
+    run_script(path, postgresql_uri)
 
 
-def run_alembic_migrations():
+def run_alembic_migrations(postgresql_uri):
     logging.info("running alembic migrations")
-    alembic_cfg = build_alembic_config()
+    alembic_cfg = build_alembic_config(postgresql_uri)
+    os.environ['XIVO_UUID'] = '99999999-9999-9999-9999-999999999999'
     alembic_command.stamp(alembic_cfg, 'base')
     alembic_command.upgrade(alembic_cfg, 'head')
 
 
-def build_alembic_config():
+def build_alembic_config(postgresql_uri):
     alembic_path = "{}/alembic".format(config.get('repos', 'manage_db'))
     ini_file = "{}/alembic.ini".format(config.get('repos', 'manage_db'))
 
     alembic_cfg = AlembicConfig(ini_file)
     alembic_cfg.set_main_option("script_location", alembic_path)
-    alembic_cfg.set_main_option("sqlalchemy.url", sqlalchemy_url())
+    alembic_cfg.set_main_option("sqlalchemy.url", postgresql_uri)
     return alembic_cfg
 
 
-def sqlalchemy_url():
-    return DB_URI.format(username=config.get('database', 'username'),
-                         password=config.get('database', 'password'),
-                         host=config.get('database', 'host'),
-                         dbname=config.get('database', 'dbname'))
-
-
-@contextmanager
-def db_superuser():
-    superuser = config.get('database', 'superuser')
-    with sh.sudo(u=superuser, _with=True):
-        yield
-
-
-def run_script(filepath):
-    _run_script(filepath, username=config.get('database', 'username'))
-
-
-def run_script_superuser(filepath):
-    _run_script(filepath, username=config.get('database', 'superuser'))
-
-
-def _run_script(filepath, username):
+def run_script(filepath, postgresql_uri):
     logging.info("running script %s", filepath)
 
-    database = config.get('database', 'dbname')
     error_buffer = StringIO.StringIO()
 
-    with db_superuser():
-        sh.psql(U=username, d=database, f=filepath, _err=error_buffer)
+    sh.psql(
+        '-qX',
+        d=postgresql_uri,
+        f=filepath,
+        _err=error_buffer,
+        _env={'PGOPTIONS': '--client-min-messages=warning'},  # prevents NOTICE:
+    )
 
-    errors = filter_errors(error_buffer)
+    errors = error_buffer.getvalue()
     if errors:
         logging.warn("errors while executing %s: %s", filepath, errors)
+        sys.exit(2)
 
 
-def filter_errors(error_buffer):
-    output = error_buffer.getvalue()
-    errors = '\n'.join(line
-                       for line in output.splitlines()
-                       if 'NOTICE' not in line)
-    return errors
-
-
-def extract_schema(filepath):
-    logging.info("extracting database schema")
-
-    database = config.get('database', 'dbname')
-    with db_superuser():
-        sh.pg_dump('-s', '-f', filepath, database)
-
-
-def compare_schemas(path_original, path_migrated):
-    apgdiff = config.get('apgdiff', 'jar')
-    logging.info("comparing %s and %s", path_original, path_migrated)
-    output = sh.java('-jar', apgdiff, path_original, path_migrated)
+def compare_schemas(migrated_postgresql_uri, installed_postgresql_uri):
+    # Return code 0 = no differences found
+    # Return code 2 = found differences
+    output = sh.migra(
+        '--unsafe',
+        migrated_postgresql_uri,
+        installed_postgresql_uri,
+        _ok_code=[0, 2],
+    )
     return unicode(output)
 
 
