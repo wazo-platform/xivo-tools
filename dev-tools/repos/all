@@ -12,6 +12,7 @@ wazo-agentd-cli
 wazo-agentd-client
 wazo-agid
 wazo-amid
+wazo-amid-client
 wazo-ansible
 wazo-asterisk-config
 wazo-auth
@@ -64,7 +65,6 @@ wazo-webhookd
 wazo-webhookd-client
 wazo-websocketd
 wazo-websocketd-client
-xivo-amid-client
 xivo-backup
 xivo-build-tools
 xivo-bus
