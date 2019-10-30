@@ -34,7 +34,9 @@ config.read(os.path.join(CWD_PATH, 'defaults.ini'))
 
 
 def argparser():
-    parser = argparse.ArgumentParser('Compare Wazo database schemas and check for inconsistencies')
+    parser = argparse.ArgumentParser(
+        'Compare Wazo database schemas and check for inconsistencies'
+    )
     parser.add_argument('--config', help='config file')
     return parser
 
@@ -174,10 +176,7 @@ def compare_schemas(migrated_postgresql_uri, installed_postgresql_uri):
     # Return code 0 = no differences found
     # Return code 2 = found differences
     output = sh.migra(
-        '--unsafe',
-        migrated_postgresql_uri,
-        installed_postgresql_uri,
-        _ok_code=[0, 2],
+        '--unsafe', migrated_postgresql_uri, installed_postgresql_uri, _ok_code=[0, 2],
     )
     return output
 
