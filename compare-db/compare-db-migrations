@@ -1,16 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
+import io
 import logging
 import os
 import sh
-import StringIO
 import sqlalchemy as sa
 import sqlalchemy_utils
 import sys
 import xivo_dao.alchemy.all
 
-from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 from alembic.config import Config as AlembicConfig
 from alembic import command as alembic_command
@@ -51,11 +51,11 @@ def main():
     differences = compare_schemas(migrated_postgresql_uri, installed_postgresql_uri)
 
     if differences:
-        print
-        print "These commands are showing what migration script should be added in order to obtain the same schema as a fresh install."
-        print "Differences detected from migrated to installed schema: "
-        print
-        print differences
+        print()
+        print("These commands are showing what migration script should be added in order to obtain the same schema as a fresh install.")
+        print("Differences detected from migrated to installed schema: ")
+        print()
+        print(differences)
         sys.exit(1)
 
 
@@ -146,7 +146,7 @@ def build_alembic_config(postgresql_uri):
 def run_script(filepath, postgresql_uri):
     logging.info("running script %s", filepath)
 
-    error_buffer = StringIO.StringIO()
+    error_buffer = io.StringIO()
 
     sh.psql(
         '-qX',
@@ -171,7 +171,7 @@ def compare_schemas(migrated_postgresql_uri, installed_postgresql_uri):
         installed_postgresql_uri,
         _ok_code=[0, 2],
     )
-    return unicode(output)
+    return output
 
 
 if __name__ == "__main__":
