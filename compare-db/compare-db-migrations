@@ -23,7 +23,6 @@ logger = logging.getLogger('sh.streamreader').setLevel(logging.WARNING)
 logger = logging.getLogger('sh.command').setLevel(logging.WARNING)
 
 CWD_PATH = os.path.abspath(os.path.dirname(__file__))
-DB_URI = "postgres://{username}:{password}@{host}/{dbname}"
 
 config = ConfigParser()
 config.read(os.path.join(CWD_PATH, 'defaults.ini'))
