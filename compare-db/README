@@ -1,8 +1,6 @@
-Setup
-=====
+# Setup
 
-Prerequisites
--------------
+## Prerequisites
 
 ```
 apt-get install docker-engine
@@ -10,8 +8,7 @@ pip install -r requirements.txt
 ```
 
 
-Usage
------
+## Usage
 
 1. Start 2 PostgreSQL instances, e.g. with Docker:
 
