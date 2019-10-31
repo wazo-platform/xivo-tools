@@ -4,44 +4,33 @@ Setup
 Prerequisites
 -------------
 
-apt-get install postgresql postgresql-contrib apgdiff
-
-notes: apgdiff must be >= 2.4
-
-sudo
-----
-
-Make sudo not ask password for postgres user. With visudo, add the line:
-
-<your_user>     ALL=(postgres) NOPASSWD:ALL
-
-This line should appear after all rules that match <your_user>.
+```
+apt-get install docker-engine
+pip install -r requirements.txt
+```
 
 
-Database user password
-----------------------
+Usage
+-----
 
-sudo -u postgres psql
-alter user asterisk with password 'proformatique';
-alter role asterisk with superuser;
+1. Start 2 PostgreSQL instances, e.g. with Docker:
 
+```
+docker-compose up -d
+```
 
-Postgres authentification
--------------------------
+2. Get PostgreSQL ports from Docker
 
-In /etc/postgres/9.1/main/pg_hba.conf, change the line:
+```
+docker-compose port postgresql-migrated 5432
+docker-compose port postgresql-installed 5432
+```
 
-local   all             all                                     peer
+3. Copy `defaults.ini` to `local.ini` and edit it to set the correct values. If you
+used the provided `docker-compose.yml`, you only need to change the port numbers.
 
-for:
+4. Run the diff tool
 
-local   all             all                                     trust
-
-
-Getting started
----------------
-
-To start, copy defaults.ini to defaults.ini.local and use this command line:
-
-
-python compare-db-migrations --config=defaults.ini.local
+```
+python compare-db-migrations --config local.ini
+```
