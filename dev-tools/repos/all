@@ -14,6 +14,7 @@ wazo-agid
 wazo-amid
 wazo-amid-client
 wazo-ansible
+wazo-archive-keyring
 wazo-asterisk-config
 wazo-auth
 wazo-auth-cli
@@ -34,6 +35,7 @@ wazo-confgend-client
 wazo-debug
 wazo-dird
 wazo-dird-client
+wazo-dist
 wazo-doc
 wazo-dxtora
 wazo-dxtorc
@@ -77,9 +79,7 @@ xivo-ci
 xivo-config
 xivo-dao
 xivo-dbms
-wazo-dist
 xivo-fetchfw
-xivo-keyring
 xivo-lib-python
 xivo-load-tester
 xivo-manage-db
