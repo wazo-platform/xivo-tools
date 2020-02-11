@@ -16,6 +16,7 @@ wazo-amid-client
 wazo-ansible
 wazo-archive-keyring
 wazo-asterisk-config
+wazo-asterisk-doc-extractor
 wazo-auth
 wazo-auth-cli
 wazo-auth-client
