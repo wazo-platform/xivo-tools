@@ -14,7 +14,6 @@ wazo-agid
 wazo-amid
 wazo-amid-client
 wazo-ansible
-wazo-archive-keyring
 wazo-asterisk-config
 wazo-asterisk-doc-extractor
 wazo-auth
@@ -40,6 +39,7 @@ wazo-dist
 wazo-doc
 wazo-dxtora
 wazo-dxtorc
+wazo-keyring
 wazo-lib-rest-client
 wazo-libsccp
 wazo-libtestlink
