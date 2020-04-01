@@ -24,7 +24,7 @@ logging.getLogger('sh.streamreader').setLevel(logging.WARNING)
 logging.getLogger('sh.command').setLevel(logging.WARNING)
 logging.getLogger('alembic.runtime.migration').setLevel(logging.WARNING)
 
-logging.basicConfig(format=LOG_FORMAT, level=logging.ERROR)
+logging.basicConfig(format=LOG_FORMAT, level=logging.INFO)
 logger = logging.getLogger('compare-db-migrations')
 
 CWD_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -170,7 +170,7 @@ def run_script(filepath, postgresql_uri):
 
     errors = error_buffer.getvalue()
     if errors:
-        logger.warn("errors while executing %s: %s", filepath, errors)
+        logger.warning("errors while executing %s: %s", filepath, errors)
         sys.exit(2)
 
 
