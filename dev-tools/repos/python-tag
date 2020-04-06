@@ -31,7 +31,6 @@ wazo-confgend-client
 wazo-debug
 wazo-dird
 wazo-dird-client
-wazo-doc
 wazo-dxtora
 wazo-dxtorc
 wazo-lib-rest-client
