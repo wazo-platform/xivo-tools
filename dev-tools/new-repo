@@ -23,7 +23,7 @@ if not (user and password):
 github = login(user, password)
 wazo_pbx = github.organization('wazo-platform')
 
-repo = wazo_pbx.create_repo(repo_name)
+repo = wazo_pbx.create_repository(repo_name)
 
 if repo:
     print(repo.ssh_url)
