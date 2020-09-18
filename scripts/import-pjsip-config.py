@@ -45,12 +45,12 @@ argument_parser.add_argument('filename', help='The file to import')
 
 def migrate_section(confd_client, block_name, options):
     # if the names is reg_<endpoint_name>@host we are in a registration section
-    if 'reg_' and '@' in block_name:
-        endpoint_name = None
-        section = 'registration_section_options'
-    else:
+    if not block_name or 'reg_' not in block_name or '@' not in block_name:
         print('ignoring', block_name, 'invalid section, only registration sections can be overridden')
         return
+
+    endpoint_name = None
+    section = 'registration_section_options'
 
     to_add = []
     for key, value in options.items():
