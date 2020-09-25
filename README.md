@@ -20,3 +20,6 @@
 
 * rename xivo-tools to wazo-tools
 * move `./dev-tools/repos` to release repository
+    * warning: automated process use directly github
+* move `./scripts/import-pjsip-config.py` to its own directory
+    * warning: people use directly github
