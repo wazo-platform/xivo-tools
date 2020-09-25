@@ -1,5 +1,0 @@
-setup.py
-OrderedConf.py
-ThreadingHTTPServer.py
-agi.py
-voicemailpwcheck.py
