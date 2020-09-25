@@ -1,5 +1,0 @@
-
-Script which is able to import Agents with their respective skills (it creates the skill if they don't exist)
-
-import_agents.py : script 
-agents_skills.csv : input file
