@@ -82,7 +82,6 @@ xivo-fetchfw
 xivo-lib-python
 xivo-load-tester
 xivo-manage-db
-xivo-migration-scripts
 xivo-monitoring
 xivo-res-freeze-check
 xivo-stat
