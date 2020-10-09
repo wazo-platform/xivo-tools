@@ -53,6 +53,7 @@ wazo-rtpe-config
 wazo-service
 wazo-setupd
 wazo-setupd-client
+wazo-stat
 wazo-ui
 wazo-upgrade
 wazo-uuid
@@ -72,7 +73,6 @@ xivo-lib-python
 xivo-manage-db
 xivo-monitoring
 xivo-res-freeze-check
-xivo-stat
 xivo-swagger-doc
 xivo-sync
 xivo-sysconfd
