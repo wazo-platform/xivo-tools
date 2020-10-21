@@ -7,6 +7,7 @@ import argparse
 import configparser
 import os
 
+from pprint import pprint
 from requests import HTTPError
 from wazo_auth_client import Client as AuthClient
 from wazo_confd_client import Client as ConfdClient
@@ -51,6 +52,7 @@ def migrate_section(confd_client, block_name, options):
 
     endpoint_name = None
     section = 'registration_section_options'
+    ignored_options = ['outbound_auth']]
 
     to_add = []
     for key, value in options.items():
@@ -58,6 +60,8 @@ def migrate_section(confd_client, block_name, options):
             section = '{}_section_options'.format(value)
         elif key == 'endpoint':
             endpoint_name = value
+        elif key in ignored_options:
+            pass
         else:
             to_add.append([key, value])
 
@@ -85,6 +89,7 @@ def migrate_section(confd_client, block_name, options):
         confd_client.endpoints_sip.update(endpoint)
     except HTTPError as e:
         print('ignoring', block_name, 'see error message below')
+        pprint(endpoint)
         print(e)
         return
 
