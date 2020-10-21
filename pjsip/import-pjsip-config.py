@@ -52,7 +52,7 @@ def migrate_section(confd_client, block_name, options):
 
     endpoint_name = None
     section = 'registration_section_options'
-    ignored_options = ['outbound_auth']]
+    ignored_options = ['outbound_auth']
 
     to_add = []
     for key, value in options.items():
