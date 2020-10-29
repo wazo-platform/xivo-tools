@@ -1,8 +1,8 @@
 asterisk
 bntools
-consul-c
 dahdi-linux
 dahdi-tools
+libconsul-c
 libpri
 wazo-agentd
 wazo-agentd-cli

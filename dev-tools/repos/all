@@ -1,10 +1,10 @@
 asterisk
 bntools
-consul-c
 dahdi-linux
 dahdi-tools
 debian-add-archive
 debian-installer
+libconsul-c
 libpri
 pylinphonelib
 wazo-acceptance
