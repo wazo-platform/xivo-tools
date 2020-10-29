@@ -57,6 +57,9 @@ wazo-provd-client
 wazo-provd-plugins
 wazo-purge-db
 wazo-res-amqp
+wazo-res-consul
+wazo-res-consul-discovery
+wazo-res-consul-stasis-app
 wazo-res-stasis-amqp
 wazo-router-confd
 wazo-rtpe-config
