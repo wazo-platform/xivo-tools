@@ -44,6 +44,17 @@ argument_parser = argparse.ArgumentParser(
 argument_parser.add_argument('filename', help='The file to import')
 
 
+def prune(endpoint):
+    registration_section = endpoint['registration_section_options']
+    to_remove = []
+    for key, value in registration_section:
+        if key == 'outbound_auth':
+            to_remove.append(([key, value]))
+    for item in to_remove:
+        registration_section.remove(item)
+    return endpoint
+
+
 def migrate_section(confd_client, block_name, options):
     # if the names is reg_<endpoint_name>@host we are in a registration section
     if not block_name or 'reg_' not in block_name or '@' not in block_name:
@@ -85,6 +96,7 @@ def migrate_section(confd_client, block_name, options):
     endpoint[section] += to_add
 
     print('updating', endpoint['name'])
+    endpoint = prune(endpoint)
     try:
         confd_client.endpoints_sip.update(endpoint)
     except HTTPError as e:
