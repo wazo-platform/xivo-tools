@@ -72,6 +72,7 @@ def main(tenant_uuid):
     endpoints_to_update = list_broken_endpoints(confd_client)
     print('updating', len(endpoints_to_update), 'endpoints')
     for endpoint_uuid in endpoints_to_update:
+        print('.', end='')
         fix_endpoint(confd_client, endpoint_uuid)
     print('done')
 
