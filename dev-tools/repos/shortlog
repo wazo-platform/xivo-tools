@@ -29,6 +29,7 @@ wazo-confd
 wazo-confd-client
 wazo-confgend
 wazo-confgend-client
+wazo-debug
 wazo-dird
 wazo-dird-client
 wazo-dxtora
