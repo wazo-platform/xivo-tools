@@ -68,6 +68,7 @@ wazo-setupd
 wazo-setupd-client
 wazo-sounds
 wazo-stat
+wazo-sysconfd-client
 wazo-ui
 wazo-upgrade
 wazo-uuid
