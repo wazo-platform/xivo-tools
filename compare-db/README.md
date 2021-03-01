@@ -28,5 +28,5 @@ pip install -r requirements.txt
 4. Run the diff tool
 
     ```sh
-    python compare-db-migrations --config local.ini
+    python compare-db-migrations.py --config local.ini
     ```
