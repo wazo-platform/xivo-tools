@@ -32,7 +32,7 @@ CWD_PATH = os.path.abspath(os.path.dirname(__file__))
 config = ConfigParser()
 config.read(os.path.join(CWD_PATH, 'defaults.ini'))
 
-del os.environ['ALEMBIC_DB_URI']
+os.environ.pop('ALEMBIC_DB_URI', None)
 
 
 def argparser():
