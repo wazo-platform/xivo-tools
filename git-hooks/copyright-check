@@ -1,8 +1,8 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # -*- coding: utf-8 -*-
-# Copyright 2016-2017 The Wazo Authors  (see the AUTHORS file)
-# SPDX-License-Identifier: GPL-3.0+
+# Copyright 2016-2021 The Wazo Authors  (see the AUTHORS file)
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 import os
 import re
@@ -19,19 +19,19 @@ def main():
     for filepath in find_files_to_check():
         copyright = find_copyright(filepath)
         if copyright is None:
-            print "WARNING: {} has no copyright".format(filepath)
+            print(f"WARNING: {filepath} has no copyright")
         elif copyright and not copyright_ok(copyright):
             fix_copyright(filepath, copyright)
             abort = True
 
     if abort:
-        print "Files have been changed. Please add and commit again."
+        print("Files have been changed. Please add and commit again.")
         sys.exit(1)
 
 
 def find_files_to_check():
     cmd = ['git', 'diff', '--cached', '--name-only', '--diff-filter=MA']
-    output = subprocess.check_output(cmd).strip()
+    output = subprocess.check_output(cmd).strip().decode('utf-8')
     if not output:
         return []
     return [l.strip() for l in output.split("\n") if not os.path.islink(l.strip())]
@@ -61,7 +61,7 @@ def fix_copyright(filepath, match):
 
 
 def change_copyright(filepath, old, new):
-    print '{}: "{}" -> "{}"'.format(filepath, old, new)
+    print(f'{filepath}: "{old}" -> "{new}"')
     with open(filepath) as f:
         text = f.read()
     with open(filepath, 'w') as f:
