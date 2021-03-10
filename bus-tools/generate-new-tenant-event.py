@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2020 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2020-2021 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import kombu
@@ -52,8 +52,13 @@ def _send_event(event):
         producer.publish(event_data, routing_key=event.routing_key)
 
 
-def _build_event(tenant_uuid, name):
-    return TenantCreatedEvent(tenant_uuid, name)
+def _build_event(tenant_uuid, tenant):
+    body = {'uuid': tenant_uuid, 'name': tenant['name']}
+    # The was not in the body of a tenant before 21.04
+    slug = tenant.get('slug')
+    if slug:
+        body['slug'] = slug
+    return TenantCreatedEvent(**body)
 
 
 def _get_tenants_infos(tenants):
@@ -64,7 +69,7 @@ def _get_tenants_infos(tenants):
     tenant_infos = {}
     for tenant in tenants:
         try:
-            tenant_infos[tenant] = auth_client.tenants.get(tenant)['name']
+            tenant_infos[tenant] = auth_client.tenants.get(tenant)
         except requests.HTTPError as e:
             print('Error while getting tenant {}: {}'.format(tenant, e))
 
@@ -73,8 +78,8 @@ def _get_tenants_infos(tenants):
 
 def main(tenants):
     tenants_infos = _get_tenants_infos(tenants)
-    for uuid, name in tenants_infos.items():
-        event = _build_event(uuid, name)
+    for uuid, tenant in tenants_infos.items():
+        event = _build_event(uuid, tenant)
         _send_event(event)
 
 
